@@ -1,9 +1,16 @@
 <resources>
-    <string name="app_name">NewsClient</string>
-    <string name="Left">Home</string>
-    <string name="Middle">Search</string>
-    <string name="Right">Account</string>
-    <string name="home_fragment">Hello home fragment</string>
-    <string name="search_fragment">Hello search fragment</string>
-    <string name="account_fragment">Hello account fragment</string>
+    <string name = "app_name">NewsClient</string>
+    <string name = "Left">Home</string>
+    <string name = "Middle">Search</string>
+    <string name = "Right">Account</string>
+    <string name = "home_fragment">Hello home fragment</string>
+    <string name = "search_fragment">Hello search fragment</string>
+    <string name = "account_fragment">Hello account fragment</string>
+
+    <string name = "news_kind0">Important</string>
+    <string name = "news_kind1">Sports</string>
+    <string name = "news_kind2">Politics</string>
+    <string name = "news_kind3">Economy</string>
+    <string name = "news_kind4">FUN</string>
+
 </resources>

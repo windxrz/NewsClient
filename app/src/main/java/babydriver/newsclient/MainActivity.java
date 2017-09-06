@@ -9,7 +9,9 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity
+import babydriver.newsclient.News.NewsContent;
+
+public class MainActivity extends AppCompatActivity implements NewsShowFragment.OnListFragmentInteractionListener
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -18,8 +20,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         HomeFragment home_fragment = new HomeFragment();
-        BottomNavigationView bottom_navigation_view = findViewById(R.id.navigation);
+        getSupportFragmentManager().beginTransaction().add(R.id.Fragment, home_fragment).commit();
 
+        BottomNavigationView bottom_navigation_view = findViewById(R.id.navigation);
         bottom_navigation_view.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
         {
             @Override
@@ -47,7 +50,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        getSupportFragmentManager().beginTransaction().add(R.id.Fragment, home_fragment).commit();
     }
-
+    public void onListFragmentInteraction(NewsContent.NewsItem item) {}
 }

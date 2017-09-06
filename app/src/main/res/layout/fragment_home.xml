@@ -1,12 +1,54 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="babydriver.newsclient.HomeFragment">
-
-    <TextView
+ <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/home_fragment"/>
+        android:orientation="vertical"
+        tools:context="babydriver.newsclient.HomeFragment">
 
-</FrameLayout>
+     <android.support.design.widget.TabLayout
+         android:layout_width="362dp"
+         android:layout_height="wrap_content"
+         app:tabMode="scrollable">
+
+         <android.support.design.widget.TabItem
+             android:id="@+id/tabitem0"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="@string/news_kind0"/>
+
+         <android.support.design.widget.TabItem
+             android:id="@+id/tabitem1"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="@string/news_kind1"/>
+
+         <android.support.design.widget.TabItem
+             android:id="@+id/tabItem2"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="@string/news_kind2"/>
+
+         <android.support.design.widget.TabItem
+             android:id="@+id/tabItem3"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="@string/news_kind3"/>
+
+         <android.support.design.widget.TabItem
+             android:id="@+id/tabitem4"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="@string/news_kind4"/>
+     </android.support.design.widget.TabLayout>
+
+     <LinearLayout
+         android:id="@+id/NewsShowFragment"
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="3"
+         android:orientation="vertical" >
+     </LinearLayout>
+
+ </LinearLayout>
