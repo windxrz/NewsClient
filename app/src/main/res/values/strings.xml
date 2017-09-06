@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">NewsClient</string>
+    <string name="Left">News</string>
+    <string name="Middle">Favourite</string>
+    <string name="Right">User</string>
+    <string name="test">Hello World!</string>
 </resources>
