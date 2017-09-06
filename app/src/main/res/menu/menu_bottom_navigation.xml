@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_news"
+        android:title="@string/Left"/>
+    <item
+        android:id="@+id/item_lib"
+        android:title="@string/Middle"/>
+    <item
+        android:id="@+id/item_find"
+        android:title="@string/Right"/>
+
+</menu>
