@@ -10,5 +10,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="babydriver.newsclient.NewsShowFragment"
+    tools:context="babydriver.newsclient.ui.NewsShowFragment"
     tools:listitem="@layout/fragment_news"/>
