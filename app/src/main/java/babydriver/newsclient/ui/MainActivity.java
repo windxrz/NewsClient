@@ -10,19 +10,36 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
+import java.util.List;
+
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBrief;
+import babydriver.newsclient.model.NewsBriefList;
 
-public class MainActivity extends AppCompatActivity implements NewsShowFragment.OnListFragmentInteractionListener
+public class MainActivity extends AppCompatActivity implements NewsShowFragment.OnListFragmentInteractionListener, NewsShowFragment.onRequestListener
 {
+    HomeFragment home_fragment;
+    SearchFragment search_fragment;
+    AccountFragment account_fragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        HomeFragment home_fragment = new HomeFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.Fragment, home_fragment).commit();
+        home_fragment = new HomeFragment();
+        search_fragment = new SearchFragment();
+        account_fragment = new AccountFragment();
+        FragmentTransaction traction = getSupportFragmentManager().beginTransaction();
+        traction.add(R.id.Fragment, home_fragment);
+        traction.hide(home_fragment);
+        traction.add(R.id.Fragment, search_fragment);
+        traction.hide(search_fragment);
+        traction.add(R.id.Fragment, account_fragment);
+        traction.hide(account_fragment);
+        traction.show(home_fragment);
+        traction.commit();
 
         BottomNavigationView bottom_navigation_view = findViewById(R.id.navigation);
         bottom_navigation_view.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
@@ -36,22 +53,30 @@ public class MainActivity extends AppCompatActivity implements NewsShowFragment.
                 switch (id)
                 {
                     case R.id.item_home:
-                        fragment = new HomeFragment();
+                        fragment = home_fragment;
                         break;
                     case R.id.item_search:
-                        fragment = new SearchFragment();
+                        fragment = search_fragment;
                         break;
                     case R.id.item_account:
-                        fragment = new AccountFragment();
+                        fragment = account_fragment;
                         break;
                 }
                 FragmentManager fragment_manager = getSupportFragmentManager();
                 FragmentTransaction transaction = fragment_manager.beginTransaction();
-                transaction.replace(R.id.Fragment, fragment).commit();
+                transaction.hide(home_fragment);
+                transaction.hide(search_fragment);
+                transaction.hide(account_fragment);
+                transaction.show(fragment).commit();
                 return true;
             }
         });
     }
 
     public void onListFragmentInteraction(NewsBrief item) {}
+
+    public void onSuccess(NewsBriefList list)
+    {
+        home_fragment.news_show_fragment.update(list);
+    }
 }

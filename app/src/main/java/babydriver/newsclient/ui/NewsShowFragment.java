@@ -6,13 +6,20 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import babydriver.newsclient.model.MyNewsRecyclerViewAdapter;
 import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBriefList;
+import babydriver.newsclient.model.NewsRequester;
 
 /**
  * A fragment representing a list of Items.
@@ -23,9 +30,12 @@ import babydriver.newsclient.model.NewsBriefList;
 public class NewsShowFragment extends Fragment
 {
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private int mColumnCount = 1;
+    public static final String ARG_NEWS_BRIEF_LIST = "news_brief_list";
+    private NewsBriefList news_brief_list = new NewsBriefList();
     private OnListFragmentInteractionListener mListener;
+    private onRequestListener mRequestListener;
+    private NewsRequester requester;
+    RecyclerView recyclerView;
 
     public NewsShowFragment() {}
 
@@ -33,9 +43,6 @@ public class NewsShowFragment extends Fragment
     public static NewsShowFragment newInstance(int columnCount)
     {
         NewsShowFragment fragment = new NewsShowFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -43,11 +50,6 @@ public class NewsShowFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null)
-        {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -55,21 +57,22 @@ public class NewsShowFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
+        Bundle bundle = new Bundle();
 
         // Set the adapter
         if (view instanceof RecyclerView)
         {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1)
-            {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else
-            {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyNewsRecyclerViewAdapter(NewsBriefList.list, mListener));
+            recyclerView = (RecyclerView) view;
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setAdapter(new MyNewsRecyclerViewAdapter(news_brief_list.list, mListener));
         }
+
+        requester = new NewsRequester(mRequestListener);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("pageNo", 1);
+        map.put("pageSize", 25);
+        requester.requestLatest(map);
         return view;
     }
 
@@ -86,6 +89,14 @@ public class NewsShowFragment extends Fragment
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
+        if (context instanceof onRequestListener)
+        {
+            mRequestListener = (onRequestListener) context;
+        } else
+        {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnRequestListener");
+        }
     }
 
     @Override
@@ -93,6 +104,12 @@ public class NewsShowFragment extends Fragment
     {
         super.onDetach();
         mListener = null;
+    }
+
+    public void update(NewsBriefList list)
+    {
+        news_brief_list = list;
+        recyclerView.setAdapter(new MyNewsRecyclerViewAdapter(news_brief_list.list, mListener));
     }
 
     /**
@@ -105,8 +122,13 @@ public class NewsShowFragment extends Fragment
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    interface OnListFragmentInteractionListener
+    public interface OnListFragmentInteractionListener
     {
         void onListFragmentInteraction(NewsBrief item);
+    }
+
+    public interface onRequestListener
+    {
+        void onSuccess(NewsBriefList list);
     }
 }
