@@ -8,7 +8,7 @@
         tools:context="babydriver.newsclient.HomeFragment">
 
      <android.support.design.widget.TabLayout
-         android:layout_width="362dp"
+         android:layout_width="match_parent"
          android:layout_height="wrap_content"
          app:tabMode="scrollable">
 
