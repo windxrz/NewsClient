@@ -26,9 +26,9 @@ public class ContentActivity extends AppCompatActivity
         setContentView(R.layout.activity_content);
 
         Intent intent = getIntent();
-//        String news_ID = intent.getStringExtra("");
+        String news_ID = intent.getStringExtra(MainActivity.NEWS_ID);
         NewsRequester newsRequester = new NewsRequester(new ContextSetter());
-//        newsRequester.requestDetail(news_ID);
+        newsRequester.requestDetail(news_ID);
 
         textView = findViewById(R.id.contentTextView);
         textView.setMovementMethod(ScrollingMovementMethod.getInstance());

@@ -19,7 +19,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 {
 
     private final List<NewsBrief> mValues;
-    final OnListFragmentInteractionListener mListener;
+    private final OnListFragmentInteractionListener mListener;
 
     public MyNewsRecyclerViewAdapter(List<NewsBrief> items, OnListFragmentInteractionListener listener)
     {
