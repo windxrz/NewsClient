@@ -1,4 +1,4 @@
-package babydriver.newsclient;
+package babydriver.newsclient.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,8 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import babydriver.newsclient.News.NewsContent;
-import babydriver.newsclient.News.NewsContent.NewsItem;
+import babydriver.newsclient.model.NewsContent;
+import babydriver.newsclient.model.NewsContent.NewsItem;
+import babydriver.newsclient.R;
 
 /**
  * A fragment representing a list of Items.

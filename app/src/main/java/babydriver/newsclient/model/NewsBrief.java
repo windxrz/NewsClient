@@ -1,7 +1,9 @@
-package babydriver.newsclient;
+package babydriver.newsclient.model;
+
+import android.util.Log;
 
 /**
- * Module: Brief information of a piece of news
+ * Model: Brief information of a piece of news
  */
 
 public class NewsBrief

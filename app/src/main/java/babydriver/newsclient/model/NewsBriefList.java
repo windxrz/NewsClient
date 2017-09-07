@@ -1,7 +1,9 @@
-package babydriver.newsclient;
+package babydriver.newsclient.model;
+
+import babydriver.newsclient.model.NewsBrief;
 
 /**
- * Module: Response body of API when latest or search
+ * Model: Response body of API when latest or search
  */
 
 public class NewsBriefList

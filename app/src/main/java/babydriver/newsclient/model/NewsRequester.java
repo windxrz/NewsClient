@@ -1,5 +1,13 @@
-package babydriver.newsclient;
+package babydriver.newsclient.model;
 
+import android.util.Log;
+
+import java.io.IOException;
+
+import babydriver.newsclient.model.LatestService;
+import babydriver.newsclient.model.NewsBrief;
+import babydriver.newsclient.model.NewsBriefList;
+import babydriver.newsclient.model.SearchService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,16 +28,16 @@ public class NewsRequester
     {
         retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://166.111.68.66:2042/news/")
+                .baseUrl("http://166.111.68.66:2042/")
                 .build();
         latestService = retrofit.create(LatestService.class);
         searchService = retrofit.create(SearchService.class);
 
     }
 
-    public void requestLatest(int newsNum)
+    public void requestLatest(int pageNo, int pageSize)
     {
-        Call<NewsBriefList> latestCall = latestService.getLatest(1, newsNum);
+        Call<NewsBriefList> latestCall = latestService.getLatest(pageNo, pageSize);
         latestCall.enqueue(new Callback<NewsBriefList>()
                            {
                                @Override
