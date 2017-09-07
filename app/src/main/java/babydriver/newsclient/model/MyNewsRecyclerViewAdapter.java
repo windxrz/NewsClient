@@ -19,7 +19,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 {
 
     private final List<NewsBrief> mValues;
-    final OnListFragmentInteractionListener mListener;
+    private final OnListFragmentInteractionListener mListener;
 
     public MyNewsRecyclerViewAdapter(List<NewsBrief> items, OnListFragmentInteractionListener listener)
     {
@@ -61,6 +61,18 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
     public int getItemCount()
     {
         return mValues.size();
+    }
+
+    public void clear()
+    {
+        mValues.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAll(List<NewsBrief> list)
+    {
+        mValues.addAll(list);
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder

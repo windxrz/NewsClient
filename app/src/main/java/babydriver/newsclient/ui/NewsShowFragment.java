@@ -1,21 +1,25 @@
 package babydriver.newsclient.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import babydriver.newsclient.model.MyNewsRecyclerViewAdapter;
 import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.R;
-import babydriver.newsclient.model.NewsBriefList;
 import babydriver.newsclient.model.NewsRequester;
 import babydriver.newsclient.model.NewsRequester.onListRequestListener;
 
@@ -29,19 +33,17 @@ public class NewsShowFragment extends Fragment
 {
 
     public static final String ARG_NEWS_BRIEF_LIST = "news_brief_list";
-    private NewsBriefList news_brief_list = new NewsBriefList();
     private OnListFragmentInteractionListener mListener;
     private onListRequestListener mRequestListener;
-    private NewsRequester requester;
-    RecyclerView recyclerView;
+    RecyclerView recycler_view;
+    SwipeRefreshLayout swipe_refresh_layout;
 
     public NewsShowFragment() {}
 
     @SuppressWarnings("unused")
     public static NewsShowFragment newInstance(int columnCount)
     {
-        NewsShowFragment fragment = new NewsShowFragment();
-        return fragment;
+        return new NewsShowFragment();
     }
 
     @Override
@@ -58,15 +60,28 @@ public class NewsShowFragment extends Fragment
         Bundle bundle = new Bundle();
 
         // Set the adapter
-        if (view instanceof RecyclerView)
-        {
-            Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new MyNewsRecyclerViewAdapter(news_brief_list.list, mListener));
-        }
+        recycler_view = view.findViewById(R.id.recycler_view);
+        Context context = recycler_view.getContext();
+        recycler_view.setLayoutManager(new LinearLayoutManager(context));
+        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), mListener));
 
-        requester = new NewsRequester(mRequestListener);
+        swipe_refresh_layout = view.findViewById(R.id.refresh_layout);
+        swipe_refresh_layout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
+        swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+            {
+                @Override
+                public void onRefresh()
+                {
+                    ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).clear();
+                    NewsRequester requester = new NewsRequester(mRequestListener);
+                    Map<String, Integer> map = new HashMap<>();
+                    map.put("pageNo", 1);
+                    map.put("pageSize", 25);
+                    requester.requestLatest(map);
+                }
+            });
+
+        NewsRequester requester = new NewsRequester(mRequestListener);
         Map<String, Integer> map = new HashMap<>();
         map.put("pageNo", 1);
         map.put("pageSize", 25);
@@ -104,10 +119,10 @@ public class NewsShowFragment extends Fragment
         mListener = null;
     }
 
-    public void update(NewsBriefList list)
+    public void addAll(List<NewsBrief> list)
     {
-        news_brief_list = list;
-        recyclerView.setAdapter(new MyNewsRecyclerViewAdapter(news_brief_list.list, mListener));
+        swipe_refresh_layout.setRefreshing(false);
+        ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).addAll(list);
     }
 
     /**
