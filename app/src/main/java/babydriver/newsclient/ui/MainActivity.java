@@ -7,16 +7,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-
-import java.util.List;
 
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.model.NewsBriefList;
+import babydriver.newsclient.model.NewsRequester;
 
-public class MainActivity extends AppCompatActivity implements NewsShowFragment.OnListFragmentInteractionListener, NewsShowFragment.onRequestListener
+public class MainActivity extends AppCompatActivity implements NewsShowFragment.OnListFragmentInteractionListener, NewsRequester.onListRequestListener
 {
     HomeFragment home_fragment;
     SearchFragment search_fragment;

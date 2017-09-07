@@ -3,16 +3,13 @@ package babydriver.newsclient.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import babydriver.newsclient.model.MyNewsRecyclerViewAdapter;
@@ -20,6 +17,7 @@ import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBriefList;
 import babydriver.newsclient.model.NewsRequester;
+import babydriver.newsclient.model.NewsRequester.onListRequestListener;
 
 /**
  * A fragment representing a list of Items.
@@ -33,7 +31,7 @@ public class NewsShowFragment extends Fragment
     public static final String ARG_NEWS_BRIEF_LIST = "news_brief_list";
     private NewsBriefList news_brief_list = new NewsBriefList();
     private OnListFragmentInteractionListener mListener;
-    private onRequestListener mRequestListener;
+    private onListRequestListener mRequestListener;
     private NewsRequester requester;
     RecyclerView recyclerView;
 
@@ -89,9 +87,9 @@ public class NewsShowFragment extends Fragment
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
-        if (context instanceof onRequestListener)
+        if (context instanceof onListRequestListener)
         {
-            mRequestListener = (onRequestListener) context;
+            mRequestListener = (onListRequestListener) context;
         } else
         {
             throw new RuntimeException(context.toString()
@@ -125,10 +123,5 @@ public class NewsShowFragment extends Fragment
     public interface OnListFragmentInteractionListener
     {
         void onListFragmentInteraction(NewsBrief item);
-    }
-
-    public interface onRequestListener
-    {
-        void onSuccess(NewsBriefList list);
     }
 }
