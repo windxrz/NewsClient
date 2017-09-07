@@ -18,7 +18,6 @@ public class NewsContent
 
     static
     {
-        Log.d("Test\n", "test");
         for (int i = 1; i <= COUNT; i++)
         {
             addItem(createNewsItem(i));

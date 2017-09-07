@@ -1,11 +1,11 @@
 package babydriver.newsclient.ui;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -14,7 +14,7 @@ import babydriver.newsclient.model.NewsContent;
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsRequester;
 
-public class MainActivity extends Activity implements NewsShowFragment.OnListFragmentInteractionListener
+public class MainActivity extends AppCompatActivity implements NewsShowFragment.OnListFragmentInteractionListener
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -23,7 +23,7 @@ public class MainActivity extends Activity implements NewsShowFragment.OnListFra
         setContentView(R.layout.activity_main);
 
         HomeFragment home_fragment = new HomeFragment();
-        getFragmentManager().beginTransaction().add(R.id.Fragment, home_fragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.Fragment, home_fragment).commit();
 
         BottomNavigationView bottom_navigation_view = findViewById(R.id.navigation);
         bottom_navigation_view.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
@@ -46,7 +46,7 @@ public class MainActivity extends Activity implements NewsShowFragment.OnListFra
                         fragment = new AccountFragment();
                         break;
                 }
-                FragmentManager fragment_manager = getFragmentManager();
+                FragmentManager fragment_manager = getSupportFragmentManager();
                 FragmentTransaction transaction = fragment_manager.beginTransaction();
                 transaction.replace(R.id.Fragment, fragment).commit();
                 return true;
