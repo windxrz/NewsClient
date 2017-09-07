@@ -2,7 +2,7 @@ package babydriver.newsclient;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -78,14 +78,11 @@ public class NewsShowFragment extends Fragment
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        Log.d("fuck", "fuck");
         if (context instanceof OnListFragmentInteractionListener)
         {
             mListener = (OnListFragmentInteractionListener) context;
         } else
         {
-            Log.d("fuck2", "fuck2");
-
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }

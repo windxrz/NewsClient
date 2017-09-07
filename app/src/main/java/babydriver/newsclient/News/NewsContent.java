@@ -10,14 +10,8 @@ import java.util.Map;
 public class NewsContent
 {
 
-    /**
-     * An array of sample (dummy) items.
-     */
     public static final List<NewsItem> ITEMS = new ArrayList<>();
 
-    /**
-     * A map of sample (dummy) items, by ID.
-     */
     private static final Map<String, NewsItem> ITEM_MAP = new HashMap<>();
 
     private static final int COUNT = 25;

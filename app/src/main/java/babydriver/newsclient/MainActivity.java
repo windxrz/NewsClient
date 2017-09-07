@@ -1,17 +1,18 @@
 package babydriver.newsclient;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import babydriver.newsclient.News.NewsContent;
 
-public class MainActivity extends AppCompatActivity implements NewsShowFragment.OnListFragmentInteractionListener
+public class MainActivity extends Activity implements NewsShowFragment.OnListFragmentInteractionListener
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -20,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements NewsShowFragment.
         setContentView(R.layout.activity_main);
 
         HomeFragment home_fragment = new HomeFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.Fragment, home_fragment).commit();
+        getFragmentManager().beginTransaction().add(R.id.Fragment, home_fragment).commit();
 
         BottomNavigationView bottom_navigation_view = findViewById(R.id.navigation);
         bottom_navigation_view.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
@@ -43,13 +44,13 @@ public class MainActivity extends AppCompatActivity implements NewsShowFragment.
                         fragment = new AccountFragment();
                         break;
                 }
-                FragmentManager fragment_manager = getSupportFragmentManager();
+                FragmentManager fragment_manager = getFragmentManager();
                 FragmentTransaction transaction = fragment_manager.beginTransaction();
                 transaction.replace(R.id.Fragment, fragment).commit();
                 return true;
             }
         });
-
     }
+
     public void onListFragmentInteraction(NewsContent.NewsItem item) {}
 }
