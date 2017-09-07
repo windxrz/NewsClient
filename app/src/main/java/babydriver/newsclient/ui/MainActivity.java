@@ -83,6 +83,6 @@ public class MainActivity extends AppCompatActivity implements NewsShowFragment.
 
     public void onSuccess(NewsBriefList list)
     {
-        home_fragment.news_show_fragment.update(list);
+        home_fragment.news_show_fragment.addAll(list.list);
     }
 }

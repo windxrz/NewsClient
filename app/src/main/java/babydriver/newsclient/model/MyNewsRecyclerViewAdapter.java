@@ -63,6 +63,18 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         return mValues.size();
     }
 
+    public void clear()
+    {
+        mValues.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAll(List<NewsBrief> list)
+    {
+        mValues.addAll(list);
+        notifyDataSetChanged();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder
     {
         final View mView;
