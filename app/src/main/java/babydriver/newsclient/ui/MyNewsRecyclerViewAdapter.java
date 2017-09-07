@@ -1,4 +1,4 @@
-package babydriver.newsclient;
+package babydriver.newsclient.ui;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,8 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import babydriver.newsclient.NewsShowFragment.OnListFragmentInteractionListener;
-import babydriver.newsclient.News.NewsContent.NewsItem;
+import babydriver.newsclient.R;
+import babydriver.newsclient.ui.NewsShowFragment.OnListFragmentInteractionListener;
+import babydriver.newsclient.model.NewsContent.NewsItem;
 
 import java.util.List;
 

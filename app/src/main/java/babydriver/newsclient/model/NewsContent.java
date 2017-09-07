@@ -1,4 +1,4 @@
-package babydriver.newsclient.News;
+package babydriver.newsclient.model;
 
 import android.util.Log;
 

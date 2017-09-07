@@ -1,4 +1,4 @@
-package babydriver.newsclient;
+package babydriver.newsclient.ui;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
-import babydriver.newsclient.News.NewsContent;
+import babydriver.newsclient.model.NewsContent;
+import babydriver.newsclient.R;
+import babydriver.newsclient.model.NewsRequester;
 
 public class MainActivity extends Activity implements NewsShowFragment.OnListFragmentInteractionListener
 {
