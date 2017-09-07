@@ -19,4 +19,14 @@ public class NewsBrief
     public String news_Pictures;
     public String news_Video;
     public String news_Intro;
+
+    NewsBrief()
+    {
+        news_Title = "fuck!";
+    }
+
+    public String toString()
+    {
+        return news_Title;
+    }
 }

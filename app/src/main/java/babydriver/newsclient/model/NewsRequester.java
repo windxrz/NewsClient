@@ -4,6 +4,8 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import babydriver.newsclient.model.LatestService;
 import babydriver.newsclient.model.NewsBrief;
@@ -25,6 +27,16 @@ public class NewsRequester
     private LatestService latestService;
     private SearchService searchService;
     private DetailService detailService;
+    public static final List<NewsBrief> newsBriefs = new ArrayList<>();
+    private onRequestListener mListener;
+
+    static
+    {
+        for (int i = 0; i < 200; i++)
+        {
+            newsBriefs.add(new NewsBrief());
+        }
+    }
 
     public NewsRequester()
     {
@@ -51,7 +63,7 @@ public class NewsRequester
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           NewsBrief[] newsBriefs = newsBriefList.list;
+                                           mListener.onSuccess(newsBriefList.list);
                                        }
                                    }
                                }
@@ -79,7 +91,8 @@ public class NewsRequester
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           NewsBrief[] newsBriefs = newsBriefList.list;
+                                           List<NewsBrief> newsBriefs = newsBriefList.list;
+
                                        }
                                    }
                                }
@@ -117,5 +130,10 @@ public class NewsRequester
 
             }
         });
+    }
+
+    public interface onRequestListener
+    {
+        void onSuccess(List<NewsBrief> list);
     }
 }

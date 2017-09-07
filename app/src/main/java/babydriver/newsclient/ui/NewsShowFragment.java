@@ -6,14 +6,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import babydriver.newsclient.model.NewsContent;
-import babydriver.newsclient.model.NewsContent.NewsItem;
+import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.R;
+import babydriver.newsclient.model.NewsBriefList;
 
 /**
  * A fragment representing a list of Items.
@@ -69,7 +68,7 @@ public class NewsShowFragment extends Fragment
             {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyNewsRecyclerViewAdapter(NewsContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyNewsRecyclerViewAdapter(NewsBriefList.list, mListener));
         }
         return view;
     }
@@ -79,14 +78,11 @@ public class NewsShowFragment extends Fragment
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        Log.d("fuck", "fuck");
         if (context instanceof OnListFragmentInteractionListener)
         {
             mListener = (OnListFragmentInteractionListener) context;
         } else
         {
-            Log.d("fuck2", "fuck2");
-
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
@@ -111,6 +107,6 @@ public class NewsShowFragment extends Fragment
      */
     interface OnListFragmentInteractionListener
     {
-        void onListFragmentInteraction(NewsItem item);
+        void onListFragmentInteraction(NewsBrief item);
     }
 }
