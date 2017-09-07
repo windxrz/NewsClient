@@ -1,18 +1,14 @@
 package babydriver.newsclient.model;
 
-import android.util.Log;
+import android.support.annotation.NonNull;
 
-import java.io.IOException;
 import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import babydriver.newsclient.ui.NewsShowFragment.onRequestListener;
 
 /**
  * Provide news modules. Bridge between UI and HTTP API.
@@ -20,23 +16,40 @@ import babydriver.newsclient.ui.NewsShowFragment.onRequestListener;
 
 public class NewsRequester
 {
-    private Retrofit retrofit;
     private LatestService latestService;
     private SearchService searchService;
     private DetailService detailService;
-    private onRequestListener mListener;
+    private onListRequestListener listListener;
+    private onDetailRequestListener detailListener;
 
-    public NewsRequester(onRequestListener listener)
+    public NewsRequester()
     {
-        mListener = listener;
-        retrofit = new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl("http://166.111.68.66:2042/")
                 .build();
         latestService = retrofit.create(LatestService.class);
         searchService = retrofit.create(SearchService.class);
         detailService = retrofit.create(DetailService.class);
+    }
 
+    public NewsRequester(onListRequestListener listListener)
+    {
+        this();
+        this.listListener = listListener;
+    }
+
+    public NewsRequester(onDetailRequestListener detailListener)
+    {
+        this();
+        this.detailListener = detailListener;
+    }
+
+    public NewsRequester(onListRequestListener listListener, onDetailRequestListener detailListener)
+    {
+        this();
+        this.listListener = listListener;
+        this.detailListener = detailListener;
     }
 
     public void requestLatest(Map<String, Integer> map)
@@ -45,20 +58,20 @@ public class NewsRequester
         latestCall.enqueue(new Callback<NewsBriefList>()
                            {
                                @Override
-                               public void onResponse(Call<NewsBriefList> call, Response<NewsBriefList> response)
+                               public void onResponse(@NonNull Call<NewsBriefList> call, @NonNull Response<NewsBriefList> response)
                                {
                                    if (response.isSuccessful())
                                    {
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           mListener.onSuccess(newsBriefList);
+                                           listListener.onSuccess(newsBriefList);
                                        }
                                    }
                                }
 
                                @Override
-                               public void onFailure(Call<NewsBriefList> call, Throwable t)
+                               public void onFailure(@NonNull Call<NewsBriefList> call, @NonNull Throwable t)
                                {
 
                                }
@@ -73,21 +86,21 @@ public class NewsRequester
         searchCall.enqueue(new Callback<NewsBriefList>()
                            {
                                @Override
-                               public void onResponse(Call<NewsBriefList> call, Response<NewsBriefList> response)
+                               public void onResponse(@NonNull Call<NewsBriefList> call, @NonNull Response<NewsBriefList> response)
                                {
                                    if (response.isSuccessful())
                                    {
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           List<NewsBrief> newsBriefs = newsBriefList.list;
+                                           listListener.onSuccess(newsBriefList);
 
                                        }
                                    }
                                }
 
                                @Override
-                               public void onFailure(Call<NewsBriefList> call, Throwable t)
+                               public void onFailure(@NonNull Call<NewsBriefList> call, @NonNull Throwable t)
                                {
 
                                }
@@ -101,20 +114,31 @@ public class NewsRequester
         detailCall.enqueue(new Callback<NewsDetail>()
         {
             @Override
-            public void onResponse(Call<NewsDetail> call, Response<NewsDetail> response)
+            public void onResponse(@NonNull Call<NewsDetail> call, @NonNull Response<NewsDetail> response)
             {
                 if (response.isSuccessful())
                 {
                     NewsDetail newsDetail = response.body();
+                    detailListener.onSuccess(newsDetail);
                 }
             }
 
             @Override
-            public void onFailure(Call<NewsDetail> call, Throwable t)
+            public void onFailure(@NonNull Call<NewsDetail> call, @NonNull Throwable t)
             {
 
             }
         });
+    }
+
+    public interface onListRequestListener
+    {
+        void onSuccess(NewsBriefList list);
+    }
+
+    public interface onDetailRequestListener
+    {
+        void onSuccess(NewsDetail newsDetail);
     }
 
 }
