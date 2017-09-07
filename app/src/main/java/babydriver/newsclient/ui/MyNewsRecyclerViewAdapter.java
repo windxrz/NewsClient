@@ -8,21 +8,21 @@ import android.widget.TextView;
 
 import babydriver.newsclient.R;
 import babydriver.newsclient.ui.NewsShowFragment.OnListFragmentInteractionListener;
-import babydriver.newsclient.model.NewsContent.NewsItem;
+import babydriver.newsclient.model.NewsBrief;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link NewsItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link NewsBrief} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
 class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder>
 {
 
-    private final List<NewsItem> mValues;
+    private final List<NewsBrief> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    MyNewsRecyclerViewAdapter(List<NewsItem> items, OnListFragmentInteractionListener listener)
+    MyNewsRecyclerViewAdapter(List<NewsBrief> items, OnListFragmentInteractionListener listener)
     {
         mValues = items;
         mListener = listener;
@@ -40,8 +40,8 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     public void onBindViewHolder(final ViewHolder holder, int position)
     {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).news_ID);
+        holder.mContentView.setText(mValues.get(position).news_Title);
 
         holder.mView.setOnClickListener(new View.OnClickListener()
         {
@@ -69,7 +69,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
         final View mView;
         final TextView mIdView;
         final TextView mContentView;
-        NewsItem mItem;
+        NewsBrief mItem;
 
         ViewHolder(View view)
         {

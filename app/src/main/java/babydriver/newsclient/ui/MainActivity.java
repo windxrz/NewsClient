@@ -10,9 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
-import babydriver.newsclient.model.NewsContent;
 import babydriver.newsclient.R;
-import babydriver.newsclient.model.NewsRequester;
+import babydriver.newsclient.model.NewsBrief;
 
 public class MainActivity extends AppCompatActivity implements NewsShowFragment.OnListFragmentInteractionListener
 {
@@ -54,5 +53,5 @@ public class MainActivity extends AppCompatActivity implements NewsShowFragment.
         });
     }
 
-    public void onListFragmentInteraction(NewsContent.NewsItem item) {}
+    public void onListFragmentInteraction(NewsBrief item) {}
 }

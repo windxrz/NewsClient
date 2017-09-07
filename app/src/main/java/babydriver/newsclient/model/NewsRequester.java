@@ -2,12 +2,9 @@ package babydriver.newsclient.model;
 
 import android.util.Log;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import babydriver.newsclient.model.LatestService;
-import babydriver.newsclient.model.NewsBrief;
-import babydriver.newsclient.model.NewsBriefList;
-import babydriver.newsclient.model.SearchService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,6 +20,16 @@ public class NewsRequester
     private Retrofit retrofit;
     private LatestService latestService;
     private SearchService searchService;
+    public static final List<NewsBrief> newsBriefs = new ArrayList<>();
+    private onRequestListener mListener;
+
+    static
+    {
+        for (int i = 0; i < 200; i++)
+        {
+            newsBriefs.add(new NewsBrief());
+        }
+    }
 
     public NewsRequester()
     {
@@ -35,7 +42,7 @@ public class NewsRequester
 
     }
 
-    public void requestLatest(int pageNo, int pageSize)
+    public void requestLatest(int pageNo, final int pageSize)
     {
         Call<NewsBriefList> latestCall = latestService.getLatest(pageNo, pageSize);
         latestCall.enqueue(new Callback<NewsBriefList>()
@@ -48,7 +55,7 @@ public class NewsRequester
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           NewsBrief[] newsBriefs = newsBriefList.list;
+                                           mListener.onSuccess(newsBriefList.list);
                                        }
                                    }
                                }
@@ -59,7 +66,6 @@ public class NewsRequester
 
                                }
                            }
-
         );
     }
 
@@ -76,7 +82,8 @@ public class NewsRequester
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           NewsBrief[] newsBriefs = newsBriefList.list;
+                                           List<NewsBrief> newsBriefs = newsBriefList.list;
+
                                        }
                                    }
                                }
@@ -88,5 +95,10 @@ public class NewsRequester
                                }
                            }
         );
+    }
+
+    public interface onRequestListener
+    {
+        void onSuccess(List<NewsBrief> list);
     }
 }
