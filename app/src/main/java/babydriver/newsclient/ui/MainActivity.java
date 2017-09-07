@@ -1,4 +1,4 @@
-package babydriver.newsclient;
+package babydriver.newsclient.ui;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -7,9 +7,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity
+import babydriver.newsclient.model.NewsContent;
+import babydriver.newsclient.R;
+import babydriver.newsclient.model.NewsRequester;
+
+public class MainActivity extends AppCompatActivity implements NewsShowFragment.OnListFragmentInteractionListener
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -18,8 +23,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         HomeFragment home_fragment = new HomeFragment();
-        BottomNavigationView bottom_navigation_view = findViewById(R.id.navigation);
+        getSupportFragmentManager().beginTransaction().add(R.id.Fragment, home_fragment).commit();
 
+        BottomNavigationView bottom_navigation_view = findViewById(R.id.navigation);
         bottom_navigation_view.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
         {
             @Override
@@ -47,7 +53,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        getSupportFragmentManager().beginTransaction().add(R.id.Fragment, home_fragment).commit();
     }
-
+    public void onListFragmentInteraction(NewsContent.NewsItem item) {}
 }
