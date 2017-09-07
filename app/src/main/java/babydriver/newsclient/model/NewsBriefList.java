@@ -1,7 +1,9 @@
 package babydriver.newsclient.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import babydriver.newsclient.model.NewsBrief;
@@ -25,7 +27,10 @@ public class NewsBriefList
             list.add(new NewsBrief());
         }
         NewsRequester requester = new NewsRequester();
-        requester.requestLatest(1, 25);
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("pageNo", 1);
+        map.put("pageSize", 25);
+        requester.requestLatest(map);
         try
         {
             Thread.sleep(2000);
