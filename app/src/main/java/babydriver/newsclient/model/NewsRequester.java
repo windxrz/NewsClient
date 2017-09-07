@@ -3,6 +3,7 @@ package babydriver.newsclient.model;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Map;
 
 import babydriver.newsclient.model.LatestService;
 import babydriver.newsclient.model.NewsBrief;
@@ -23,6 +24,7 @@ public class NewsRequester
     private Retrofit retrofit;
     private LatestService latestService;
     private SearchService searchService;
+    private DetailService detailService;
 
     public NewsRequester()
     {
@@ -32,12 +34,13 @@ public class NewsRequester
                 .build();
         latestService = retrofit.create(LatestService.class);
         searchService = retrofit.create(SearchService.class);
+        detailService = retrofit.create(DetailService.class);
 
     }
 
-    public void requestLatest(int pageNo, int pageSize)
+    public void requestLatest(Map<String, Integer> map)
     {
-        Call<NewsBriefList> latestCall = latestService.getLatest(pageNo, pageSize);
+        Call<NewsBriefList> latestCall = latestService.getLatest(map);
         latestCall.enqueue(new Callback<NewsBriefList>()
                            {
                                @Override
@@ -63,9 +66,9 @@ public class NewsRequester
         );
     }
 
-    public void requestSearch(String keyword, int category, int pageNo, int pageSize)
+    public void requestSearch(String keyword, Map<String, Integer> map)
     {
-        Call<NewsBriefList> searchCall = searchService.getSearch(keyword, category, pageNo, pageSize);
+        Call<NewsBriefList> searchCall = searchService.getSearch(keyword, map);
         searchCall.enqueue(new Callback<NewsBriefList>()
                            {
                                @Override
@@ -88,5 +91,31 @@ public class NewsRequester
                                }
                            }
         );
+    }
+
+    public void requestDetail(String newsId)
+    {
+        Call<NewsDetail> detailCall = detailService.getDetail(newsId);
+        detailCall.enqueue(new Callback<NewsDetail>()
+        {
+            @Override
+            public void onResponse(Call<NewsDetail> call, Response<NewsDetail> response)
+            {
+                if (response.isSuccessful())
+                {
+                    NewsDetail newsDetail = response.body();
+                    if (newsDetail != null)
+                    {
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsDetail> call, Throwable t)
+            {
+
+            }
+        });
     }
 }
