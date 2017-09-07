@@ -3,6 +3,7 @@ package babydriver.newsclient.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,13 +59,57 @@ public class NewsShowFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-        Bundle bundle = new Bundle();
 
-        // Set the adapter
         recycler_view = view.findViewById(R.id.recycler_view);
         Context context = recycler_view.getContext();
         recycler_view.setLayoutManager(new LinearLayoutManager(context));
         recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), mListener));
+        recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener()
+            {
+                int previousTotal = 0;
+                int totalItemCount = 25;
+                boolean loading = false;
+
+                @Override
+                public void onScrolled(RecyclerView recycler_view, int dx, int dy)
+                {
+                    super.onScrolled(recycler_view, dx, dy);
+
+                    LinearLayoutManager manager = (LinearLayoutManager)recycler_view.getLayoutManager();
+                    totalItemCount = manager.getItemCount();
+                    if (totalItemCount < 25) totalItemCount = 25;
+                    int lastVisibleItem = manager.findLastVisibleItemPosition();
+                    if (loading)
+                    {
+                        if (totalItemCount > previousTotal)
+                        {
+                            loading = false;
+                            previousTotal = totalItemCount;
+                        }
+                    }
+                    else if (lastVisibleItem == totalItemCount - 1)
+                    {
+                        loading = true;
+                        NewsRequester requester = new NewsRequester(mRequestListener);
+                        Map<String, Integer> map = new HashMap<>();
+                        map.put("pageNo", totalItemCount / 25 + 1);
+                        map.put("pageSize", 25);
+                        requester.requestLatest(map);
+                        final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNews, Toast.LENGTH_SHORT);
+                        toast.show();
+                        Handler handler = new Handler();
+                        handler.postDelayed(
+                                new Runnable()
+                                {
+                                    @Override
+                                    public void run() {
+                                        toast.cancel();
+                                    }
+                                }, 500);
+                    }
+                }
+            }
+        );
 
         swipe_refresh_layout = view.findViewById(R.id.refresh_layout);
         swipe_refresh_layout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);

@@ -12,5 +12,6 @@
     <string name="news_kind2">Politics</string>
     <string name="news_kind3">Economy</string>
     <string name="news_kind4">FUN</string>
+    <string name="FetchingNews">Fetching News</string>
 
 </resources>
