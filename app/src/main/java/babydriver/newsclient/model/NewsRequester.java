@@ -7,15 +7,12 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
 
-import babydriver.newsclient.model.LatestService;
-import babydriver.newsclient.model.NewsBrief;
-import babydriver.newsclient.model.NewsBriefList;
-import babydriver.newsclient.model.SearchService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import babydriver.newsclient.ui.NewsShowFragment.onRequestListener;
 
 /**
  * Provide news modules. Bridge between UI and HTTP API.
@@ -27,19 +24,11 @@ public class NewsRequester
     private LatestService latestService;
     private SearchService searchService;
     private DetailService detailService;
-    public static final List<NewsBrief> newsBriefs = new ArrayList<>();
     private onRequestListener mListener;
 
-    static
+    public NewsRequester(onRequestListener listener)
     {
-        for (int i = 0; i < 200; i++)
-        {
-            newsBriefs.add(new NewsBrief());
-        }
-    }
-
-    public NewsRequester()
-    {
+        mListener = listener;
         retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl("http://166.111.68.66:2042/")
@@ -63,7 +52,7 @@ public class NewsRequester
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           mListener.onSuccess(newsBriefList.list);
+                                           mListener.onSuccess(newsBriefList);
                                        }
                                    }
                                }
@@ -117,10 +106,6 @@ public class NewsRequester
                 if (response.isSuccessful())
                 {
                     NewsDetail newsDetail = response.body();
-                    if (newsDetail != null)
-                    {
-
-                    }
                 }
             }
 
@@ -132,8 +117,4 @@ public class NewsRequester
         });
     }
 
-    public interface onRequestListener
-    {
-        void onSuccess(List<NewsBrief> list);
-    }
 }

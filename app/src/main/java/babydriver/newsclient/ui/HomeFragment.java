@@ -11,12 +11,17 @@ import babydriver.newsclient.R;
 
 public class HomeFragment extends Fragment
 {
-
+    NewsShowFragment news_show_fragment;
     @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        news_show_fragment = new NewsShowFragment();
+    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        NewsShowFragment news_show_fragment = new NewsShowFragment();
         FragmentTransaction traction = getChildFragmentManager().beginTransaction();
         traction.add(R.id.NewsShowFragment, news_show_fragment);
         traction.commit();
