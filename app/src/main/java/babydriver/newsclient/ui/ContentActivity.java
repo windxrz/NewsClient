@@ -45,8 +45,8 @@ public class ContentActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         String news_ID = intent.getStringExtra(MainActivity.NEWS_ID);
-        NewsRequester newsRequester = new NewsRequester(new ContextSetter());
-        newsRequester.requestDetail(news_ID);
+        NewsRequester newsRequester = new NewsRequester();
+        newsRequester.requestDetail(news_ID, new ContextSetter());
 
         textView = findViewById(R.id.contentTextView);;
     }
@@ -61,7 +61,7 @@ public class ContentActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private class ContextSetter implements NewsRequester.onDetailRequestListener
+    private class ContextSetter implements NewsRequester.onRequestListener<NewsDetail>
     {
         public void onSuccess(NewsDetail newsDetail)
         {

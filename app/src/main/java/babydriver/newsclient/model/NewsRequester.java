@@ -19,8 +19,6 @@ public class NewsRequester
     private LatestService latestService;
     private SearchService searchService;
     private DetailService detailService;
-    private onListRequestListener listListener;
-    private onDetailRequestListener detailListener;
 
     public NewsRequester()
     {
@@ -35,26 +33,7 @@ public class NewsRequester
         detailService = retrofit.create(DetailService.class);
     }
 
-    public NewsRequester(onListRequestListener listListener)
-    {
-        this();
-        this.listListener = listListener;
-    }
-
-    public NewsRequester(onDetailRequestListener detailListener)
-    {
-        this();
-        this.detailListener = detailListener;
-    }
-
-    public NewsRequester(onListRequestListener listListener, onDetailRequestListener detailListener)
-    {
-        this();
-        this.listListener = listListener;
-        this.detailListener = detailListener;
-    }
-
-    public void requestLatest(Map<String, Integer> map)
+    public void requestLatest(Map<String, Integer> map, final onRequestListener<NewsBriefList> listener)
     {
         Call<NewsBriefList> latestCall = latestService.getLatest(map);
         latestCall.enqueue(new Callback<NewsBriefList>()
@@ -67,7 +46,7 @@ public class NewsRequester
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           listListener.onSuccess(newsBriefList);
+                                           listener.onSuccess(newsBriefList);
                                        }
                                    }
                                }
@@ -82,7 +61,7 @@ public class NewsRequester
         );
     }
 
-    public void requestSearch(String keyword, Map<String, Integer> map)
+    public void requestSearch(String keyword, Map<String, Integer> map, final onRequestListener<NewsBriefList> listener)
     {
         Call<NewsBriefList> searchCall = searchService.getSearch(keyword, map);
         searchCall.enqueue(new Callback<NewsBriefList>()
@@ -95,7 +74,7 @@ public class NewsRequester
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           listListener.onSuccess(newsBriefList);
+                                           listener.onSuccess(newsBriefList);
 
                                        }
                                    }
@@ -110,7 +89,7 @@ public class NewsRequester
         );
     }
 
-    public void requestDetail(String newsId)
+    public void requestDetail(String newsId, final onRequestListener<NewsDetail> listener)
     {
         Call<NewsDetail> detailCall = detailService.getDetail(newsId);
         detailCall.enqueue(new Callback<NewsDetail>()
@@ -121,7 +100,7 @@ public class NewsRequester
                 if (response.isSuccessful())
                 {
                     NewsDetail newsDetail = response.body();
-                    detailListener.onSuccess(newsDetail);
+                    listener.onSuccess(newsDetail);
                 }
             }
 
@@ -133,14 +112,9 @@ public class NewsRequester
         });
     }
 
-    public interface onListRequestListener
+    public interface onRequestListener<T>
     {
-        void onSuccess(NewsBriefList list);
-    }
-
-    public interface onDetailRequestListener
-    {
-        void onSuccess(NewsDetail newsDetail);
+        void onSuccess(T data);
     }
 
 }
