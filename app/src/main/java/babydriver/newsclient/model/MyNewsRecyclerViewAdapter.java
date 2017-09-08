@@ -85,6 +85,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 //                Picasso.with(mContext).load(url).into(holder.mImage);
 //            }
 
+
             NewsBrief news = mValues.get(position);
             File dir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             String filename = "";
@@ -142,6 +143,18 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
                     }
                 }
             });
+        }
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(ViewHolder old_holder)
+    {
+        if (old_holder instanceof NewsWithPictureViewHolder)
+        {
+            NewsWithPictureViewHolder holder = (NewsWithPictureViewHolder)old_holder;
+            holder.mImage.setImageDrawable(null);
+            holder.mImage.destroyDrawingCache();
+
         }
     }
 

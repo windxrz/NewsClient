@@ -153,13 +153,18 @@ public class NewsRequester
         File file = new File(cacheDir);
         try
         {
+            BitmapFactory.Options option = new BitmapFactory.Options();
+            option.inPreferredConfig = Bitmap.Config.RGB_565;
             inputStream = body.byteStream();
-            bm = BitmapFactory.decodeStream(inputStream);
+            bm = BitmapFactory.decodeStream(inputStream, null, option);
             FileOutputStream outputStream = new FileOutputStream(file);
             bm.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
             bm.recycle();
             outputStream.flush();
             outputStream.close();
+        } catch (NullPointerException e)
+        {
+            Log.e("Exception", "NullPointerException");
         } catch (FileNotFoundException e)
         {
             Log.e("Exception", "filenotfound");
