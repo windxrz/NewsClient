@@ -16,7 +16,7 @@ import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.model.NewsBriefList;
 import babydriver.newsclient.model.NewsRequester;
 
-public class MainActivity extends AppCompatActivity implements NewsShowFragment.OnListFragmentInteractionListener, NewsRequester.onListRequestListener
+public class MainActivity extends AppCompatActivity implements NewsShowFragment.OnListFragmentInteractionListener, NewsRequester.onRequestListener<NewsBriefList>
 {
     public final static String NEWS_ID = "babydriver.newsclient.NEWS_ID";
     HomeFragment home_fragment;

@@ -23,8 +23,9 @@ import java.util.Map;
 import babydriver.newsclient.model.MyNewsRecyclerViewAdapter;
 import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.R;
+import babydriver.newsclient.model.NewsBriefList;
 import babydriver.newsclient.model.NewsRequester;
-import babydriver.newsclient.model.NewsRequester.onListRequestListener;
+import babydriver.newsclient.model.NewsRequester.onRequestListener;
 
 /**
  * A fragment representing a list of Items.
@@ -37,7 +38,7 @@ public class NewsShowFragment extends Fragment
 
     public static final String ARG_NEWS_BRIEF_LIST = "news_brief_list";
     private OnListFragmentInteractionListener mListener;
-    private onListRequestListener mRequestListener;
+    private onRequestListener<NewsBriefList> mRequestListener;
     RecyclerView recycler_view;
     SwipeRefreshLayout swipe_refresh_layout;
     int previousTotal = 0;
@@ -93,11 +94,11 @@ public class NewsShowFragment extends Fragment
                     else if (lastVisibleItem == totalItemCount - 1)
                     {
                         loading = true;
-                        NewsRequester requester = new NewsRequester(mRequestListener);
+                        NewsRequester requester = new NewsRequester();
                         Map<String, Integer> map = new HashMap<>();
                         map.put("pageNo", totalItemCount / 25 + 1);
                         map.put("pageSize", 25);
-                        requester.requestLatest(map);
+                        requester.requestLatest(map, mRequestListener);
                         final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNews, Toast.LENGTH_SHORT);
                         toast.show();
                         Handler handler = new Handler();
@@ -122,21 +123,21 @@ public class NewsShowFragment extends Fragment
                 public void onRefresh()
                 {
                     ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).clear();
-                    NewsRequester requester = new NewsRequester(mRequestListener);
+                    NewsRequester requester = new NewsRequester();
                     Map<String, Integer> map = new HashMap<>();
                     map.put("pageNo", 1);
                     map.put("pageSize", 25);
                     previousTotal = 0;
                     totalItemCount = 25;
-                    requester.requestLatest(map);
+                    requester.requestLatest(map, mRequestListener);
                 }
             });
 
-        NewsRequester requester = new NewsRequester(mRequestListener);
+        NewsRequester requester = new NewsRequester();
         Map<String, Integer> map = new HashMap<>();
         map.put("pageNo", 1);
         map.put("pageSize", 25);
-        requester.requestLatest(map);
+        requester.requestLatest(map, mRequestListener);
         return view;
     }
 
@@ -153,9 +154,9 @@ public class NewsShowFragment extends Fragment
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
-        if (context instanceof onListRequestListener)
+        if (context instanceof onRequestListener)
         {
-            mRequestListener = (onListRequestListener) context;
+            mRequestListener = (onRequestListener<NewsBriefList>) context;
         } else
         {
             throw new RuntimeException(context.toString()
