@@ -13,15 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/text_margin"
-        android:layout_weight="1"
         android:textAppearance="?attr/textAppearanceListItem"/>
 
     <ImageView
         android:id="@+id/news1_picture"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_margin="0dp"
-        android:layout_weight="1"
         android:contentDescription="@string/news_picture_outline"
         app:srcCompat="@android:drawable/ic_lock_lock"
         tools:layout_editor_absoluteX="0dp"
@@ -29,8 +27,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/news1_source"
