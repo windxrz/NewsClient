@@ -123,7 +123,7 @@ public class NewsRequester
         });
     }
 
-    public void requestPicture(String picUrl, final String cacheDir, final int pos, final onBitmapRequestListener listener)
+    void requestPicture(String picUrl, final String cacheDir, final int pos, final onRequestListener<Integer> listener)
     {
         Call<ResponseBody> pictureCall = pictureService.downloadPic(picUrl);
         pictureCall.enqueue(new Callback<ResponseBody>()
@@ -133,8 +133,8 @@ public class NewsRequester
             {
                 if (response.isSuccessful())
                 {
-                    Bitmap bm = savePicToDisk(cacheDir, response.body());
-                    listener.onSuccess(bm, pos);
+                    savePicToDisk(cacheDir, response.body());
+                    listener.onSuccess(pos);
                 }
             }
 
@@ -146,9 +146,9 @@ public class NewsRequester
         });
     }
 
-    private Bitmap savePicToDisk(String cacheDir, ResponseBody body)
+    private void savePicToDisk(String cacheDir, ResponseBody body)
     {
-        Bitmap bm = null;
+        Bitmap bm;
         InputStream inputStream = null;
         File file = new File(cacheDir);
         try
@@ -156,7 +156,8 @@ public class NewsRequester
             inputStream = body.byteStream();
             bm = BitmapFactory.decodeStream(inputStream);
             FileOutputStream outputStream = new FileOutputStream(file);
-            bm.compress(Bitmap.CompressFormat.JPEG,90,outputStream);
+            bm.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
+            bm.recycle();
             outputStream.flush();
             outputStream.close();
         } catch (FileNotFoundException e)
@@ -176,17 +177,11 @@ public class NewsRequester
                     Log.e("Exception", "ioexception when closing inputStream");
                 }
         }
-        return bm;
     }
 
     public interface onRequestListener<T>
     {
         void onSuccess(T data);
-    }
-
-    public interface onBitmapRequestListener
-    {
-        void onSuccess(Bitmap bm, int pos);
     }
 
 }

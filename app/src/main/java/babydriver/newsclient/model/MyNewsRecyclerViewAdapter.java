@@ -2,7 +2,9 @@ package babydriver.newsclient.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +17,9 @@ import com.squareup.picasso.Picasso;
 
 import babydriver.newsclient.R;
 import babydriver.newsclient.ui.NewsShowFragment.OnListFragmentInteractionListener;
+import babydriver.newsclient.model.NewsRequester.onRequestListener;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -35,6 +39,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 
     private final List<NewsBrief> mValues;
     private final OnListFragmentInteractionListener mListener;
+    private final onRequestListener<Integer> mRequestListener;
     private Context mContext;
 
     private enum NEWS_TYPE
@@ -43,12 +48,13 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         NEWS_WITHOUT_PICTURE
     }
 
-    public MyNewsRecyclerViewAdapter(List<NewsBrief> items, OnListFragmentInteractionListener listener, Context context)
+    public MyNewsRecyclerViewAdapter(List<NewsBrief> items, OnListFragmentInteractionListener listener, onRequestListener<Integer> requestListener, Context context)
     {
 
         mValues = items;
         mListener = listener;
         mContext = context;
+        mRequestListener = requestListener;
     }
 
     @Override
@@ -72,11 +78,34 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
             final NewsWithPictureViewHolder holder = (NewsWithPictureViewHolder)old_holder;
             holder.mItem = mValues.get(position);
 
-            String url = holder.mItem.newsPictures.get(0);
-            if (url.length() > 3)
+//            String url = holder.mItem.newsPictures.get(0);
+//            if (url.length() > 3)
+//            {
+//                Log.e("url", url);
+//                Picasso.with(mContext).load(url).into(holder.mImage);
+//            }
+
+            NewsBrief news = mValues.get(position);
+            File dir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            String filename = "";
+            try
             {
-                Log.e("url", url);
-                Picasso.with(mContext).load(url).into(holder.mImage);
+                assert dir != null;
+                filename = dir.getPath();
+                Log.e("filename", filename);
+            }
+            catch (NullPointerException ignored) {}
+            filename = filename + "/" + news.news_ID;
+            File file = new File(filename);
+            if (file.exists())
+            {
+                Bitmap map = BitmapFactory.decodeFile(filename);
+                holder.mImage.setImageBitmap(map);
+            }
+            else
+            {
+                NewsRequester news_requester = new NewsRequester();
+                news_requester.requestPicture(news.newsPictures.get(0), filename, position, mRequestListener);
             }
             holder.mNewsTitle.setText(holder.mItem.news_Title);
             holder.mNewsSource.setText(holder.mItem.news_Source);
@@ -147,6 +176,11 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         {
             super(view);
         }
+    }
+
+    public void setPicture(int pos)
+    {
+        notifyDataSetChanged();
     }
 
     private class NewsWithPictureViewHolder extends ViewHolder

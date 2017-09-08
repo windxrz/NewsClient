@@ -1,6 +1,7 @@
 package babydriver.newsclient.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +40,7 @@ public class NewsShowFragment extends Fragment
     public static final String ARG_NEWS_BRIEF_LIST = "news_brief_list";
     private OnListFragmentInteractionListener mListener;
     private onRequestListener<NewsBriefList> mRequestListener;
+    private onRequestListener<Integer> mBitmapRequestListener;
     RecyclerView recycler_view;
     SwipeRefreshLayout swipe_refresh_layout;
     int previousTotal = 0;
@@ -67,7 +69,7 @@ public class NewsShowFragment extends Fragment
         recycler_view = view.findViewById(R.id.recycler_view);
         Context context = recycler_view.getContext();
         recycler_view.setLayoutManager(new LinearLayoutManager(context));
-        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), mListener, this.getActivity()));
+        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), mListener, mBitmapRequestListener, this.getActivity()));
         recycler_view.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
         recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener()
             {
@@ -143,6 +145,7 @@ public class NewsShowFragment extends Fragment
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onAttach(Context context)
     {
         super.onAttach(context);
@@ -157,6 +160,7 @@ public class NewsShowFragment extends Fragment
         if (context instanceof onRequestListener)
         {
             mRequestListener = (onRequestListener<NewsBriefList>) context;
+            mBitmapRequestListener = (onRequestListener<Integer>) context;
         } else
         {
             throw new RuntimeException(context.toString()
@@ -177,6 +181,10 @@ public class NewsShowFragment extends Fragment
         ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).addAll(list);
     }
 
+    public void setPicture(int pos)
+    {
+        ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).setPicture(pos);
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
