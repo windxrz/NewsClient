@@ -1,5 +1,6 @@
 package babydriver.newsclient.model;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import babydriver.newsclient.R;
 import babydriver.newsclient.ui.NewsShowFragment.OnListFragmentInteractionListener;
 
@@ -18,7 +21,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -30,6 +35,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 
     private final List<NewsBrief> mValues;
     private final OnListFragmentInteractionListener mListener;
+    private Context mContext;
 
     private enum NEWS_TYPE
     {
@@ -37,10 +43,12 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         NEWS_WITHOUT_PICTURE
     }
 
-    public MyNewsRecyclerViewAdapter(List<NewsBrief> items, OnListFragmentInteractionListener listener)
+    public MyNewsRecyclerViewAdapter(List<NewsBrief> items, OnListFragmentInteractionListener listener, Context context)
     {
+
         mValues = items;
         mListener = listener;
+        mContext = context;
     }
 
     @Override
@@ -58,27 +66,21 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
     @Override
     public void onBindViewHolder(final ViewHolder old_holder, int position)
     {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA);
         if (old_holder instanceof NewsWithPictureViewHolder)
         {
             final NewsWithPictureViewHolder holder = (NewsWithPictureViewHolder)old_holder;
             holder.mItem = mValues.get(position);
 
-//            try
-//            {
-//                URL url = new URL(holder.mItem.news_Pictures);
-//                Log.e("url", holder.mItem.news_Pictures);
-//                InputStream is = (InputStream)url.getContent();
-//                Log.e("url", holder.mItem.news_Pictures);
-//                Drawable drawable = Drawable.createFromStream(is, "src");
-//                holder.mImage.setImageDrawable(drawable);
-//            }
-//            catch (Exception e)
-//            {
-//                Log.e(e.toString(), e.toString());
-//            }
+            String url = holder.mItem.newsPictures.get(0);
+            if (url.length() > 3)
+            {
+                Log.e("url", url);
+                Picasso.with(mContext).load(url).into(holder.mImage);
+            }
             holder.mNewsTitle.setText(holder.mItem.news_Title);
             holder.mNewsSource.setText(holder.mItem.news_Source);
-            holder.mNewsTime.setText(holder.mItem.news_Time);
+            holder.mNewsTime.setText(format.format(holder.mItem.newsTime));
 
             holder.mView.setOnClickListener(new View.OnClickListener()
             {
@@ -98,7 +100,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
             holder.mItem = mValues.get(position);
             holder.mNewsTitle.setText(holder.mItem.news_Title);
             holder.mNewsSource.setText(holder.mItem.news_Source);
-            holder.mNewsTime.setText(holder.mItem.news_Time);
+            holder.mNewsTime.setText(format.format(holder.mItem.newsTime));
 
             holder.mView.setOnClickListener(new View.OnClickListener()
             {
@@ -117,7 +119,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
     @Override
     public int getItemViewType(int position)
     {
-        return (Objects.equals(mValues.get(position).news_Pictures, "") ? NEWS_TYPE.NEWS_WITHOUT_PICTURE.ordinal() : NEWS_TYPE.NEWS_WITH_PICTURE.ordinal());
+        return (mValues.get(position).newsPictures.size() == 0 ? NEWS_TYPE.NEWS_WITHOUT_PICTURE.ordinal() : NEWS_TYPE.NEWS_WITH_PICTURE.ordinal());
     }
 
     @Override
