@@ -13,5 +13,6 @@
     <string name="news_kind3">Economy</string>
     <string name="news_kind4">FUN</string>
     <string name="FetchingNews">Fetching News</string>
+    <string name="news_picture_outline">nothing</string>
 
 </resources>
