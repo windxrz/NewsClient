@@ -66,7 +66,8 @@ public class NewsShowFragment extends Fragment
         recycler_view = view.findViewById(R.id.recycler_view);
         Context context = recycler_view.getContext();
         recycler_view.setLayoutManager(new LinearLayoutManager(context));
-        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), mListener));
+        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), mListener, this.getActivity()));
+        recycler_view.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
         recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener()
             {
 
