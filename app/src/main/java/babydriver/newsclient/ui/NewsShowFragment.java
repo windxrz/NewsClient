@@ -39,6 +39,8 @@ public class NewsShowFragment extends Fragment
     private onListRequestListener mRequestListener;
     RecyclerView recycler_view;
     SwipeRefreshLayout swipe_refresh_layout;
+    int previousTotal = 0;
+    int totalItemCount = 25;
 
     public NewsShowFragment() {}
 
@@ -66,8 +68,7 @@ public class NewsShowFragment extends Fragment
         recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), mListener));
         recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener()
             {
-                int previousTotal = 0;
-                int totalItemCount = 25;
+
                 boolean loading = false;
 
                 @Override
@@ -123,6 +124,8 @@ public class NewsShowFragment extends Fragment
                     Map<String, Integer> map = new HashMap<>();
                     map.put("pageNo", 1);
                     map.put("pageSize", 25);
+                    previousTotal = 0;
+                    totalItemCount = 25;
                     requester.requestLatest(map);
                 }
             });
