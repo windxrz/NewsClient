@@ -39,7 +39,6 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
     public void onBindViewHolder(final ViewHolder holder, int position)
     {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText("");
         holder.mContentView.setText(mValues.get(position).news_Title);
 
         holder.mView.setOnClickListener(new View.OnClickListener()
@@ -78,7 +77,6 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
     class ViewHolder extends RecyclerView.ViewHolder
     {
         final View mView;
-        final TextView mIdView;
         final TextView mContentView;
         NewsBrief mItem;
 
@@ -86,7 +84,6 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         {
             super(view);
             mView = view;
-            mIdView = view.findViewById(R.id.id);
             mContentView = view.findViewById(R.id.content);
         }
 
