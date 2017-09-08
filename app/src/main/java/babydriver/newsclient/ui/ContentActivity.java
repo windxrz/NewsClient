@@ -3,14 +3,20 @@ package babydriver.newsclient.ui;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.ScrollingMovementMethod;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import babydriver.newsclient.R;
@@ -39,8 +45,7 @@ public class ContentActivity extends AppCompatActivity
         NewsRequester newsRequester = new NewsRequester(new ContextSetter());
         newsRequester.requestDetail(news_ID);
 
-        textView = findViewById(R.id.contentTextView);
-        textView.setMovementMethod(ScrollingMovementMethod.getInstance());
+        textView = findViewById(R.id.contentTextView);;
     }
 
     @Override
@@ -57,27 +62,38 @@ public class ContentActivity extends AppCompatActivity
     {
         public void onSuccess(NewsDetail newsDetail)
         {
-            int sumLen;
-            SpannableStringBuilder content = new SpannableStringBuilder(newsDetail.news_Title);
-            StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-            RelativeSizeSpan doubleSizeSpan = new RelativeSizeSpan(2.0f);
-            content.setSpan(boldSpan, 0, content.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            content.setSpan(doubleSizeSpan, 0, content.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            content.append('\n');
+            int sumLen = 0;
+            SpannableStringBuilder content = new SpannableStringBuilder();
+            content.append(newsDetail.news_Title);
+            TypefaceSpan titleFontSpan = new TypefaceSpan("serif");
+//            RelativeSizeSpan doubleSizeSpan = new RelativeSizeSpan(2.0f);
+            AbsoluteSizeSpan titleSizeSpan = new AbsoluteSizeSpan(25, true);
+            content.setSpan(titleFontSpan, sumLen, content.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            content.setSpan(titleSizeSpan, sumLen, content.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            content.append("\n\n");
             sumLen = content.length();
 
             content.append(newsDetail.news_Source).append(" ").append(newsDetail.news_Author).append('\n');
-            RelativeSizeSpan halfSizeSpan = new RelativeSizeSpan(0.5f);
-            content.setSpan(halfSizeSpan, sumLen, content.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            RelativeSizeSpan halfSizeSpan = new RelativeSizeSpan(0.5f);
+            TypefaceSpan authorFontSpan = new TypefaceSpan("serif");
+            AbsoluteSizeSpan authorSizeSpan = new AbsoluteSizeSpan(15, true);
+            content.setSpan(authorFontSpan, sumLen, content.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            content.setSpan(authorSizeSpan, sumLen, content.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             content.append('\n');
-//            sumLen += newsDetail.news_Source.length() + newsDetail.news_Author.length() + 2;
+            sumLen = content.length();
 
             content.append(newsDetail.news_Content);
+            TypefaceSpan contentFontSpan = new TypefaceSpan("serif");
+            AbsoluteSizeSpan contentSizeSpan = new AbsoluteSizeSpan(18, true);
+            content.setSpan(contentFontSpan, sumLen, content.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            content.setSpan(contentSizeSpan, sumLen, content.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 //            sumLen += newsDetail.news_Content.length();
 
             textView.setText(content);
         }
     }
+
 }
+
 
 
