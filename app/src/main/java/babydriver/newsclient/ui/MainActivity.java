@@ -1,6 +1,7 @@
 package babydriver.newsclient.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +17,9 @@ import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.model.NewsBriefList;
 import babydriver.newsclient.model.NewsRequester;
 
-public class MainActivity extends AppCompatActivity implements NewsShowFragment.OnListFragmentInteractionListener, NewsRequester.onRequestListener<NewsBriefList>
+public class MainActivity extends AppCompatActivity
+        implements NewsShowFragment.OnListFragmentInteractionListener,
+                   NewsRequester.onRequestListener
 {
     public final static String NEWS_ID = "babydriver.newsclient.NEWS_ID";
     HomeFragment home_fragment;
@@ -81,8 +84,18 @@ public class MainActivity extends AppCompatActivity implements NewsShowFragment.
         startActivity(intent);
     }
 
-    public void onSuccess(NewsBriefList list)
+    @Override
+    public void onSuccess(Object data)
     {
-        home_fragment.news_show_fragment.addAll(list.list);
+        if (data instanceof NewsBriefList)
+        {
+            NewsBriefList list = (NewsBriefList) data;
+            home_fragment.news_show_fragment.addAll(list.list);
+        }
+        if (data instanceof Integer)
+        {
+            int pos = (Integer)data;
+            home_fragment.news_show_fragment.setPicture(pos);
+        }
     }
 }
