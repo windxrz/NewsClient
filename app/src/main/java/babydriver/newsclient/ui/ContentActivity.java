@@ -19,6 +19,9 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsDetail;
 import babydriver.newsclient.model.NewsRequester;
@@ -73,7 +76,12 @@ public class ContentActivity extends AppCompatActivity
             content.append("\n\n");
             sumLen = content.length();
 
-            content.append(newsDetail.news_Source).append(" ").append(newsDetail.news_Author).append('\n');
+            SimpleDateFormat ft = new SimpleDateFormat("yyyy年MM月dd日 HH:mm", Locale.CHINA);
+            content.append("").append(newsDetail.news_Source)
+                    .append(" ").append(newsDetail.news_Author)
+                    .append(" ").append(newsDetail.news_Journal)
+                    .append("\n").append(ft.format(newsDetail.newsTime))
+                    .append('\n');
 //            RelativeSizeSpan halfSizeSpan = new RelativeSizeSpan(0.5f);
             TypefaceSpan authorFontSpan = new TypefaceSpan("serif");
             AbsoluteSizeSpan authorSizeSpan = new AbsoluteSizeSpan(15, true);
@@ -84,7 +92,7 @@ public class ContentActivity extends AppCompatActivity
 
             content.append(newsDetail.news_Content);
             TypefaceSpan contentFontSpan = new TypefaceSpan("serif");
-            AbsoluteSizeSpan contentSizeSpan = new AbsoluteSizeSpan(18, true);
+            AbsoluteSizeSpan contentSizeSpan = new AbsoluteSizeSpan(17, true);
             content.setSpan(contentFontSpan, sumLen, content.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             content.setSpan(contentSizeSpan, sumLen, content.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 //            sumLen += newsDetail.news_Content.length();
