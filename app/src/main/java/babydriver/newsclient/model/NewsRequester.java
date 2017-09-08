@@ -123,7 +123,7 @@ public class NewsRequester
         });
     }
 
-    public void requestPicture(String picUrl, final String cacheDir, final onRequestListener<Bitmap> listener)
+    public void requestPicture(String picUrl, final String cacheDir, final int pos, final onBitmapRequestListener listener)
     {
         Call<ResponseBody> pictureCall = pictureService.downloadPic(picUrl);
         pictureCall.enqueue(new Callback<ResponseBody>()
@@ -134,7 +134,7 @@ public class NewsRequester
                 if (response.isSuccessful())
                 {
                     Bitmap bm = savePicToDisk(cacheDir, response.body());
-                    listener.onSuccess(bm);
+                    listener.onSuccess(bm, pos);
                 }
             }
 
@@ -182,6 +182,11 @@ public class NewsRequester
     public interface onRequestListener<T>
     {
         void onSuccess(T data);
+    }
+
+    public interface onBitmapRequestListener
+    {
+        void onSuccess(Bitmap bm, int pos);
     }
 
 }
