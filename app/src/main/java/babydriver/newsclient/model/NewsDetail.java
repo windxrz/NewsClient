@@ -7,4 +7,5 @@ package babydriver.newsclient.model;
 public class NewsDetail extends NewsBrief
 {
     public String news_Content;
+    public String news_Journal;
 }

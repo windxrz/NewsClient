@@ -25,6 +25,8 @@ public class NewsRequester
     public NewsRequester()
     {
         Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(NewsBriefListConverterFactory.create())
+                .addConverterFactory(NewsDetailConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl("http://166.111.68.66:2042/")
                 .build();
