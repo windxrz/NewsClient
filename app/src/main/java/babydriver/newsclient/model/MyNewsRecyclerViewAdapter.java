@@ -3,7 +3,6 @@ package babydriver.newsclient.model;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -70,14 +69,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
             final NewsWithPictureViewHolder holder = (NewsWithPictureViewHolder)old_holder;
             holder.mItem = mValues.get(position);
 
-//            String url = holder.mItem.newsPictures.get(0);
-//            if (url.length() > 3)
-//            {
-//                Log.e("url", url);
-//                Picasso.with(mContext).load(url).into(holder.mImage);
-//            }
-
-
+            holder.mImage.setImageBitmap(null);
             NewsBrief news = mValues.get(position);
             File dir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             String filename = "";
@@ -85,7 +77,6 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
             {
                 assert dir != null;
                 filename = dir.getPath();
-                Log.e("filename", filename);
             }
             catch (NullPointerException ignored) {}
             filename = filename + "/" + news.news_ID;
@@ -144,9 +135,8 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         if (old_holder instanceof NewsWithPictureViewHolder)
         {
             NewsWithPictureViewHolder holder = (NewsWithPictureViewHolder)old_holder;
-            holder.mImage.setImageDrawable(null);
-            holder.mImage.destroyDrawingCache();
-
+//            holder.mImage.setImageDrawable(null);
+//            holder.mImage.destroyDrawingCache();
         }
     }
 
@@ -185,7 +175,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 
     public void setPicture(int pos)
     {
-        notifyDataSetChanged();
+        notifyItemChanged(pos);
     }
 
     private class NewsWithPictureViewHolder extends ViewHolder

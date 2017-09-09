@@ -2,7 +2,7 @@
     <string name="app_name">NewsClient</string>
     <string name="Left">Home</string>
     <string name="Middle">Search</string>
-    <string name="Right">Setting</string>
+    <string name="Right">Account</string>
     <string name="home_fragment">Hello home fragment</string>
     <string name="search_fragment">Hello search fragment</string>
     <string name="account_fragment">Hello account fragment</string>
