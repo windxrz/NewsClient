@@ -20,19 +20,20 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
 {
     NewsDetail newsDetail = null;
     private WebView webView;
-    private Toolbar toolbar;
 
     private final static String placeholder = "file:///android_res/drawable/placeholder.9.png";
     private String newsPath;
     private String content;
+    private boolean willPictureShow = false;
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState)
     {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
         {
@@ -78,7 +79,7 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
         assert dir != null;
         File newsDir = new File(dir.getPath() + "/" + newsDetail.news_ID);
         if (!newsDir.exists())
-            newsDir.mkdir();
+            willPictureShow = newsDir.mkdir();
         newsPath = newsDir.getPath();
 
         content = "<html>" + "<head>" +
@@ -90,7 +91,7 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
                 newsDetail.news_Journal + "</div>" +
                 "<hr /><br />";
         int i = 0;
-        for (String picUrl : newsDetail.newsPictures)
+        for (String ignored : newsDetail.newsPictures)
         {
             content += "<p><img src=\"" + placeholder + "\" alt=\"" + i + "\"/></p>";
             i++;
@@ -108,8 +109,10 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
         webView.loadDataWithBaseURL("", content, "text/html", "utf-8", "");
     }
 
+    @SuppressWarnings("unchecked")
     private void updatePics()
     {
+        if (!willPictureShow) return;
         int i = 0;
         for (String picUrl : newsDetail.newsPictures)
         {
@@ -124,6 +127,7 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
 
     private void updateSinglePic(String picDir, int num)
     {
+        if (!willPictureShow) return;
         content = content.replace("<img src=\"" + placeholder + "\" alt=\"" + num + "\"/>",
                 "<img src=\"" + picDir + "\" alt=\"" + num + "\"/>");
         setContent();
