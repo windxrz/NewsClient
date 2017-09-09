@@ -13,22 +13,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import babydriver.newsclient.R;
 import babydriver.newsclient.ui.NewsShowFragment.OnListFragmentInteractionListener;
 import babydriver.newsclient.model.NewsRequester.onRequestListener;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link NewsBrief} and makes a call to the
@@ -84,6 +76,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
 //                Log.e("url", url);
 //                Picasso.with(mContext).load(url).into(holder.mImage);
 //            }
+
 
             NewsBrief news = mValues.get(position);
             File dir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -142,6 +135,18 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
                     }
                 }
             });
+        }
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(ViewHolder old_holder)
+    {
+        if (old_holder instanceof NewsWithPictureViewHolder)
+        {
+            NewsWithPictureViewHolder holder = (NewsWithPictureViewHolder)old_holder;
+            holder.mImage.setImageDrawable(null);
+            holder.mImage.destroyDrawingCache();
+
         }
     }
 
