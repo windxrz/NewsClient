@@ -1,7 +1,6 @@
 package babydriver.newsclient.ui;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -27,34 +26,36 @@ import babydriver.newsclient.model.NewsRequester.onRequestListener;
 
 public class NewsShowFragment extends Fragment implements NewsRequester.onRequestListener
 {
-    final static String ARG_TYPE = "babydriver.newsclient.Type";
-    final static String ARG_KEY = "babydrivers.newsclient.Key";
-    private OnListFragmentInteractionListener mListener;
-    private onRequestListener<NewsBriefList> mNewsBriefRequestListener;
-    private onRequestListener<Integer> mBitmapRequestListener;
+    OnListFragmentInteractionListener mListener;
+    onRequestListener<NewsBriefList> mNewsBriefRequestListener;
+    onRequestListener<Integer> mBitmapRequestListener;
     RecyclerView recycler_view;
     SwipeRefreshLayout swipe_refresh_layout;
-    private int previousTotal = 0;
-    private int totalItemCount = 25;
-    private int category = 0;
+    int previousTotal = 0;
+    int totalItemCount = 25;
+    int category = 0;
 
-    private enum TYPE
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onAttach(Context context)
     {
-        HOME_FRAGMENT,
-        SEARCH_FRAGMENT
+        super.onAttach(context);
+        if (context instanceof OnListFragmentInteractionListener)
+        {
+            mListener = (OnListFragmentInteractionListener) context;
+        } else
+        {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
+        }
+        mNewsBriefRequestListener = (onRequestListener<NewsBriefList>) this;
+        mBitmapRequestListener = (onRequestListener<Integer>) this;
     }
-
-    TYPE type;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        Bundle bundle = getArguments();
-        String tmp = bundle.getString(ARG_TYPE);
-        assert tmp != null;
-        if (tmp.equals("HomeFragment")) type = TYPE.HOME_FRAGMENT; else type = TYPE.SEARCH_FRAGMENT;
     }
 
     @Override
@@ -115,59 +116,8 @@ public class NewsShowFragment extends Fragment implements NewsRequester.onReques
         );
 
         swipe_refresh_layout = view.findViewById(R.id.refresh_layout);
-        if (type == TYPE.HOME_FRAGMENT)
-        {
-            swipe_refresh_layout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
-            swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-                {
-                    @Override
-                    public void onRefresh()
-                    {
-                        ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).clear();
-                        NewsRequester requester = new NewsRequester();
-                        Map<String, Integer> map = new HashMap<>();
-                        map.put("pageNo", 1);
-                        map.put("pageSize", 25);
-                        if (category >= 1 && category <= 12)
-                            map.put("category", category);
-                        previousTotal = 0;
-                        totalItemCount = 25;
-                        requester.requestLatest(map, mNewsBriefRequestListener);
-                    }
-                });
-        }
-        else
-            swipe_refresh_layout.setEnabled(false);
 
-        if (type == TYPE.HOME_FRAGMENT)
-        {
-            NewsRequester requester = new NewsRequester();
-            Map<String, Integer> map = new HashMap<>();
-            map.put("pageNo", 1);
-            map.put("pageSize", 25);
-            if (category >= 1 && category <= 12)
-                map.put("category", category);
-            requester.requestLatest(map, mNewsBriefRequestListener);
-        }
         return view;
-    }
-
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener)
-        {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else
-        {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
-        mNewsBriefRequestListener = (onRequestListener<NewsBriefList>) this;
-        mBitmapRequestListener = (onRequestListener<Integer>) this;
     }
 
     @Override

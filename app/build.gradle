@@ -21,6 +21,11 @@ android {
     }
     productFlavors {
     }
+
+    lintOptions {
+        disable 'GoogleAppIndexingWarning'
+        baseline file("lint-baseline.xml")
+    }
 }
 
 dependencies {
@@ -35,6 +40,7 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'com.android.support:recyclerview-v7:26.0.2'
-    compile "com.android.support:appcompat-v7:26.0.2"
+    compile 'com.android.support:appcompat-v7:26.0.2'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.android.support:support-v4:26.0.2'
 }
