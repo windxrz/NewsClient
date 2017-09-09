@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -28,6 +29,7 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
         toolbar = findViewById(R.id.toolbar);
