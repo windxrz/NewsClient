@@ -132,7 +132,7 @@ public class NewsRequester
         });
     }
 
-    void requestPicture(String picUrl, final String cacheDir, final int pos, final onRequestListener<Integer> listener)
+    public void requestPicture(String picUrl, final String cacheDir, final int pos, final onRequestListener<Integer> listener)
     {
         Call<ResponseBody> pictureCall = pictureService.downloadPic(picUrl);
         pictureCall.enqueue(new Callback<ResponseBody>()
