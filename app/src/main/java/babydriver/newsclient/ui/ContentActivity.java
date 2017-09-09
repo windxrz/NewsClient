@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -28,7 +30,8 @@ import babydriver.newsclient.model.NewsRequester;
 
 public class ContentActivity extends AppCompatActivity
 {
-    private TextView textView;
+//    private TextView textView;
+    private WebView webView;
     private Toolbar toolbar;
 
     @Override
@@ -48,7 +51,17 @@ public class ContentActivity extends AppCompatActivity
         NewsRequester newsRequester = new NewsRequester();
         newsRequester.requestDetail(news_ID, new ContextSetter());
 
-        textView = findViewById(R.id.contentTextView);;
+//        textView = findViewById(R.id.contentTextView);;
+        webView = findViewById(R.id.webView);
+        webView.setBackgroundColor(0);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setUseWideViewPort(true);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setLoadsImagesAutomatically(true);
+        webSettings.setDefaultTextEncodingName("utf-8");
+        webSettings.setDefaultFontSize(45);
+        webSettings.setMinimumFontSize(12);
     }
 
     @Override
@@ -65,6 +78,7 @@ public class ContentActivity extends AppCompatActivity
     {
         public void onSuccess(NewsDetail newsDetail)
         {
+            /*
             int sumLen = 0;
             SpannableStringBuilder content = new SpannableStringBuilder();
             content.append(newsDetail.news_Title);
@@ -98,6 +112,18 @@ public class ContentActivity extends AppCompatActivity
 //            sumLen += newsDetail.news_Content.length();
 
             textView.setText(content);
+            */
+            String content = "<html><body>" +
+                    "<h2 style=\"font-weight:normal\">" + newsDetail.news_Title + "</h2>" +
+                    "<div style=\"font-size:80%;color:grey\">" + newsDetail.news_Author + " " +
+                    newsDetail.news_Journal + "</div>" +
+                    "<hr /><br />" +
+                    "<div  style=\"text-align:justify;\">" + newsDetail.news_Content + "</div>" +
+                    "<br />" +
+                    "<div style=\"font-size:80%;color:grey;text-align:right\">来源：" +
+                    newsDetail.news_Source + "</div>" +
+                    "</body></html>";
+            webView.loadDataWithBaseURL("", content, "text/html", "utf-8", "");
         }
     }
 
