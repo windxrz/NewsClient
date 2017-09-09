@@ -13,16 +13,12 @@ import babydriver.newsclient.R;
 
 public class HomeFragment extends Fragment
 {
-    NewsShowFragment news_show_fragment;
+    HomeNewsShowFragment home_news_show_fragment;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        news_show_fragment = new NewsShowFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(NewsShowFragment.ARG_TYPE, "HomeFragment");
-        bundle.putString(NewsShowFragment.ARG_KEY, "");
-        news_show_fragment.setArguments(bundle);
+        home_news_show_fragment = new HomeNewsShowFragment();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,7 +26,7 @@ public class HomeFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         FragmentTransaction traction = getChildFragmentManager().beginTransaction();
-        traction.add(R.id.NewsShowFragment, news_show_fragment);
+        traction.add(R.id.NewsShowFragment, home_news_show_fragment);
         traction.commit();
         final TabLayout tab_lay_out = view.findViewById(R.id.tab_layout);
         assert tab_lay_out != null;
@@ -40,7 +36,7 @@ public class HomeFragment extends Fragment
                 public void onTabSelected(TabLayout.Tab tab)
                 {
 
-                    news_show_fragment.setCategory(tab.getPosition());
+                    home_news_show_fragment.setCategory(tab.getPosition());
                 }
 
                 @Override
