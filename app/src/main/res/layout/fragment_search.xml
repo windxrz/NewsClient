@@ -4,9 +4,12 @@
              android:layout_height="match_parent"
              tools:context="babydriver.newsclient.ui.SearchFragment">
 
-    <TextView
+    <SearchView
+        android:id="@+id/searchView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/search_fragment"/>
+        android:layout_height="wrap_content"
+        android:iconifiedByDefault="false"
+        android:queryHint="搜个大新闻" />
+
 
 </FrameLayout>
