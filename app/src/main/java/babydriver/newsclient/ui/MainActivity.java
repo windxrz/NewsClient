@@ -16,6 +16,7 @@ import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.model.NewsBriefList;
 import babydriver.newsclient.model.NewsRequester;
+import babydriver.newsclient.model.Settings;
 
 public class MainActivity extends AppCompatActivity
         implements NewsShowFragment.OnListFragmentInteractionListener,
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Settings.setSettings();
 
         home_fragment = new HomeFragment();
         search_fragment = new SearchFragment();
@@ -48,6 +50,8 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView bottom_navigation_view = findViewById(R.id.navigation);
         bottom_navigation_view.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
         {
+            int time = 1;
+
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item)
             {
@@ -57,12 +61,21 @@ public class MainActivity extends AppCompatActivity
                 switch (id)
                 {
                     case R.id.item_home:
+                        Log.e("choose", "home_fragment");
+                        if (time == 1)
+                        {
+                            home_fragment.news_show_fragment.setTop();
+                        }
+                        else
+                            time++;
                         fragment = home_fragment;
                         break;
                     case R.id.item_search:
+                        time = 0;
                         fragment = search_fragment;
                         break;
                     case R.id.item_account:
+                        time = 0;
                         fragment = account_fragment;
                         break;
                 }
