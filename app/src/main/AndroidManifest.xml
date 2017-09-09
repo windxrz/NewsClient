@@ -14,10 +14,6 @@
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-                <action android:name="android.intent.action.VIEW"/>
-                <data
-                    android:host="java-lang-programming"
-                    android:scheme="android-app-google-plus-demo" />
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

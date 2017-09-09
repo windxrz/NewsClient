@@ -21,6 +21,11 @@ android {
     }
     productFlavors {
     }
+
+    lintOptions {
+        disable 'GoogleAppIndexingWarning'
+        baseline file("lint-baseline.xml")
+    }
 }
 
 dependencies {
