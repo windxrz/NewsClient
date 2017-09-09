@@ -1,11 +1,10 @@
-package babydriver.newsclient.model;
+package babydriver.newsclient.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import babydriver.newsclient.R;
+import babydriver.newsclient.model.NewsBrief;
+import babydriver.newsclient.model.NewsRequester;
+import babydriver.newsclient.model.Settings;
 import babydriver.newsclient.ui.NewsShowFragment.OnListFragmentInteractionListener;
 import babydriver.newsclient.model.NewsRequester.onRequestListener;
 
