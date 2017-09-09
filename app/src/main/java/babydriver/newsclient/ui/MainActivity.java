@@ -111,4 +111,10 @@ public class MainActivity extends AppCompatActivity
             home_fragment.news_show_fragment.setPicture(pos);
         }
     }
+
+    @Override
+    public void onFailure(String info)
+    {
+
+    }
 }

@@ -59,13 +59,17 @@ public class NewsRequester
                                        {
                                            listener.onSuccess(newsBriefList);
                                        }
+                                       else
+                                           listener.onFailure("NewsBriefList");
                                    }
+                                   else
+                                       listener.onFailure("NewsBriefList");
                                }
 
                                @Override
                                public void onFailure(@NonNull Call<NewsBriefList> call, @NonNull Throwable t)
                                {
-
+                                   listener.onFailure("NewsBriefList");
                                }
                            }
 
@@ -86,15 +90,18 @@ public class NewsRequester
                                        if (newsBriefList != null)
                                        {
                                            listener.onSuccess(newsBriefList);
-
                                        }
+                                       else
+                                           listener.onFailure("NewsBriefList");
                                    }
+                                   else
+                                       listener.onFailure("NewsBriefList");
                                }
 
                                @Override
                                public void onFailure(@NonNull Call<NewsBriefList> call, @NonNull Throwable t)
                                {
-
+                                   listener.onFailure("NewsBriefList");
                                }
                            }
         );
@@ -113,12 +120,14 @@ public class NewsRequester
                     NewsDetail newsDetail = response.body();
                     listener.onSuccess(newsDetail);
                 }
+                else
+                    listener.onFailure("NewsDetail");
             }
 
             @Override
             public void onFailure(@NonNull Call<NewsDetail> call, @NonNull Throwable t)
             {
-
+                listener.onFailure("NewsDetail");
             }
         });
     }
@@ -136,12 +145,14 @@ public class NewsRequester
                     savePicToDisk(cacheDir, response.body());
                     listener.onSuccess(pos);
                 }
+                else
+                    listener.onFailure("Picture");
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t)
             {
-
+                listener.onFailure("Picture");
             }
         });
     }
@@ -187,6 +198,7 @@ public class NewsRequester
     public interface onRequestListener<T>
     {
         void onSuccess(T data);
+        void onFailure(String info);
     }
 
 }
