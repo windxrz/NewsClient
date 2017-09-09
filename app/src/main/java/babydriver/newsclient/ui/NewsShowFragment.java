@@ -185,6 +185,11 @@ public class NewsShowFragment extends Fragment
     {
         ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).setPicture(pos);
     }
+
+    public void setTop()
+    {
+        recycler_view.smoothScrollToPosition(0);
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
