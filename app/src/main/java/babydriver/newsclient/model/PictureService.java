@@ -9,7 +9,7 @@ import retrofit2.http.Url;
  * download pictures
  */
 
-public interface PictureService
+interface PictureService
 {
     @GET
     Call<ResponseBody> downloadPic(@Url String picUrl);

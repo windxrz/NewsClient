@@ -1,7 +1,6 @@
 package babydriver.newsclient.ui;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -9,18 +8,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBrief;
-import babydriver.newsclient.model.NewsBriefList;
-import babydriver.newsclient.model.NewsRequester;
 import babydriver.newsclient.model.Settings;
 
 public class MainActivity extends AppCompatActivity
-        implements NewsShowFragment.OnListFragmentInteractionListener,
-                   NewsRequester.onRequestListener
+        implements NewsShowFragment.OnListFragmentInteractionListener
 {
     public final static String NEWS_ID = "babydriver.newsclient.NEWS_ID";
     HomeFragment home_fragment;
@@ -61,7 +56,6 @@ public class MainActivity extends AppCompatActivity
                 switch (id)
                 {
                     case R.id.item_home:
-                        Log.e("choose", "home_fragment");
                         if (time == 1)
                         {
                             home_fragment.news_show_fragment.setTop();
@@ -95,26 +89,5 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, ContentActivity.class);
         intent.putExtra(NEWS_ID, item.news_ID);
         startActivity(intent);
-    }
-
-    @Override
-    public void onSuccess(Object data)
-    {
-        if (data instanceof NewsBriefList)
-        {
-            NewsBriefList list = (NewsBriefList) data;
-            home_fragment.news_show_fragment.addAll(list.list);
-        }
-        if (data instanceof Integer)
-        {
-            int pos = (Integer)data;
-            home_fragment.news_show_fragment.setPicture(pos);
-        }
-    }
-
-    @Override
-    public void onFailure(String info)
-    {
-
     }
 }

@@ -27,7 +27,7 @@ import java.util.Locale;
  * {@link RecyclerView.Adapter} that can display a {@link NewsBrief} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
-public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder>
+class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder>
 {
 
     private final List<NewsBrief> mValues;
@@ -41,7 +41,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         NEWS_WITHOUT_PICTURE
     }
 
-    public MyNewsRecyclerViewAdapter(List<NewsBrief> items, OnListFragmentInteractionListener listener, onRequestListener<Integer> requestListener, Context context)
+    MyNewsRecyclerViewAdapter(List<NewsBrief> items, OnListFragmentInteractionListener listener, onRequestListener<Integer> requestListener, Context context)
     {
 
         mValues = items;
@@ -134,12 +134,12 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
     @Override
     public void onViewDetachedFromWindow(ViewHolder old_holder)
     {
-        if (old_holder instanceof NewsWithPictureViewHolder)
-        {
-            NewsWithPictureViewHolder holder = (NewsWithPictureViewHolder)old_holder;
+//        if (old_holder instanceof NewsWithPictureViewHolder)
+//        {
+//            NewsWithPictureViewHolder holder = (NewsWithPictureViewHolder)old_holder;
 //            holder.mImage.setImageDrawable(null);
 //            holder.mImage.destroyDrawingCache();
-        }
+//        }
     }
 
     @Override
@@ -155,13 +155,13 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         return mValues.size();
     }
 
-    public void clear()
+    void clear()
     {
         mValues.clear();
         notifyDataSetChanged();
     }
 
-    public void addAll(List<NewsBrief> list)
+    void addAll(List<NewsBrief> list)
     {
         mValues.addAll(list);
         notifyDataSetChanged();
@@ -176,7 +176,7 @@ public class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecycl
         }
     }
 
-    public void setPicture(int pos)
+    void setPicture(int pos)
     {
         notifyItemChanged(pos);
     }

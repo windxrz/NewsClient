@@ -7,12 +7,24 @@
     <string name="search_fragment">Hello search fragment</string>
     <string name="account_fragment">Hello account fragment</string>
 
-    <string name="news_kind0">Important</string>
-    <string name="news_kind1">Sports</string>
-    <string name="news_kind2">Politics</string>
-    <string name="news_kind3">Economy</string>
-    <string name="news_kind4">FUN</string>
-    <string name="FetchingNews">Fetching News</string>
+    <string name="news_kind0">For you</string>
+    <string name="news_kind1">Technology</string>
+    <string name="news_kind2">Education</string>
+    <string name="news_kind3">Military</string>
+    <string name="news_kind4">Domestic</string>
+    <string name="news_kind5">Social</string>
+    <string name="news_kind6">Culture</string>
+    <string name="news_kind7">Cars</string>
+    <string name="news_kind8">International</string>
+    <string name="news_kind9">Sports</string>
+    <string name="news_kind10">Economy</string>
+    <string name="news_kind11">Health</string>
+    <string name="news_kind12">Fun</string>
+
+
+
+    <string name="FetchingNews">Fetching news</string>
+    <string name="FetchingNewsFail">Fail Fetching news</string>
     <string name="news_picture_outline">nothing</string>
 
 </resources>

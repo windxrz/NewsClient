@@ -25,36 +25,36 @@ import babydriver.newsclient.model.NewsBriefList;
 import babydriver.newsclient.model.NewsRequester;
 import babydriver.newsclient.model.NewsRequester.onRequestListener;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
-public class NewsShowFragment extends Fragment
+public class NewsShowFragment extends Fragment implements NewsRequester.onRequestListener
 {
-
-    public static final String ARG_NEWS_BRIEF_LIST = "news_brief_list";
+    final static String ARG_TYPE = "babydriver.newsclient.Type";
+    final static String ARG_KEY = "babydrivers.newsclient.Key";
     private OnListFragmentInteractionListener mListener;
-    private onRequestListener<NewsBriefList> mRequestListener;
+    private onRequestListener<NewsBriefList> mNewsBriefRequestListener;
     private onRequestListener<Integer> mBitmapRequestListener;
     RecyclerView recycler_view;
     SwipeRefreshLayout swipe_refresh_layout;
-    int previousTotal = 0;
-    int totalItemCount = 25;
+    private int previousTotal = 0;
+    private int totalItemCount = 25;
+    private int category = 0;
 
-    public NewsShowFragment() {}
-
-    @SuppressWarnings("unused")
-    public static NewsShowFragment newInstance(int columnCount)
+    private enum TYPE
     {
-        return new NewsShowFragment();
+        HOME_FRAGMENT,
+        SEARCH_FRAGMENT
     }
+
+    TYPE type;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        Bundle bundle = getArguments();
+        String tmp = bundle.getString(ARG_TYPE);
+        assert tmp != null;
+        if (tmp.equals("HomeFragment")) type = TYPE.HOME_FRAGMENT; else type = TYPE.SEARCH_FRAGMENT;
     }
 
     @Override
@@ -97,7 +97,7 @@ public class NewsShowFragment extends Fragment
                         Map<String, Integer> map = new HashMap<>();
                         map.put("pageNo", totalItemCount / 25 + 1);
                         map.put("pageSize", 25);
-                        requester.requestLatest(map, mRequestListener);
+                        requester.requestLatest(map, mNewsBriefRequestListener);
                         final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNews, Toast.LENGTH_SHORT);
                         toast.show();
                         Handler handler = new Handler();
@@ -115,28 +115,40 @@ public class NewsShowFragment extends Fragment
         );
 
         swipe_refresh_layout = view.findViewById(R.id.refresh_layout);
-        swipe_refresh_layout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
-        swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-            {
-                @Override
-                public void onRefresh()
+        if (type == TYPE.HOME_FRAGMENT)
+        {
+            swipe_refresh_layout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
+            swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
                 {
-                    ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).clear();
-                    NewsRequester requester = new NewsRequester();
-                    Map<String, Integer> map = new HashMap<>();
-                    map.put("pageNo", 1);
-                    map.put("pageSize", 25);
-                    previousTotal = 0;
-                    totalItemCount = 25;
-                    requester.requestLatest(map, mRequestListener);
-                }
-            });
+                    @Override
+                    public void onRefresh()
+                    {
+                        ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).clear();
+                        NewsRequester requester = new NewsRequester();
+                        Map<String, Integer> map = new HashMap<>();
+                        map.put("pageNo", 1);
+                        map.put("pageSize", 25);
+                        if (category >= 1 && category <= 12)
+                            map.put("category", category);
+                        previousTotal = 0;
+                        totalItemCount = 25;
+                        requester.requestLatest(map, mNewsBriefRequestListener);
+                    }
+                });
+        }
+        else
+            swipe_refresh_layout.setEnabled(false);
 
-        NewsRequester requester = new NewsRequester();
-        Map<String, Integer> map = new HashMap<>();
-        map.put("pageNo", 1);
-        map.put("pageSize", 25);
-        requester.requestLatest(map, mRequestListener);
+        if (type == TYPE.HOME_FRAGMENT)
+        {
+            NewsRequester requester = new NewsRequester();
+            Map<String, Integer> map = new HashMap<>();
+            map.put("pageNo", 1);
+            map.put("pageSize", 25);
+            if (category >= 1 && category <= 12)
+                map.put("category", category);
+            requester.requestLatest(map, mNewsBriefRequestListener);
+        }
         return view;
     }
 
@@ -154,15 +166,8 @@ public class NewsShowFragment extends Fragment
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
-        if (context instanceof onRequestListener)
-        {
-            mRequestListener = (onRequestListener<NewsBriefList>) context;
-            mBitmapRequestListener = (onRequestListener<Integer>) context;
-        } else
-        {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnRequestListener");
-        }
+        mNewsBriefRequestListener = (onRequestListener<NewsBriefList>) this;
+        mBitmapRequestListener = (onRequestListener<Integer>) this;
     }
 
     @Override
@@ -172,32 +177,77 @@ public class NewsShowFragment extends Fragment
         mListener = null;
     }
 
-    public void addAll(List<NewsBrief> list)
+    private void addAll(List<NewsBrief> list)
     {
         swipe_refresh_layout.setRefreshing(false);
         ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).addAll(list);
     }
 
-    public void setPicture(int pos)
+    private void fetchNewsListFail()
+    {
+        swipe_refresh_layout.setRefreshing(false);
+        final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNewsFail, Toast.LENGTH_SHORT);
+        toast.show();
+        Handler handler = new Handler();
+        handler.postDelayed(
+                new Runnable()
+                {
+                    @Override
+                    public void run() {
+                        toast.cancel();
+                    }
+                }, 1000);
+    }
+
+    private void setPicture(int pos)
     {
         ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).setPicture(pos);
     }
 
-    public void setTop()
+    void setTop()
     {
         recycler_view.smoothScrollToPosition(0);
     }
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener
+
+    void setCategory(int t)
+    {
+        if (category != t)
+        {
+            category = t;
+            ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).clear();
+            NewsRequester requester = new NewsRequester();
+            Map<String, Integer> map = new HashMap<>();
+            map.put("pageNo", 1);
+            map.put("pageSize", 25);
+            map.put("category", t);
+            previousTotal = 0;
+            totalItemCount = 25;
+            requester.requestLatest(map, mNewsBriefRequestListener);
+        }
+    }
+
+    @Override
+    public void onSuccess(Object data)
+    {
+        if (data instanceof NewsBriefList)
+        {
+            NewsBriefList list = (NewsBriefList) data;
+            addAll(list.list);
+        }
+        if (data instanceof Integer)
+        {
+            int pos = (Integer)data;
+            setPicture(pos);
+        }
+    }
+
+    @Override
+    public void onFailure(String info)
+    {
+        if (info.equals("NewsBriefList")) fetchNewsListFail();
+    }
+
+    interface OnListFragmentInteractionListener
     {
         void onListFragmentInteraction(NewsBrief item);
     }
