@@ -13,22 +13,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import babydriver.newsclient.R;
 import babydriver.newsclient.ui.NewsShowFragment.OnListFragmentInteractionListener;
 import babydriver.newsclient.model.NewsRequester.onRequestListener;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link NewsBrief} and makes a call to the
