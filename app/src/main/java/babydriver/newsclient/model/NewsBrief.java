@@ -63,6 +63,12 @@ public class NewsBrief
         }
     }
 
+    void process()
+    {
+        processPictures();
+        processTime();
+    }
+
     public String toString()
     {
         return news_Title;

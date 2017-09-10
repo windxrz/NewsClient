@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsDetail;
@@ -48,18 +52,19 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
 //        textView = findViewById(R.id.contentTextView);;
         webView = findViewById(R.id.webView);
         webView.setBackgroundColor(0);
+        webView.setVerticalScrollBarEnabled(false);
         WebSettings webSettings = webView.getSettings();
         webSettings.setUseWideViewPort(true); //将图片调整到适合webview的大小
         webSettings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
-        webSettings.setSupportZoom(true);  //支持缩放，默认为true。是下面那个的前提。
-        webSettings.setBuiltInZoomControls(true); //设置内置的缩放控件。
+//        webSettings.setSupportZoom(true);  //支持缩放，默认为true。是下面那个的前提。
+//        webSettings.setBuiltInZoomControls(true); //设置内置的缩放控件。
 //        webSettings.setTextZoom(2);//设置文本的缩放倍数，默认为 100
 //        webSettings.setDisplayZoomControls(false); //隐藏原生的缩放控件
 //        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN); //支持内容重新布局
         webSettings.setAllowFileAccess(true); //设置可以访问文件
         webSettings.setLoadsImagesAutomatically(true); //支持自动加载图片
         webSettings.setDefaultTextEncodingName("utf-8"); //设置编码格式
-        webSettings.setDefaultFontSize(45); //设置 WebView 字体的大小，默认大小为 16
+        webSettings.setDefaultFontSize(16); //设置 WebView 字体的大小，默认大小为 16
         webSettings.setMinimumFontSize(12); //设置 WebView 支持的最小字体大小，默认为 8
     }
 
@@ -77,10 +82,12 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
     {
         File dir = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         assert dir != null;
-        File newsDir = new File(dir.getPath() + "/" + newsDetail.news_ID);
-        if (!newsDir.exists())
-            willPictureShow = newsDir.mkdir();
+        File newsDir = new File(dir.getPath() + "/" + newsDetail.news_ID + "_pics");
+        willPictureShow = newsDir.isDirectory() || newsDir.mkdir();
+//        if (!newsDir.exists())
+//            willPictureShow = newsDir.mkdir();
         newsPath = newsDir.getPath();
+        Log.e(String.valueOf(willPictureShow), newsPath);
 
         content = "<html>" + "<head>" +
                 "<meta name=\"viewport\" content=\"width=device-width\">" +
@@ -89,7 +96,7 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
                 "<h2 style=\"font-weight:normal\">" + newsDetail.news_Title + "</h2>" +
                 "<div style=\"font-size:80%;color:grey\">" + newsDetail.news_Author + " " +
                 newsDetail.news_Journal + "</div>" +
-                "<hr /><br />";
+                "<hr />";
         int i = 0;
         for (String ignored : newsDetail.newsPictures)
         {
@@ -116,7 +123,12 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
         int i = 0;
         for (String picUrl : newsDetail.newsPictures)
         {
-            File picFile = new File(newsPath + "/" + i);
+            String suffix = "";
+            Pattern p = Pattern.compile("\\.[^\\.]+$");
+            Matcher m = p.matcher(picUrl);
+            if (m.find())
+                suffix = m.group();
+            File picFile = new File(newsPath + "/" + i + suffix);
             if (!picFile.isFile())
                 new NewsRequester().requestPicture(picUrl, picFile.getPath(), i, this);
             else
@@ -128,8 +140,9 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
     private void updateSinglePic(String picDir, int num)
     {
         if (!willPictureShow) return;
+        Log.e("picDir", picDir);
         content = content.replace("<img src=\"" + placeholder + "\" alt=\"" + num + "\"/>",
-                "<img src=\"" + picDir + "\" alt=\"" + num + "\"/>");
+                "<img src=\"" + "file://" + picDir + "\" alt=\"" + num + "\"/>");
         setContent();
     }
 
@@ -146,7 +159,13 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
         else if (data instanceof Integer)
         {
             int i = (int)data;
-            updateSinglePic(newsPath + "/" + i, i);
+            String picUrl = newsDetail.newsPictures.get(i);
+            String suffix = "";
+            Pattern p = Pattern.compile("\\.[^\\.]+$");
+            Matcher m = p.matcher(picUrl);
+            if (m.find())
+                suffix = m.group();
+            updateSinglePic(newsPath + "/" + i + suffix, i);
         }
     }
 
