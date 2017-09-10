@@ -2,6 +2,7 @@ package babydriver.newsclient.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,7 +10,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,25 +17,30 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBriefList;
+import babydriver.newsclient.model.NewsDetail;
 import babydriver.newsclient.model.NewsRequester;
-import babydriver.newsclient.model.NewsRequester.onRequestListener;
+import babydriver.newsclient.model.NewsRequester.OnRequestListener;
 import babydriver.newsclient.model.Operation;
 
-public class NewsShowFragment extends Fragment implements NewsRequester.onRequestListener
+public class NewsShowFragment extends Fragment
+        implements OnRequestListener, MyNewsRecyclerViewAdapter.OnButtonClickedListener
 {
     static NewsBrief nonNews;
     OnNewsClickedListener mNewsClickedListener;
-    onRequestListener<NewsBriefList> mNewsBriefRequestListener;
-    onRequestListener<Integer> mBitmapRequestListener;
+    OnRequestListener<NewsBriefList> mNewsBriefRequestListener;
+    OnRequestListener<NewsDetail> mNewsDetailRequestListener;
+    OnRequestListener<Integer> mBitmapRequestListener;
+    OnRequestListener<String> mDownloadListener;
     RecyclerView recycler_view;
     SwipeRefreshLayout swipe_refresh_layout;
     NewsRequester requester;
-
+    HashMap<String, Operation> operationMap = new HashMap<>();
     int previousTotal = 0;
     int totalItemCount = 0;
 
@@ -53,8 +58,10 @@ public class NewsShowFragment extends Fragment implements NewsRequester.onReques
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
-        mNewsBriefRequestListener = (onRequestListener<NewsBriefList>) this;
-        mBitmapRequestListener = (onRequestListener<Integer>) this;
+        mNewsBriefRequestListener = (OnRequestListener<NewsBriefList>) this;
+        mBitmapRequestListener = (OnRequestListener<Integer>) this;
+        mNewsDetailRequestListener = (OnRequestListener<NewsDetail>) this;
+        mDownloadListener = (OnRequestListener<String>) this;
         requester = new NewsRequester();
     }
 
@@ -73,7 +80,7 @@ public class NewsShowFragment extends Fragment implements NewsRequester.onReques
         recycler_view = view.findViewById(R.id.recycler_view);
         Context context = recycler_view.getContext();
         recycler_view.setLayoutManager(new LinearLayoutManager(context));
-        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), mNewsClickedListener, mBitmapRequestListener, this.getActivity()));
+        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), this, mNewsClickedListener, mBitmapRequestListener, this.getActivity()));
         recycler_view.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
         swipe_refresh_layout = view.findViewById(R.id.refresh_layout);
 
@@ -148,35 +155,82 @@ public class NewsShowFragment extends Fragment implements NewsRequester.onReques
     }
 
     @Override
-    public void onSuccess(Object data)
+    public void onSuccess(String type, Object data)
     {
-        if (data instanceof NewsBriefList)
+        if (type.equals(NewsRequester.normal))
         {
-            NewsBriefList list = (NewsBriefList) data;
-            addAll(list.list);
+            if (data instanceof NewsBriefList)
+            {
+                NewsBriefList list = (NewsBriefList) data;
+                addAll(list.list);
+            }
+            if (data instanceof Integer)
+            {
+                int pos = (Integer) data;
+                setPicture(pos);
+            }
         }
-        if (data instanceof Integer)
+        if (type.equals(NewsRequester.download))
         {
-            int pos = (Integer)data;
-            setPicture(pos);
+            if (data instanceof String)
+            {
+                Operation op = operationMap.get(data);
+                op.finish();
+                if (op.isFinished())
+                {
+                    operationMap.remove(data);
+                    recycler_view.getAdapter().notifyDataSetChanged();
+                }
+            }
         }
     }
 
-    @Override
-    public void onFailure(String info)
+    void update()
     {
+        recycler_view.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onFailure(String info, String id)
+    {
+        if (info.equals(NewsRequester.download))
+        {
+            Operation op = operationMap.get(id);
+            op.finish();
+            if (op.isFinished())
+            {
+                operationMap.remove(id);
+                recycler_view.getAdapter().notifyDataSetChanged();
+            }
+        }
         if (info.equals("NewsBriefList")) fetchNewsListFail();
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item)
     {
-        String operation = item.getTitle().toString();
-        MyNewsRecyclerViewAdapter adapter = (MyNewsRecyclerViewAdapter)recycler_view.getAdapter();
-        if (operation.equals(getString(R.string.like)) || operation.equals(getString(R.string.unlike))) Operation.like(adapter.getNews());
-        if (operation.equals(getString(R.string.download)) || operation.equals(getString(R.string.delete))) Operation.download(adapter.getNews());
-        recycler_view.getAdapter().notifyDataSetChanged();
+        String type = item.getTitle().toString();
+        newsOperate(type);
         return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onButtonClicked(String type)
+    {
+        newsOperate(type);
+    }
+
+    private void newsOperate(String type)
+    {
+        NewsBrief news = ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).getNews();
+        Operation operation = new Operation();
+        if (type.equals(getString(R.string.like)) || type.equals(getString(R.string.unlike))) operation.like(news.news_ID);
+        if (type.equals(getString(R.string.download)) || type.equals(getString(R.string.delete)))
+        {
+            operationMap.put(news.news_ID, operation);
+            operation.download(news, getContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), mDownloadListener);
+        }
+        recycler_view.getAdapter().notifyDataSetChanged();
     }
 
     interface OnNewsClickedListener

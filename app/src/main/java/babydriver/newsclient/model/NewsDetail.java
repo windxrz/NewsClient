@@ -1,10 +1,12 @@
 package babydriver.newsclient.model;
 
+import java.io.Serializable;
+
 /**
  * Model: Detail information of a piece of news
  */
 
-public class NewsDetail extends NewsBrief
+public class NewsDetail extends NewsBrief implements Serializable
 {
     public String news_Content;
     public String news_Journal;

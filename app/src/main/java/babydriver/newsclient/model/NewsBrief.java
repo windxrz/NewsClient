@@ -3,6 +3,7 @@ package babydriver.newsclient.model;
 import android.app.Application;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,7 +19,7 @@ import babydriver.newsclient.R;
  * Model: Brief information of a piece of news
  */
 
-public class NewsBrief
+public class NewsBrief implements Serializable
 {
     public String newsClassTag;
     public String news_ID;

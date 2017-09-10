@@ -3,14 +3,10 @@ package babydriver.newsclient.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Path;
 import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -23,7 +19,7 @@ import babydriver.newsclient.model.NewsRequester;
 import babydriver.newsclient.model.Operation;
 import babydriver.newsclient.model.Settings;
 import babydriver.newsclient.ui.NewsShowFragment.OnNewsClickedListener;
-import babydriver.newsclient.model.NewsRequester.onRequestListener;
+import babydriver.newsclient.model.NewsRequester.OnRequestListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -34,8 +30,8 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
 {
     private List<NewsBrief> mValues;
     private OnNewsClickedListener mNewsClickedListener;
-
-    private onRequestListener<Integer> mRequestListener;
+    private OnButtonClickedListener mButtonClickedListener;
+    private OnRequestListener<Integer> mRequestListener;
     private Context mContext;
     private NewsBrief news;
 
@@ -46,12 +42,14 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     }
 
     MyNewsRecyclerViewAdapter(List<NewsBrief> items,
+                              OnButtonClickedListener buttonClickedListener,
                               OnNewsClickedListener newsClickedListener,
-                              onRequestListener<Integer> requestListener,
+                              OnRequestListener<Integer> requestListener,
                               Context context)
     {
 
         mValues = items;
+        mButtonClickedListener = buttonClickedListener;
         mNewsClickedListener = newsClickedListener;
         mContext = context;
         mRequestListener = requestListener;
@@ -99,7 +97,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             else
             {
                 NewsRequester news_requester = new NewsRequester();
-                news_requester.requestPicture(news.newsPictures.get(0), filename, position, mRequestListener);
+                news_requester.normalRequestPicture(news.newsPictures.get(0), filename, position, mRequestListener);
             }
             holder.mNewsTitle.setText(holder.mItem.news_Title);
             holder.mNewsSource.setText(holder.mItem.news_Source);
@@ -187,15 +185,22 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
 
         void setImage()
         {
-            if (Operation.isFavorite(mItem))
+            if (Operation.isFavorite(mItem.news_ID))
                 mLike.setImageResource(R.drawable.ic_star_black_24dp);
             else
                 mLike.setImageResource(R.drawable.ic_star_border_black_24dp);
-            if (Operation.isDownloaded(mItem))
+            mDownload.setEnabled(true);
+            if (Operation.isDownloaded(mItem.news_ID))
                 mDownload.setImageResource(R.drawable.ic_delete_black_24dp);
+            else if (Operation.isDownloading(mItem.news_ID))
+            {
+                mDownload.setImageResource(R.drawable.ic_more_horiz_black_24dp);
+                mDownload.setEnabled(false);
+            }
             else
                 mDownload.setImageResource(R.drawable.ic_arrow_downward_black_24dp);
         }
+
         void set()
         {
             mLike.setOnClickListener(new View.OnClickListener()
@@ -203,7 +208,8 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
                 @Override
                 public void onClick(View view)
                 {
-                    Operation.like(mItem);
+                    news = mItem;
+                    mButtonClickedListener.onButtonClicked(mContext.getString(R.string.like));
                     notifyDataSetChanged();
                 }
             });
@@ -212,7 +218,8 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
                 @Override
                 public void onClick(View view)
                 {
-                    Operation.download(mItem);
+                    news = mItem;
+                    mButtonClickedListener.onButtonClicked(mContext.getString(R.string.download));
                     notifyDataSetChanged();
                 }
             });
@@ -221,14 +228,20 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
         @Override
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo)
         {
-            if (Operation.isFavorite(mItem))
+            if (Operation.isFavorite(mItem.news_ID))
                 contextMenu.add(R.string.unlike);
             else
                 contextMenu.add(R.string.like);
-            if (Operation.isDownloaded(mItem))
+            if (Operation.isDownloaded(mItem.news_ID))
                 contextMenu.add(R.string.delete);
+            else if (Operation.isDownloading(mItem.news_ID))
+                contextMenu.add(R.string.downloading);
             else
                 contextMenu.add(R.string.download);
+            if (Operation.isDownloading(mItem.news_ID))
+                contextMenu.getItem(1).setEnabled(false);
+            else
+                contextMenu.getItem(1).setEnabled(true);
         }
     }
 
@@ -285,4 +298,10 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     {
         return news;
     }
+
+    interface OnButtonClickedListener
+    {
+        void onButtonClicked(String type);
+    }
+
 }
