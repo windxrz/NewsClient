@@ -30,6 +30,7 @@
 
     <string name="favorites">Favorites</string>
     <string name="downloads">Downloads</string>
+    <string name="downloading">Downloading</string>
 
     <string name="title_activity_settings">Settings</string>
 

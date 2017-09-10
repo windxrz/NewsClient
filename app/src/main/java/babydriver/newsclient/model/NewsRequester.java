@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 
 import okhttp3.ResponseBody;
@@ -25,6 +26,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NewsRequester
 {
+    public static String normal = "normal";
+    public static String download = "download";
+
     private LatestService latestService;
     private SearchService searchService;
     private DetailService detailService;
@@ -44,7 +48,7 @@ public class NewsRequester
         pictureService = retrofit.create(PictureService.class);
     }
 
-    public void requestLatest(Map<String, Integer> map, final onRequestListener<NewsBriefList> listener)
+    public void requestLatest(Map<String, Integer> map, final OnRequestListener<NewsBriefList> listener)
     {
         Call<NewsBriefList> latestCall = latestService.getLatest(map);
         latestCall.enqueue(new Callback<NewsBriefList>()
@@ -57,26 +61,26 @@ public class NewsRequester
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           listener.onSuccess(newsBriefList);
+                                           listener.onSuccess(normal, newsBriefList);
                                        }
                                        else
-                                           listener.onFailure("NewsBriefList");
+                                           listener.onFailure("NewsBriefList", "");
                                    }
                                    else
-                                       listener.onFailure("NewsBriefList");
+                                       listener.onFailure("NewsBriefList", "");
                                }
 
                                @Override
                                public void onFailure(@NonNull Call<NewsBriefList> call, @NonNull Throwable t)
                                {
-                                   listener.onFailure("NewsBriefList");
+                                   listener.onFailure("NewsBriefList", "");
                                }
                            }
 
         );
     }
 
-    public void requestSearch(String keyword, Map<String, Integer> map, final onRequestListener<NewsBriefList> listener)
+    public void requestSearch(String keyword, Map<String, Integer> map, final OnRequestListener<NewsBriefList> listener)
     {
         Call<NewsBriefList> searchCall = searchService.getSearch(keyword, map);
         searchCall.enqueue(new Callback<NewsBriefList>()
@@ -89,25 +93,25 @@ public class NewsRequester
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           listener.onSuccess(newsBriefList);
+                                           listener.onSuccess(normal, newsBriefList);
                                        }
                                        else
-                                           listener.onFailure("NewsBriefList");
+                                           listener.onFailure("NewsBriefList", "");
                                    }
                                    else
-                                       listener.onFailure("NewsBriefList");
+                                       listener.onFailure("NewsBriefList", "");
                                }
 
                                @Override
                                public void onFailure(@NonNull Call<NewsBriefList> call, @NonNull Throwable t)
                                {
-                                   listener.onFailure("NewsBriefList");
+                                   listener.onFailure("NewsBriefList", "");
                                }
                            }
         );
     }
 
-    public void requestDetail(String newsId, final onRequestListener<NewsDetail> listener)
+    public void normalRequestDetail(final String newsId, final OnRequestListener<NewsDetail> listener)
     {
         Call<NewsDetail> detailCall = detailService.getDetail(newsId);
         detailCall.enqueue(new Callback<NewsDetail>()
@@ -118,21 +122,21 @@ public class NewsRequester
                 if (response.isSuccessful())
                 {
                     NewsDetail newsDetail = response.body();
-                    listener.onSuccess(newsDetail);
+                    listener.onSuccess(normal, newsDetail);
                 }
                 else
-                    listener.onFailure("NewsDetail");
+                    listener.onFailure("NewsDetail", "");
             }
 
             @Override
             public void onFailure(@NonNull Call<NewsDetail> call, @NonNull Throwable t)
             {
-                listener.onFailure("NewsDetail");
+                listener.onFailure("NewsDetail", "");
             }
         });
     }
 
-    public void requestPicture(String picUrl, final String cacheDir, final int pos, final onRequestListener<Integer> listener)
+    public void normalRequestPicture(String picUrl, final String cacheDir, final int pos, final OnRequestListener<Integer> listener)
     {
         Call<ResponseBody> pictureCall = pictureService.downloadPic(picUrl);
         pictureCall.enqueue(new Callback<ResponseBody>()
@@ -143,23 +147,83 @@ public class NewsRequester
                 if (response.isSuccessful())
                 {
                     savePicToDisk(cacheDir, response.body());
-                    listener.onSuccess(pos);
+                    listener.onSuccess(normal, pos);
                 }
                 else
-                    listener.onFailure("Picture");
+                    listener.onFailure("Picture", "");
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t)
             {
-                listener.onFailure("Picture");
+                listener.onFailure("Picture", "");
+            }
+        });
+    }
+
+    void downloadRequestDetail(final String newsId, final String cacheDir, final OnRequestListener<String> listener)
+    {
+        Call<NewsDetail> detailCall = detailService.getDetail(newsId);
+        detailCall.enqueue(new Callback<NewsDetail>()
+        {
+            @Override
+            public void onResponse(@NonNull Call<NewsDetail> call, @NonNull Response<NewsDetail> response)
+            {
+                if (response.isSuccessful())
+                {
+                    NewsDetail newsDetail = response.body();
+                    try
+                    {
+                        FileOutputStream fo = new FileOutputStream(cacheDir + "detail.txt");
+                        ObjectOutputStream so = new ObjectOutputStream(fo);
+                        so.writeObject(newsDetail);
+                        so.close();
+                    } catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                    listener.onSuccess(download, newsId);
+                }
+                else
+                    listener.onFailure(download, newsId);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<NewsDetail> call, @NonNull Throwable t)
+            {
+                listener.onFailure(download, newsId);
+            }
+        });
+    }
+
+    void downloadRequestPicture(final String newsId, final String picUrl, final String cacheDir, final OnRequestListener<String> listener)
+    {
+        Call<ResponseBody> pictureCall = pictureService.downloadPic(picUrl);
+        pictureCall.enqueue(new Callback<ResponseBody>()
+        {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response)
+            {
+                if (response.isSuccessful())
+                {
+                    savePicToDisk(cacheDir, response.body());
+                    listener.onSuccess(download, newsId);
+                }
+                else
+                    listener.onFailure(download, newsId);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t)
+            {
+                listener.onFailure(download, newsId);
             }
         });
     }
 
     private void savePicToDisk(String cacheDir, ResponseBody body)
     {
-        Log.e("cacheDir", cacheDir);
         Bitmap bm;
         InputStream inputStream = null;
         File file = new File(cacheDir);
@@ -196,10 +260,10 @@ public class NewsRequester
         }
     }
 
-    public interface onRequestListener<T>
+    public interface OnRequestListener<T>
     {
-        void onSuccess(T data);
-        void onFailure(String info);
+        void onSuccess(String type, T data);
+        void onFailure(String info, String id);
     }
 
 }

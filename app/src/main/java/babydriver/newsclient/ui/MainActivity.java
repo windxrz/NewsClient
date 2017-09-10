@@ -22,12 +22,17 @@ public class MainActivity extends AppCompatActivity
     SearchFragment search_fragment;
     AccountFragment account_fragment;
 
+    private void initialize()
+    {
+        Settings.setSettings();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        initialize();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Settings.setSettings();
 
         home_fragment = new HomeFragment();
         search_fragment = new SearchFragment();
@@ -56,6 +61,7 @@ public class MainActivity extends AppCompatActivity
                 switch (id)
                 {
                     case R.id.item_home:
+                        home_fragment.home_news_show_fragment.update();
                         search_time = 0;
                         if (home_time == 1)
                         {
@@ -67,6 +73,7 @@ public class MainActivity extends AppCompatActivity
                         break;
                     case R.id.item_search:
                         home_time = 0;
+                        search_fragment.search_news_show_fragment.update();
                         if (search_time == 1)
                         {
                             search_fragment.search_news_show_fragment.setTop();
@@ -79,8 +86,6 @@ public class MainActivity extends AppCompatActivity
                         home_time = 0;
                         search_time = 0;
                         fragment = account_fragment;
-//                        Intent intent = new Intent(home_fragment.getActivity(), SettingsActivity.class);
-//                        startActivity(intent);
                         break;
                 }
                 FragmentManager fragment_manager = getSupportFragmentManager();
