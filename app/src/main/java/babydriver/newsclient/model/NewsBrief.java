@@ -1,5 +1,6 @@
 package babydriver.newsclient.model;
 
+import android.app.Application;
 import android.util.Log;
 
 import java.text.ParseException;
@@ -11,6 +12,8 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import babydriver.newsclient.R;
+
 /**
  * Model: Brief information of a piece of news
  */
@@ -21,26 +24,32 @@ public class NewsBrief
     public String news_ID;
     public String news_Source;
     public String news_Title;
-    public String news_Time;
+    private String news_Time;
 
     public Date newsTime;
 
     public String news_URL;
     public String news_Author;
     public String lang_Type;
-    public String news_Pictures;
+    private String news_Pictures;
 
-    public List<String> newsPictures;
+    public List<String> newsPictures = new LinkedList<>();
 
     public String news_Video;
     public String news_Intro;
 
-    NewsBrief()
+    public NewsBrief(String title)
     {
-        news_Title = "fuck!";
+        news_ID = "";
+        news_Title = title;
+        newsPictures.clear();
+        news_Source = "";
+        newsTime = null;
     }
 
-    void processTime()
+    NewsBrief() {}
+
+    private void processTime()
     {
         SimpleDateFormat ft = new SimpleDateFormat("yyyyMMddHHmmss", Locale.CHINA);
         try
@@ -52,9 +61,8 @@ public class NewsBrief
         }
     }
 
-    void processPictures()
+    private void processPictures()
     {
-        newsPictures = new LinkedList<String>();
         Pattern p = Pattern.compile("https?://\\S+?\\.(png|jpg|jpeg|gif|bmp)");
         Matcher m = p.matcher(news_Pictures);
         while (m.find())

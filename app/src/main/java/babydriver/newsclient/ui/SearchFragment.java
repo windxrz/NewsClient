@@ -2,49 +2,55 @@ package babydriver.newsclient.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
-
-import java.util.HashMap;
-import java.util.Map;
+import android.support.v7.widget.SearchView;
 
 import babydriver.newsclient.R;
-import babydriver.newsclient.model.NewsRequester;
 
 public class SearchFragment extends Fragment
 {
-    private SearchView searchView;
+    private SearchView search_view;
+    SearchNewsShowFragment search_news_show_fragment;
+
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        search_news_show_fragment = new SearchNewsShowFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        searchView = view.findViewById(R.id.searchView);
-        searchView.setSubmitButtonEnabled(true);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
-        {
-            @Override
-            public boolean onQueryTextSubmit(String query)
-            {
-                if (searchView != null) {
-                    searchView.clearFocus(); // 不获取焦点
-                }
-                NewsRequester newsRequester = new NewsRequester();
-                Map<String, Integer> map = new HashMap<String, Integer>();
-//                newsRequester.requestSearch(query, map, );
-                return true;
-            }
+        FragmentTransaction traction = getChildFragmentManager().beginTransaction();
+        traction.add(R.id.SearchNewsShowFragment, search_news_show_fragment);
+        traction.commit();
 
-            @Override
-            public boolean onQueryTextChange(String newText)
+        search_view = view.findViewById(R.id.searchView);
+        search_view.setSubmitButtonEnabled(true);
+        search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener()
             {
-                return false;
-            }
-        });
+                @Override
+                public boolean onQueryTextSubmit(String query)
+                {
+                    if (search_view != null) {
+                        search_view.clearFocus();
+                        search_news_show_fragment.setKeyword(query);
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText)
+                {
+                    if (newText.equals("")) search_news_show_fragment.clear();
+                    return false;
+                }
+            });
         return view;
     }
 }

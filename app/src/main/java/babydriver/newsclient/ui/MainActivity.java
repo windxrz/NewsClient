@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView bottom_navigation_view = findViewById(R.id.navigation);
         bottom_navigation_view.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
         {
-            int time = 1;
-
+            int home_time = 1;
+            int search_time = 0;
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item)
             {
@@ -56,20 +56,28 @@ public class MainActivity extends AppCompatActivity
                 switch (id)
                 {
                     case R.id.item_home:
-                        if (time == 1)
+                        search_time = 0;
+                        if (home_time == 1)
                         {
                             home_fragment.home_news_show_fragment.setTop();
                         }
                         else
-                            time++;
+                            home_time++;
                         fragment = home_fragment;
                         break;
                     case R.id.item_search:
-                        time = 0;
+                        home_time = 0;
+                        if (search_time == 1)
+                        {
+                            search_fragment.search_news_show_fragment.setTop();
+                        }
+                        else
+                            search_time++;
                         fragment = search_fragment;
                         break;
                     case R.id.item_account:
-                        time = 0;
+                        home_time = 0;
+                        search_time = 0;
                         fragment = account_fragment;
                         Intent intent = new Intent(home_fragment.getActivity(), SettingsActivity.class);
                         startActivity(intent);
@@ -88,8 +96,11 @@ public class MainActivity extends AppCompatActivity
 
     public void onListFragmentInteraction(NewsBrief item)
     {
-        Intent intent = new Intent(this, ContentActivity.class);
-        intent.putExtra(NEWS_ID, item.news_ID);
-        startActivity(intent);
+        if (!item.news_ID.equals(""))
+        {
+            Intent intent = new Intent(this, ContentActivity.class);
+            intent.putExtra(NEWS_ID, item.news_ID);
+            startActivity(intent);
+        }
     }
 }

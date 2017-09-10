@@ -26,8 +26,9 @@ public class HomeFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         FragmentTransaction traction = getChildFragmentManager().beginTransaction();
-        traction.add(R.id.NewsShowFragment, home_news_show_fragment);
+        traction.add(R.id.HomeNewsShowFragment, home_news_show_fragment);
         traction.commit();
+
         final TabLayout tab_lay_out = view.findViewById(R.id.tab_layout);
         assert tab_lay_out != null;
         tab_lay_out.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
@@ -35,7 +36,6 @@ public class HomeFragment extends Fragment
                 @Override
                 public void onTabSelected(TabLayout.Tab tab)
                 {
-
                     home_news_show_fragment.setCategory(tab.getPosition());
                 }
 
@@ -53,5 +53,4 @@ public class HomeFragment extends Fragment
             });
         return view;
     }
-
 }
