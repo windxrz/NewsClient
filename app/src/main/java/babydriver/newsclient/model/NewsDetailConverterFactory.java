@@ -41,8 +41,7 @@ class NewsDetailConverterFactory extends Converter.Factory
         public NewsDetail convert(@NonNull ResponseBody value) throws IOException
         {
             NewsDetail newsDetail = new Gson().fromJson(value.string(), NewsDetail.class);
-            newsDetail.processTime();
-            newsDetail.processPictures();
+            newsDetail.process();
             return newsDetail;
         }
     }

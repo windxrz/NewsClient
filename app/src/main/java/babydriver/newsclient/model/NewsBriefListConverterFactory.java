@@ -43,8 +43,7 @@ class NewsBriefListConverterFactory extends Converter.Factory
             NewsBriefList newsBriefList = new Gson().fromJson(value.string(), NewsBriefList.class);
             for (NewsBrief newsBrief : newsBriefList.list)
             {
-                newsBrief.processTime();
-                newsBrief.processPictures();
+                newsBrief.process();
             }
             return newsBriefList;
         }

@@ -159,6 +159,7 @@ public class NewsRequester
 
     private void savePicToDisk(String cacheDir, ResponseBody body)
     {
+        Log.e("cacheDir", cacheDir);
         Bitmap bm;
         InputStream inputStream = null;
         File file = new File(cacheDir);
