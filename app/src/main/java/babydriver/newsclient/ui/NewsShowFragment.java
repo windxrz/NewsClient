@@ -9,7 +9,9 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -22,11 +24,12 @@ import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBriefList;
 import babydriver.newsclient.model.NewsRequester;
 import babydriver.newsclient.model.NewsRequester.onRequestListener;
+import babydriver.newsclient.model.Operation;
 
 public class NewsShowFragment extends Fragment implements NewsRequester.onRequestListener
 {
     static NewsBrief nonNews;
-    OnListFragmentInteractionListener mListener;
+    OnNewsClickedListener mNewsClickedListener;
     onRequestListener<NewsBriefList> mNewsBriefRequestListener;
     onRequestListener<Integer> mBitmapRequestListener;
     RecyclerView recycler_view;
@@ -42,9 +45,9 @@ public class NewsShowFragment extends Fragment implements NewsRequester.onReques
     {
         super.onAttach(context);
         nonNews = new NewsBrief(getString(R.string.NonNews));
-        if (context instanceof OnListFragmentInteractionListener)
+        if (context instanceof OnNewsClickedListener)
         {
-            mListener = (OnListFragmentInteractionListener) context;
+            mNewsClickedListener = (OnNewsClickedListener) context;
         } else
         {
             throw new RuntimeException(context.toString()
@@ -70,9 +73,8 @@ public class NewsShowFragment extends Fragment implements NewsRequester.onReques
         recycler_view = view.findViewById(R.id.recycler_view);
         Context context = recycler_view.getContext();
         recycler_view.setLayoutManager(new LinearLayoutManager(context));
-        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), mListener, mBitmapRequestListener, this.getActivity()));
+        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), mNewsClickedListener, mBitmapRequestListener, this.getActivity()));
         recycler_view.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
-
         swipe_refresh_layout = view.findViewById(R.id.refresh_layout);
 
         return view;
@@ -82,7 +84,7 @@ public class NewsShowFragment extends Fragment implements NewsRequester.onReques
     public void onDetach()
     {
         super.onDetach();
-        mListener = null;
+        mNewsClickedListener = null;
     }
 
     void clear()
@@ -166,8 +168,20 @@ public class NewsShowFragment extends Fragment implements NewsRequester.onReques
         if (info.equals("NewsBriefList")) fetchNewsListFail();
     }
 
-    interface OnListFragmentInteractionListener
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
     {
-        void onListFragmentInteraction(NewsBrief item);
+        String operation = item.getTitle().toString();
+        MyNewsRecyclerViewAdapter adapter = (MyNewsRecyclerViewAdapter)recycler_view.getAdapter();
+        if (operation.equals(getString(R.string.like)) || operation.equals(getString(R.string.unlike))) Operation.like(adapter.getNews());
+        if (operation.equals(getString(R.string.download)) || operation.equals(getString(R.string.delete))) Operation.download(adapter.getNews());
+        recycler_view.getAdapter().notifyDataSetChanged();
+        return super.onContextItemSelected(item);
     }
+
+    interface OnNewsClickedListener
+    {
+        void onNewsClicked(NewsBrief item);
+    }
+
 }
