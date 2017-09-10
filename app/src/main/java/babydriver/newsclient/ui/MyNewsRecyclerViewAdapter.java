@@ -95,8 +95,9 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             }
             holder.mNewsTitle.setText(holder.mItem.news_Title);
             holder.mNewsSource.setText(holder.mItem.news_Source);
-            holder.mNewsTime.setText(format.format(holder.mItem.newsTime));
-
+            if (holder.mItem.newsTime != null) holder.mNewsTime.setText(format.format(holder.mItem.newsTime));
+            else
+                holder.mNewsTime.setText("");
             holder.mView.setOnClickListener(new View.OnClickListener()
             {
                 @Override
@@ -115,8 +116,9 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             holder.mItem = mValues.get(position);
             holder.mNewsTitle.setText(holder.mItem.news_Title);
             holder.mNewsSource.setText(holder.mItem.news_Source);
-            holder.mNewsTime.setText(format.format(holder.mItem.newsTime));
-
+            if (holder.mItem.newsTime != null) holder.mNewsTime.setText(format.format(holder.mItem.newsTime));
+            else
+                holder.mNewsTime.setText("");
             holder.mView.setOnClickListener(new View.OnClickListener()
             {
                 @Override
@@ -163,8 +165,9 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
 
     void addAll(List<NewsBrief> list)
     {
+        int k = list.size();
         mValues.addAll(list);
-        notifyDataSetChanged();
+        notifyItemRangeChanged(k, list.size());
     }
 
     class ViewHolder extends RecyclerView.ViewHolder

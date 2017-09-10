@@ -179,10 +179,10 @@ public class NewsRequester
             Log.e("Exception", "NullPointerException");
         } catch (FileNotFoundException e)
         {
-            Log.e("Exception", "filenotfound");
+            Log.e("Exception", "FileNotFound");
         } catch (IOException e)
         {
-            Log.e("Exception", "ioexception when flushing/closing outputStream");
+            Log.e("Exception", "IOException when flushing/closing outputStream");
         } finally
         {
             if (inputStream != null)
@@ -191,7 +191,7 @@ public class NewsRequester
                     inputStream.close();
                 } catch (IOException e)
                 {
-                    Log.e("Exception", "ioexception when closing inputStream");
+                    Log.e("Exception", "IOException when closing inputStream");
                 }
         }
     }

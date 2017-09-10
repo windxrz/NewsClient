@@ -8,15 +8,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.R;
@@ -26,20 +25,23 @@ import babydriver.newsclient.model.NewsRequester.onRequestListener;
 
 public class NewsShowFragment extends Fragment implements NewsRequester.onRequestListener
 {
+    static NewsBrief nonNews;
     OnListFragmentInteractionListener mListener;
     onRequestListener<NewsBriefList> mNewsBriefRequestListener;
     onRequestListener<Integer> mBitmapRequestListener;
     RecyclerView recycler_view;
     SwipeRefreshLayout swipe_refresh_layout;
+    NewsRequester requester;
+
     int previousTotal = 0;
-    int totalItemCount = 25;
-    int category = 0;
+    int totalItemCount = 0;
 
     @Override
     @SuppressWarnings("unchecked")
     public void onAttach(Context context)
     {
         super.onAttach(context);
+        nonNews = new NewsBrief(getString(R.string.NonNews));
         if (context instanceof OnListFragmentInteractionListener)
         {
             mListener = (OnListFragmentInteractionListener) context;
@@ -50,6 +52,7 @@ public class NewsShowFragment extends Fragment implements NewsRequester.onReques
         }
         mNewsBriefRequestListener = (onRequestListener<NewsBriefList>) this;
         mBitmapRequestListener = (onRequestListener<Integer>) this;
+        requester = new NewsRequester();
     }
 
     @Override
@@ -69,51 +72,6 @@ public class NewsShowFragment extends Fragment implements NewsRequester.onReques
         recycler_view.setLayoutManager(new LinearLayoutManager(context));
         recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), mListener, mBitmapRequestListener, this.getActivity()));
         recycler_view.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
-        recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener()
-            {
-
-                boolean loading = false;
-
-                @Override
-                public void onScrolled(RecyclerView recycler_view, int dx, int dy)
-                {
-                    super.onScrolled(recycler_view, dx, dy);
-
-                    LinearLayoutManager manager = (LinearLayoutManager)recycler_view.getLayoutManager();
-                    totalItemCount = manager.getItemCount();
-                    if (totalItemCount < 25) totalItemCount = 25;
-                    int lastVisibleItem = manager.findLastVisibleItemPosition();
-                    if (loading)
-                    {
-                        if (totalItemCount > previousTotal)
-                        {
-                            loading = false;
-                            previousTotal = totalItemCount;
-                        }
-                    }
-                    else if (lastVisibleItem == totalItemCount - 1)
-                    {
-                        loading = true;
-                        NewsRequester requester = new NewsRequester();
-                        Map<String, Integer> map = new HashMap<>();
-                        map.put("pageNo", totalItemCount / 25 + 1);
-                        map.put("pageSize", 25);
-                        requester.requestLatest(map, mNewsBriefRequestListener);
-                        final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNews, Toast.LENGTH_SHORT);
-                        toast.show();
-                        Handler handler = new Handler();
-                        handler.postDelayed(
-                                new Runnable()
-                                {
-                                    @Override
-                                    public void run() {
-                                        toast.cancel();
-                                    }
-                                }, 500);
-                    }
-                }
-            }
-        );
 
         swipe_refresh_layout = view.findViewById(R.id.refresh_layout);
 
@@ -127,10 +85,38 @@ public class NewsShowFragment extends Fragment implements NewsRequester.onReques
         mListener = null;
     }
 
+    void clear()
+    {
+        previousTotal = 0;
+        totalItemCount = 0;
+        ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).clear();
+    }
+
     private void addAll(List<NewsBrief> list)
     {
         swipe_refresh_layout.setRefreshing(false);
-        ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).addAll(list);
+        if (list == null || list.size() == 0)
+        {
+            if (totalItemCount == 0)
+            {
+                List<NewsBrief> mList = new ArrayList<>();
+                mList.add(NewsShowFragment.nonNews);
+                ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).addAll(mList);
+            }
+            final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.AllNewsFetched, Toast.LENGTH_SHORT);
+            toast.show();
+            Handler handler = new Handler();
+            handler.postDelayed(
+                    new Runnable()
+                    {
+                        @Override
+                        public void run() {
+                            toast.cancel();
+                        }
+                    }, 2000);
+        }
+        else
+            ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).addAll(list);
     }
 
     private void fetchNewsListFail()
@@ -157,23 +143,6 @@ public class NewsShowFragment extends Fragment implements NewsRequester.onReques
     void setTop()
     {
         recycler_view.smoothScrollToPosition(0);
-    }
-
-    void setCategory(int t)
-    {
-        if (category != t)
-        {
-            category = t;
-            ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).clear();
-            NewsRequester requester = new NewsRequester();
-            Map<String, Integer> map = new HashMap<>();
-            map.put("pageNo", 1);
-            map.put("pageSize", 25);
-            map.put("category", t);
-            previousTotal = 0;
-            totalItemCount = 25;
-            requester.requestLatest(map, mNewsBriefRequestListener);
-        }
     }
 
     @Override
