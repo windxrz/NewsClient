@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity
                         home_time = 0;
                         search_time = 0;
                         fragment = account_fragment;
-                        Intent intent = new Intent(home_fragment.getActivity(), SettingsActivity.class);
-                        startActivity(intent);
+//                        Intent intent = new Intent(home_fragment.getActivity(), SettingsActivity.class);
+//                        startActivity(intent);
                         break;
                 }
                 FragmentManager fragment_manager = getSupportFragmentManager();
