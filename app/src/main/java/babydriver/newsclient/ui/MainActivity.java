@@ -15,7 +15,7 @@ import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.model.Settings;
 
 public class MainActivity extends AppCompatActivity
-        implements NewsShowFragment.OnListFragmentInteractionListener
+        implements NewsShowFragment.OnNewsClickedListener
 {
     public final static String NEWS_ID = "babydriver.newsclient.NEWS_ID";
     HomeFragment home_fragment;
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void onListFragmentInteraction(NewsBrief item)
+    public void onNewsClicked(NewsBrief item)
     {
         if (!item.news_ID.equals(""))
         {
