@@ -1,5 +1,6 @@
 package babydriver.newsclient.controller;
 
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.io.File;
@@ -79,7 +80,7 @@ public class Operation
     public void download(NewsBrief news, File dir)
     {
         id = news.news_ID;
-        final boolean[] success = {true};
+        final boolean[] success = {false};
         final int[] missions = new int[1];
         if (isDownloaded(news.news_ID))
             remove(news, dir);
@@ -100,6 +101,8 @@ public class Operation
                     public void onSuccess(Integer detail)
                     {
                         missions[0]--;
+                        Log.e("progress", missions[0] + " " + detail);
+                        if (detail.equals(1)) success[0] = true;
                         if (missions[0] == 0)
                         {
                             listener.onSuccess(DOWNLOAD, id);
@@ -112,9 +115,18 @@ public class Operation
                     public void onFailure()
                     {
                         missions[0]--;
-                        success[0] = false;
+                        Log.e("progress", missions[0] + "");
                         if (missions[0] == 0)
-                            listener.onFailure(DOWNLOAD, "");
+                        {
+                            downloading.remove(id);
+                            if (success[0])
+                            {
+                                MyApplication.downloaded_list.add(id);
+                                listener.onSuccess(DOWNLOAD, id);
+                            }
+                            else
+                                listener.onFailure(DOWNLOAD, "");
+                        }
                     }
                 };
                 requester.downloadDetail(id, directory, requestListener);
@@ -126,7 +138,7 @@ public class Operation
                     Matcher m = p.matcher(picUrl);
                     if (m.find())
                         suffix = m.group();
-                    requester.downloadPicture(picUrl, directory + i + suffix, requestListener);
+                    requester.downloadPicture(picUrl, directory + i + suffix, new BitmapFactory.Options(), requestListener);
                 }
             }
         }
@@ -174,10 +186,10 @@ public class Operation
     }
 
     @SuppressWarnings("unchecked")
-    public void requestPicture(final String picUrl, final String cacheDir, final int pos)
+    public void requestPicture(final String picUrl, final String cacheDir, final int pos, BitmapFactory.Options option)
     {
         NewsRequester requester = new NewsRequester();
-        requester.downloadPicture(picUrl, cacheDir, new OnRequestListener<Integer>()
+        requester.downloadPicture(picUrl, cacheDir, option, new OnRequestListener<Integer>()
         {
             @Override
             public void onSuccess(Integer detail)
@@ -188,7 +200,7 @@ public class Operation
             @Override
             public void onFailure()
             {
-                listener.onFailure(PICTURE, null);
+                listener.onFailure(PICTURE, pos);
             }
         });
     }

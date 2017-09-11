@@ -22,6 +22,9 @@ import babydriver.newsclient.R;
 public class MyApplication extends Application
 {
     public static boolean isPreviewShowPicture;
+
+    final String FAVORITE_LIST = "favorite_list";
+    final String DOWNLOADED_LIST = "download_list";
     public static HashSet<String> favorite_list = new HashSet<>();
     public static HashSet<String> downloaded_list = new HashSet<>();
     public static List<Integer> showCateNumList = new ArrayList<>();
@@ -49,6 +52,17 @@ public class MyApplication extends Application
     public void onCreate()
     {
         super.onCreate();
+
+        SharedPreferences favorite_preferences = getSharedPreferences(FAVORITE_LIST, MODE_PRIVATE);
+        SharedPreferences.Editor favorite_editor = favorite_preferences.edit();
+        favorite_editor.putStringSet(FAVORITE_LIST, favorite_list);
+        favorite_editor.apply();
+
+        SharedPreferences downloaded_preferences = getSharedPreferences(DOWNLOADED_LIST, MODE_PRIVATE);
+        SharedPreferences.Editor downloaded_editor = downloaded_preferences.edit();
+        downloaded_editor.putStringSet(DOWNLOADED_LIST, downloaded_list);
+        downloaded_editor.apply();
+
         setDefaultCateNames();
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
