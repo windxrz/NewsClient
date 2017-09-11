@@ -19,10 +19,9 @@ import java.util.regex.Pattern;
 
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsDetail;
-import babydriver.newsclient.model.NewsRequester;
 import babydriver.newsclient.model.Operation;
 
-public class ContentActivity extends AppCompatActivity implements NewsRequester.OnRequestListener
+public class ContentActivity extends AppCompatActivity implements Operation.OnOperationListener
 {
     NewsDetail newsDetail = null;
     private WebView webView;
@@ -81,8 +80,7 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
         }
         if (!f)
         {
-            NewsRequester newsRequester = new NewsRequester();
-            newsRequester.normalRequestDetail(news_ID, this);
+            new Operation().normalRequestDetail(news_ID, this);
         }
         else
         {
@@ -167,7 +165,7 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
                 suffix = m.group();
             File picFile = new File(newsPath + "/" + i + suffix);
             if (!picFile.isFile())
-                new NewsRequester().normalRequestPicture(picUrl, picFile.getPath(), i, this);
+                new Operation().normalRequestPicture(picUrl, picFile.getPath(), i, this);
             else
                 updateSinglePic(picFile.getPath(), i);
             i++;
@@ -185,7 +183,7 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
     @Override
     public void onSuccess(String type, Object data)
     {
-        if (type.equals(NewsRequester.normal))
+        if (type.equals(Operation.normal))
         {
             if (data instanceof NewsDetail)
             {
@@ -208,7 +206,7 @@ public class ContentActivity extends AppCompatActivity implements NewsRequester.
     }
 
     @Override
-    public void onFailure(String info, String id)
+    public void onFailure(String info, Object detail)
     {
 
     }
