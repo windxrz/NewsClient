@@ -18,9 +18,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import babydriver.newsclient.R;
+import babydriver.newsclient.controller.MyApplication;
 import babydriver.newsclient.model.NewsDetail;
-import babydriver.newsclient.model.Operation;
-import babydriver.newsclient.model.Settings;
+import babydriver.newsclient.controller.Operation;
 
 public class ContentActivity extends AppCompatActivity implements Operation.OnOperationListener
 {
@@ -119,7 +119,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
     private void init(File newsDir)
     {
 
-        willPictureShow = Settings.isPreviewShowPicture && (newsDir.isDirectory() || newsDir.mkdir());
+        willPictureShow = MyApplication.isPreviewShowPicture && (newsDir.isDirectory() || newsDir.mkdir());
 //        if (!newsDir.exists())
 //            willPictureShow = newsDir.mkdir();
         newsPath = newsDir.getPath();

@@ -1,4 +1,4 @@
-package babydriver.newsclient.model;
+package babydriver.newsclient.controller;
 
 import android.util.Log;
 
@@ -8,7 +8,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import babydriver.newsclient.model.NewsRequester.OnRequestListener;
+import babydriver.newsclient.controller.NewsRequester.OnRequestListener;
+import babydriver.newsclient.model.NewsBrief;
+import babydriver.newsclient.model.NewsBriefList;
+import babydriver.newsclient.model.NewsDetail;
 
 public class Operation
 {
@@ -22,12 +25,12 @@ public class Operation
 
     public static boolean isFavorite(String id)
     {
-        return Settings.favorite_list.contains(id);
+        return MyApplication.favorite_list.contains(id);
     }
 
     public static boolean isDownloaded(String id)
     {
-        return Settings.downloaded_list.contains(id);
+        return MyApplication.downloaded_list.contains(id);
     }
 
     public static boolean isDownloading(String id)
@@ -47,14 +50,14 @@ public class Operation
     public void like(String id)
     {
         if (isFavorite(id))
-            Settings.favorite_list.remove(id);
+            MyApplication.favorite_list.remove(id);
         else
-            Settings.favorite_list.add(id);
+            MyApplication.favorite_list.add(id);
     }
 
     private void remove(NewsBrief news, File dir)
     {
-        Settings.downloaded_list.remove(news.news_ID);
+        MyApplication.downloaded_list.remove(news.news_ID);
         String directory = dir.getPath() + "/" + id;
         File d = new File(directory);
         if (d.isDirectory())
@@ -101,7 +104,7 @@ public class Operation
                         {
                             listener.onSuccess(DOWNLOAD, id);
                             downloading.remove(id);
-                            if (success[0]) Settings.downloaded_list.add(id);
+                            if (success[0]) MyApplication.downloaded_list.add(id);
                         }
                     }
 

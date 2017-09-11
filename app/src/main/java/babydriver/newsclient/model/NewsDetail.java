@@ -19,7 +19,7 @@ public class NewsDetail extends NewsBrief implements Serializable
     }
 
     @Override
-    void process()
+    public void process()
     {
         super.process();
         processContent();

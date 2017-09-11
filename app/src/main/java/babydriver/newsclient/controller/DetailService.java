@@ -1,5 +1,6 @@
-package babydriver.newsclient.model;
+package babydriver.newsclient.controller;
 
+import babydriver.newsclient.model.NewsDetail;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

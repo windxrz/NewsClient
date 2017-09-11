@@ -1,8 +1,7 @@
-package babydriver.newsclient.model;
+package babydriver.newsclient.controller;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Path;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -14,6 +13,8 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
+import babydriver.newsclient.model.NewsBriefList;
+import babydriver.newsclient.model.NewsDetail;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;

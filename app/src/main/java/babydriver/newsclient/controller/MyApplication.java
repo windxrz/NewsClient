@@ -1,18 +1,19 @@
-package babydriver.newsclient.ui;
+package babydriver.newsclient.controller;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import babydriver.newsclient.R;
-import babydriver.newsclient.model.Settings;
 
 /**
  * Application class used to initialize settings
@@ -20,6 +21,11 @@ import babydriver.newsclient.model.Settings;
 
 public class MyApplication extends Application
 {
+    public static boolean isPreviewShowPicture;
+    public static HashSet<String> favorite_list = new HashSet<>();
+    public static HashSet<String> downloaded_list = new HashSet<>();
+    public static List<Integer> showCateNumList = new ArrayList<>();
+
     public static final List<String> cateNames = new ArrayList<>();
 
     private void setDefaultCateNames()
@@ -51,7 +57,7 @@ public class MyApplication extends Application
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         else
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        Settings.isPreviewShowPicture = sharedPreferences.getBoolean("pic_switch", true);
+        isPreviewShowPicture = sharedPreferences.getBoolean("pic_switch", true);
         Set<String> defaultCategories = new TreeSet<>();
         for (int i = 1; i <= 12; i++)
         {
@@ -66,6 +72,6 @@ public class MyApplication extends Application
             showCateNumList.add(Integer.parseInt(cateNumStr));
         }
         Collections.sort(showCateNumList);
-        Settings.showCateNumList = showCateNumList;
+        MyApplication.showCateNumList = showCateNumList;
     }
 }

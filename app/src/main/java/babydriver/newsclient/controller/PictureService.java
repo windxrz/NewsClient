@@ -1,4 +1,4 @@
-package babydriver.newsclient.model;
+package babydriver.newsclient.controller;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

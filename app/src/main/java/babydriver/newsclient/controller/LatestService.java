@@ -1,7 +1,8 @@
-package babydriver.newsclient.model;
+package babydriver.newsclient.controller;
 
 import java.util.Map;
 
+import babydriver.newsclient.model.NewsBriefList;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.QueryMap;

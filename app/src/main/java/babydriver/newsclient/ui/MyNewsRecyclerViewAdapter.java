@@ -14,11 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import babydriver.newsclient.R;
+import babydriver.newsclient.controller.MyApplication;
 import babydriver.newsclient.model.NewsBrief;
-import babydriver.newsclient.model.Operation;
-import babydriver.newsclient.model.Settings;
+import babydriver.newsclient.controller.Operation;
 import babydriver.newsclient.ui.NewsShowFragment.OnNewsClickedListener;
-import babydriver.newsclient.model.Operation.OnOperationListener;
+import babydriver.newsclient.controller.Operation.OnOperationListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -141,7 +141,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     @Override
     public int getItemViewType(int position)
     {
-        if (!Settings.isPreviewShowPicture) return NEWS_TYPE.NEWS_WITHOUT_PICTURE.ordinal();
+        if (!MyApplication.isPreviewShowPicture) return NEWS_TYPE.NEWS_WITHOUT_PICTURE.ordinal();
         return (mValues.get(position).newsPictures.size() == 0 ? NEWS_TYPE.NEWS_WITHOUT_PICTURE.ordinal() : NEWS_TYPE.NEWS_WITH_PICTURE.ordinal());
     }
 

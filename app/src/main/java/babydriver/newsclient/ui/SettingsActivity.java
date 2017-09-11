@@ -25,7 +25,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import babydriver.newsclient.R;
-import babydriver.newsclient.model.Settings;
+import babydriver.newsclient.controller.MyApplication;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -225,7 +225,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity
             }
             else if (preference.getKey().equals("pic_switch"))
             {
-                Settings.isPreviewShowPicture = (boolean) newValue;
+                MyApplication.isPreviewShowPicture = (boolean) newValue;
             }
             else if (preference.getKey().equals("category_select"))
             {
@@ -237,7 +237,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity
                     showCateNumList.add(Integer.parseInt(cateNumStr));
                 }
                 Collections.sort(showCateNumList);
-                Settings.showCateNumList = showCateNumList;
+                MyApplication.showCateNumList = showCateNumList;
                 Log.e("settings", "categories changed");
             }
             return true;

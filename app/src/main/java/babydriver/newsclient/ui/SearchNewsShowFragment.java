@@ -14,8 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import babydriver.newsclient.R;
-import babydriver.newsclient.model.NewsBriefList;
-import babydriver.newsclient.model.Operation;
+import babydriver.newsclient.controller.Operation;
 
 public class SearchNewsShowFragment extends NewsShowFragment
 {
