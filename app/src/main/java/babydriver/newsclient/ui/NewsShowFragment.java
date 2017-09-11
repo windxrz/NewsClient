@@ -92,6 +92,10 @@ public class NewsShowFragment extends Fragment
     {
         super.onDetach();
         mNewsClickedListener = null;
+        mBitmapRequestListener = null;
+        mNewsBriefRequestListener = null;
+        mNewsDetailRequestListener = null;
+        mDownloadListener = null;
     }
 
     void clear()
@@ -154,6 +158,28 @@ public class NewsShowFragment extends Fragment
         recycler_view.smoothScrollToPosition(0);
     }
 
+    void update()
+    {
+        recycler_view.getAdapter().notifyDataSetChanged();
+    }
+
+    void downloadFail(String id)
+    {
+        final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.DownloadFail, Toast.LENGTH_SHORT);
+        toast.show();
+        Handler handler = new Handler();
+        handler.postDelayed(
+                new Runnable()
+                {
+                    @Override
+                    public void run() {
+                        toast.cancel();
+                    }
+                }, 1000);
+        operationMap.remove(id);
+        recycler_view.getAdapter().notifyDataSetChanged();
+    }
+
     @Override
     public void onSuccess(String type, Object data)
     {
@@ -175,19 +201,19 @@ public class NewsShowFragment extends Fragment
             if (data instanceof String)
             {
                 Operation op = operationMap.get(data);
-                op.finish();
+                op.finish(true);
                 if (op.isFinished())
                 {
-                    operationMap.remove(data);
-                    recycler_view.getAdapter().notifyDataSetChanged();
+                    if (op.isSuccess())
+                    {
+                        operationMap.remove(data);
+                        recycler_view.getAdapter().notifyDataSetChanged();
+                    }
+                    else
+                        downloadFail((String) data);
                 }
             }
         }
-    }
-
-    void update()
-    {
-        recycler_view.getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -196,12 +222,8 @@ public class NewsShowFragment extends Fragment
         if (info.equals(NewsRequester.download))
         {
             Operation op = operationMap.get(id);
-            op.finish();
-            if (op.isFinished())
-            {
-                operationMap.remove(id);
-                recycler_view.getAdapter().notifyDataSetChanged();
-            }
+            op.finish(false);
+            if (op.isFinished()) downloadFail(id);
         }
         if (info.equals("NewsBriefList")) fetchNewsListFail();
     }

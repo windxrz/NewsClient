@@ -133,7 +133,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             public boolean onLongClick(View v)
             {
                 news = mValues.get(old_holder.getAdapterPosition());
-                return false;
+                return (news.equals(NewsShowFragment.nonNews));
             }
         });
         old_holder.setImage();
@@ -185,24 +185,34 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
 
         void setImage()
         {
-            if (Operation.isFavorite(mItem.news_ID))
-                mLike.setImageResource(R.drawable.ic_star_black_24dp);
-            else
-                mLike.setImageResource(R.drawable.ic_star_border_black_24dp);
-            mDownload.setEnabled(true);
-            if (Operation.isDownloaded(mItem.news_ID))
-                mDownload.setImageResource(R.drawable.ic_delete_black_24dp);
-            else if (Operation.isDownloading(mItem.news_ID))
+            if (mItem.equals(NewsShowFragment.nonNews))
             {
-                mDownload.setImageResource(R.drawable.ic_more_horiz_black_24dp);
-                mDownload.setEnabled(false);
+                mLike.setVisibility(View.GONE);
+                mDownload.setVisibility(View.GONE);
             }
             else
-                mDownload.setImageResource(R.drawable.ic_arrow_downward_black_24dp);
+            {
+                mLike.setVisibility(View.VISIBLE);
+                mDownload.setVisibility(View.VISIBLE);
+                if (Operation.isFavorite(mItem.news_ID))
+                    mLike.setImageResource(R.drawable.ic_star_black_24dp);
+                else
+                    mLike.setImageResource(R.drawable.ic_star_border_black_24dp);
+                mDownload.setEnabled(true);
+                if (Operation.isDownloaded(mItem.news_ID))
+                    mDownload.setImageResource(R.drawable.ic_delete_black_24dp);
+                else if (Operation.isDownloading(mItem.news_ID))
+                {
+                    mDownload.setImageResource(R.drawable.ic_more_horiz_black_24dp);
+                    mDownload.setEnabled(false);
+                } else
+                    mDownload.setImageResource(R.drawable.ic_arrow_downward_black_24dp);
+            }
         }
 
         void set()
         {
+
             mLike.setOnClickListener(new View.OnClickListener()
             {
                 @Override
