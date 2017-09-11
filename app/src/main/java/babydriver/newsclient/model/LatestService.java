@@ -10,7 +10,7 @@ import retrofit2.http.QueryMap;
  * Interface of getting the latest news
  */
 
-public interface LatestService
+interface LatestService
 {
     @GET("news/action/query/latest")
     Call<NewsBriefList> getLatest(@QueryMap Map<String, Integer> map);
