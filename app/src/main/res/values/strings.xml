@@ -17,7 +17,7 @@
     <string name="news_kind7">Cars</string>
     <string name="news_kind8">International</string>
     <string name="news_kind9">Sports</string>
-    <string name="news_kind10">Money</string>
+    <string name="news_kind10">Finance</string>
     <string name="news_kind11">Health</string>
     <string name="news_kind12">Entertainment</string>
 
@@ -46,24 +46,42 @@
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
+    <string name="pref_title_night">Night mode</string>
+
+    <string name="pref_title_pic">Show pictures</string>
 
     <string name="pref_title_display_name">Display name</string>
     <string name="pref_default_display_name">John Smith</string>
 
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
+    <string name="pref_title_category">News categories</string>
+    <string name="pref_summary_category">Select categories you want to read</string>
+    <string-array name="pref_category_titles">
+        <item>@string/news_kind1</item>
+        <item>@string/news_kind2</item>
+        <item>@string/news_kind3</item>
+        <item>@string/news_kind4</item>
+        <item>@string/news_kind5</item>
+        <item>@string/news_kind6</item>
+        <item>@string/news_kind7</item>
+        <item>@string/news_kind8</item>
+        <item>@string/news_kind9</item>
+        <item>@string/news_kind10</item>
+        <item>@string/news_kind11</item>
+        <item>@string/news_kind12</item>
     </string-array>
-    <string-array name="pref_example_list_values">
+    <string-array name="pref_category_values">
         <item>1</item>
-        <item>0</item>
-        <item>-1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
     </string-array>
 
     <!-- Example settings for Data & Sync -->

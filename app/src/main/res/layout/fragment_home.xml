@@ -11,37 +11,40 @@
          android:id="@+id/tab_layout"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
+         android:background="@color/colorForeground"
+         app:tabTextColor="@color/colorText"
+         app:tabSelectedTextColor="@color/colorText"
          app:tabMode="scrollable">
 
-         <android.support.design.widget.TabItem
-             android:id="@+id/tabitem0"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:text="@string/news_kind0"/>
-
-         <android.support.design.widget.TabItem
-             android:id="@+id/tabitem1"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:text="@string/news_kind1"/>
-
-         <android.support.design.widget.TabItem
-             android:id="@+id/tabItem2"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:text="@string/news_kind2"/>
-
-         <android.support.design.widget.TabItem
-             android:id="@+id/tabItem3"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:text="@string/news_kind3"/>
-
-         <android.support.design.widget.TabItem
-             android:id="@+id/tabitem4"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:text="@string/news_kind4"/>
+         <!--<android.support.design.widget.TabItem-->
+             <!--android:id="@+id/tabitem0"-->
+             <!--android:layout_width="wrap_content"-->
+             <!--android:layout_height="wrap_content"-->
+             <!--android:text="@string/news_kind0"/>-->
+<!---->
+         <!--<android.support.design.widget.TabItem-->
+             <!--android:id="@+id/tabitem1"-->
+             <!--android:layout_width="wrap_content"-->
+             <!--android:layout_height="wrap_content"-->
+             <!--android:text="@string/news_kind1"/>-->
+<!---->
+         <!--<android.support.design.widget.TabItem-->
+             <!--android:id="@+id/tabItem2"-->
+             <!--android:layout_width="wrap_content"-->
+             <!--android:layout_height="wrap_content"-->
+             <!--android:text="@string/news_kind2"/>-->
+<!---->
+         <!--<android.support.design.widget.TabItem-->
+             <!--android:id="@+id/tabItem3"-->
+             <!--android:layout_width="wrap_content"-->
+             <!--android:layout_height="wrap_content"-->
+             <!--android:text="@string/news_kind3"/>-->
+<!---->
+         <!--<android.support.design.widget.TabItem-->
+             <!--android:id="@+id/tabitem4"-->
+             <!--android:layout_width="wrap_content"-->
+             <!--android:layout_height="wrap_content"-->
+             <!--android:text="@string/news_kind4"/>-->
      </android.support.design.widget.TabLayout>
 
      <LinearLayout

@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsDetail;
 import babydriver.newsclient.model.Operation;
+import babydriver.newsclient.model.Settings;
 
 public class ContentActivity extends AppCompatActivity implements Operation.OnOperationListener
 {
@@ -119,7 +120,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
     private void init(File newsDir)
     {
 
-        willPictureShow = newsDir.isDirectory() || newsDir.mkdir();
+        willPictureShow = Settings.isPreviewShowPicture && (newsDir.isDirectory() || newsDir.mkdir());
 //        if (!newsDir.exists())
 //            willPictureShow = newsDir.mkdir();
         newsPath = newsDir.getPath();
@@ -132,11 +133,14 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
                 "<div style=\"font-size:80%;color:grey\">" + newsDetail.news_Author + " " +
                 newsDetail.news_Journal + "</div>" +
                 "<hr />";
-        int i = 0;
-        for (String ignored : newsDetail.newsPictures)
+        if (willPictureShow)
         {
-            content += "<p><img src=\"" + placeholder + "\" alt=\"" + i + "\"/></p>";
-            i++;
+            int i = 0;
+            for (String ignored : newsDetail.newsPictures)
+            {
+                content += "<p><img src=\"" + placeholder + "\" alt=\"" + i + "\"/></p>";
+                i++;
+            }
         }
         content +=
                 "<div  style=\"text-align:justify;\">" + newsDetail.news_Content + "</div>" +

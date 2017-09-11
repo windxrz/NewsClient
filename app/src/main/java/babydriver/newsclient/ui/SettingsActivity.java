@@ -11,18 +11,27 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
+import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.SwitchPreference;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 
 import babydriver.newsclient.R;
+import babydriver.newsclient.model.Settings;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -41,6 +50,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
+
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener()
         {
             @Override
@@ -159,15 +169,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity
         return isXLargeTablet(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public void onBuildHeaders(List<Header> target)
-    {
-        loadHeadersFromResource(R.xml.pref_headers, target);
-    }
+
 
     /**
      * This method stops fragment injection in malicious applications.
@@ -176,9 +178,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity
     protected boolean isValidFragment(String fragmentName)
     {
         return PreferenceFragment.class.getName().equals(fragmentName)
-                || GeneralPreferenceFragment.class.getName().equals(fragmentName)
-                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
-                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+                || GeneralPreferenceFragment.class.getName().equals(fragmentName);
     }
 
     /**
@@ -186,21 +186,62 @@ public class SettingsActivity extends AppCompatPreferenceActivity
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment
+    public static class GeneralPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener
     {
+        private SwitchPreference nightSwitchPreference;
+        private SwitchPreference picSwitchPreference;
+        private MultiSelectListPreference categorySelectPreference;
+
         @Override
         public void onCreate(Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
+            nightSwitchPreference = (SwitchPreference) findPreference("night_switch");
+            picSwitchPreference = (SwitchPreference) findPreference("pic_switch");
+            categorySelectPreference = (MultiSelectListPreference) findPreference("category_select");
+            nightSwitchPreference.setOnPreferenceChangeListener(this);
+            picSwitchPreference.setOnPreferenceChangeListener(this);
+            categorySelectPreference.setOnPreferenceChangeListener(this);
+        }
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+        @Override
+        @SuppressWarnings("unchecked")
+        public boolean onPreferenceChange(Preference preference, Object newValue)
+        {
+            if (preference.getKey().equals("night_switch"))
+            {
+                boolean isNight = (boolean) newValue;
+                if (isNight)
+                {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    Log.e("mode", "night mode");
+                }
+                else
+                {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    Log.e("mode", "day mode");
+                }
+            }
+            else if (preference.getKey().equals("pic_switch"))
+            {
+                Settings.isPreviewShowPicture = (boolean) newValue;
+            }
+            else if (preference.getKey().equals("category_select"))
+            {
+                Set<String> cateNumStrs = (Set<String>) newValue;
+                List<Integer> showCateNumList = new ArrayList<>();
+                showCateNumList.add(0);
+                for (String cateNumStr : cateNumStrs)
+                {
+                    showCateNumList.add(Integer.parseInt(cateNumStr));
+                }
+                Collections.sort(showCateNumList);
+                Settings.showCateNumList = showCateNumList;
+                Log.e("settings", "categories changed");
+            }
+            return true;
         }
 
         @Override
@@ -216,71 +257,5 @@ public class SettingsActivity extends AppCompatPreferenceActivity
         }
     }
 
-    /**
-     * This fragment shows notification preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class NotificationPreferenceFragment extends PreferenceFragment
-    {
-        @Override
-        public void onCreate(Bundle savedInstanceState)
-        {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
-            setHasOptionsMenu(true);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item)
-        {
-            int id = item.getItemId();
-            if (id == android.R.id.home)
-            {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    /**
-     * This fragment shows data and sync preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class DataSyncPreferenceFragment extends PreferenceFragment
-    {
-        @Override
-        public void onCreate(Bundle savedInstanceState)
-        {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_data_sync);
-            setHasOptionsMenu(true);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item)
-        {
-            int id = item.getItemId();
-            if (id == android.R.id.home)
-            {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
-    }
 }
