@@ -12,8 +12,11 @@ import babydriver.newsclient.model.NewsRequester.OnRequestListener;
 
 public class Operation
 {
-    public static String normal = "normal";
-    static String download = "download";
+    public static String LATEST = "latest";
+    public static String DETAIL = "detail";
+    public static String PICTURE = "picture";
+    public static String SEARCH = "search";
+    private static String DOWNLOAD = "download";
 
     final private static HashSet<String> downloading = new HashSet<>();
 
@@ -33,6 +36,13 @@ public class Operation
     }
 
     private String id;
+
+    private OnOperationListener listener;
+
+    public Operation(OnOperationListener listener)
+    {
+        this.listener = listener;
+    }
 
     public void like(String id)
     {
@@ -63,7 +73,7 @@ public class Operation
     }
 
     @SuppressWarnings("unchecked")
-    public void download(NewsBrief news, File dir, final OnOperationListener mListener)
+    public void download(NewsBrief news, File dir)
     {
         id = news.news_ID;
         final boolean[] success = {true};
@@ -81,15 +91,15 @@ public class Operation
                 downloading.add(id);
                 missions[0] = 1 + news.newsPictures.size();
                 NewsRequester requester = new NewsRequester();
-                OnRequestListener<String> requestListener = new OnRequestListener<String>()
+                OnRequestListener<Integer> requestListener = new OnRequestListener<Integer>()
                 {
                     @Override
-                    public void onSuccess(String detail)
+                    public void onSuccess(Integer detail)
                     {
                         missions[0]--;
                         if (missions[0] == 0)
                         {
-                            mListener.onSuccess(download, id);
+                            listener.onSuccess(DOWNLOAD, id);
                             downloading.remove(id);
                             if (success[0]) Settings.downloaded_list.add(id);
                         }
@@ -101,10 +111,10 @@ public class Operation
                         missions[0]--;
                         success[0] = false;
                         if (missions[0] == 0)
-                            mListener.onFailure(download, "");
+                            listener.onFailure(DOWNLOAD, "");
                     }
                 };
-                requester.downloadRequestDetail(id, directory, requestListener);
+                requester.downloadDetail(id, directory, requestListener);
                 for (int i = 0; i < news.newsPictures.size(); i++)
                 {
                     String picUrl = news.newsPictures.get(i);
@@ -113,14 +123,14 @@ public class Operation
                     Matcher m = p.matcher(picUrl);
                     if (m.find())
                         suffix = m.group();
-                    requester.downloadRequestPicture(picUrl, directory + i + suffix, requestListener);
+                    requester.downloadPicture(picUrl, directory + i + suffix, requestListener);
                 }
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void requestLatest(Map<String, Integer> map, final OnOperationListener listener)
+    public void requestLatest(Map<String, Integer> map)
     {
         NewsRequester requester = new NewsRequester();
 
@@ -129,59 +139,59 @@ public class Operation
                 @Override
                 public void onSuccess(NewsBriefList data)
                 {
-                    listener.onSuccess(normal, data);
+                    listener.onSuccess(LATEST, data);
                 }
 
                 @Override
                 public void onFailure()
                 {
-                    listener.onFailure(normal, null);
+                    listener.onFailure(LATEST, null);
                 }
             });
     }
 
     @SuppressWarnings("unchecked")
-    public void normalRequestDetail(final String newsId, final OnOperationListener listener)
+    public void requestDetail(final String newsId)
     {
         NewsRequester requester = new NewsRequester();
-        requester.normalRequestDetail(newsId, new OnRequestListener<NewsDetail>()
+        requester.requestDetail(newsId, new OnRequestListener<NewsDetail>()
         {
             @Override
             public void onSuccess(NewsDetail detail)
             {
-                listener.onSuccess(normal, detail);
+                listener.onSuccess(DETAIL, detail);
             }
 
             @Override
             public void onFailure()
             {
-                listener.onFailure(normal, null);
+                listener.onFailure(DETAIL, null);
             }
         });
     }
 
     @SuppressWarnings("unchecked")
-    public void normalRequestPicture(String picUrl, final String cacheDir, final int pos, final OnOperationListener listener)
+    public void requestPicture(final String picUrl, final String cacheDir, final int pos)
     {
         NewsRequester requester = new NewsRequester();
-        requester.normalRequestPicture(picUrl, cacheDir, new OnRequestListener<Integer>()
+        requester.downloadPicture(picUrl, cacheDir, new OnRequestListener<Integer>()
         {
             @Override
             public void onSuccess(Integer detail)
             {
-                listener.onSuccess(normal, pos);
+                listener.onSuccess(PICTURE, pos);
             }
 
             @Override
             public void onFailure()
             {
-                listener.onFailure(normal, null);
+                listener.onFailure(PICTURE, null);
             }
         });
     }
 
     @SuppressWarnings("unchecked")
-    public void requestSearch(String keyword, Map<String, Integer> map, final OnOperationListener listener)
+    public void requestSearch(String keyword, Map<String, Integer> map)
     {
         NewsRequester requester = new NewsRequester();
         requester.requestSearch(keyword, map, new OnRequestListener<NewsBriefList>()
@@ -189,13 +199,13 @@ public class Operation
             @Override
             public void onSuccess(NewsBriefList detail)
             {
-                listener.onSuccess(normal, detail);
+                listener.onSuccess(SEARCH, detail);
             }
 
             @Override
             public void onFailure()
             {
-                listener.onFailure(normal, null);
+                listener.onFailure(SEARCH, null);
             }
         });
     }

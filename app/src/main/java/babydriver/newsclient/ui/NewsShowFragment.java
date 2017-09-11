@@ -2,6 +2,7 @@ package babydriver.newsclient.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Path;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -34,10 +35,9 @@ public abstract  class NewsShowFragment extends Fragment
     RecyclerView recycler_view;
     SwipeRefreshLayout swipe_refresh_layout;
 
-    boolean loading = false;
+    private boolean loading = false;
 
     @Override
-    @SuppressWarnings("unchecked")
     public void onAttach(Context context)
     {
         super.onAttach(context);
@@ -53,7 +53,6 @@ public abstract  class NewsShowFragment extends Fragment
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
@@ -106,6 +105,7 @@ public abstract  class NewsShowFragment extends Fragment
 
     void clear()
     {
+        loading = false;
         ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).clear();
     }
 
@@ -171,26 +171,34 @@ public abstract  class NewsShowFragment extends Fragment
     @Override
     public void onSuccess(String type, Object data)
     {
-        if (type.equals(Operation.normal))
+        if (type.equals(Operation.LATEST) && data instanceof NewsBriefList)
         {
-            if (data instanceof NewsBriefList)
-            {
-                NewsBriefList list = (NewsBriefList) data;
-                addAll(list.list);
-            }
-            if (data instanceof Integer)
-            {
-                int pos = (Integer) data;
-                setPicture(pos);
-            }
+            loading = false;
+            NewsBriefList list = (NewsBriefList) data;
+            addAll(list.list);
+        }
+        if (type.equals(Operation.SEARCH) && data instanceof NewsBriefList)
+        {
+            loading = false;
+            NewsBriefList list = (NewsBriefList) data;
+            addAll(list.list);
+        }
+        if (type.equals(Operation.PICTURE) && data instanceof Integer)
+        {
+            int pos = (Integer) data;
+            setPicture(pos);
         }
         recycler_view.getAdapter().notifyDataSetChanged();
     }
 
     @Override
-    public void onFailure(String info, Object id)
+    public void onFailure(String type, Object data)
     {
-        if (info.equals("NewsBriefList")) fetchNewsListFail();
+        if (type.equals(Operation.LATEST))
+        {
+            fetchNewsListFail();
+            loading = false;
+        }
         recycler_view.getAdapter().notifyDataSetChanged();
     }
 
@@ -214,15 +222,14 @@ public abstract  class NewsShowFragment extends Fragment
         newsOperate(type);
     }
 
-    @SuppressWarnings("unchecked")
     private void newsOperate(String type)
     {
         NewsBrief news = ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).getNews();
-        Operation operation = new Operation();
+        Operation operation = new Operation(this);
         if (type.equals(getString(R.string.like)) || type.equals(getString(R.string.unlike))) operation.like(news.news_ID);
         if (type.equals(getString(R.string.download)) || type.equals(getString(R.string.delete)))
         {
-            operation.download(news, getContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), this);
+            operation.download(news, getContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS));
         }
         recycler_view.getAdapter().notifyDataSetChanged();
     }

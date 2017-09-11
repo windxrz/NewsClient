@@ -33,7 +33,6 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
     private boolean willPictureShow = false;
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState)
     {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -81,7 +80,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         }
         if (!f)
         {
-            new Operation().normalRequestDetail(news_ID, this);
+            new Operation(this).requestDetail(news_ID);
         }
         else
         {
@@ -155,7 +154,6 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         webView.loadDataWithBaseURL("", content, "text/html", "utf-8", "");
     }
 
-    @SuppressWarnings("unchecked")
     private void updatePics()
     {
         if (!willPictureShow) return;
@@ -169,7 +167,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
                 suffix = m.group();
             File picFile = new File(newsPath + "/" + i + suffix);
             if (!picFile.isFile())
-                new Operation().normalRequestPicture(picUrl, picFile.getPath(), i, this);
+                new Operation(this).requestPicture(picUrl, picFile.getPath(), i);
             else
                 updateSinglePic(picFile.getPath(), i);
             i++;
@@ -187,25 +185,23 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
     @Override
     public void onSuccess(String type, Object data)
     {
-        if (type.equals(Operation.normal))
+        if (type.equals(Operation.DETAIL) && data instanceof NewsDetail)
         {
-            if (data instanceof NewsDetail)
-            {
-                newsDetail = (NewsDetail) data;
-                init(getNewsDirectory());
-                setContent();
-                updatePics();
-            } else if (data instanceof Integer)
-            {
-                int i = (int) data;
-                String picUrl = newsDetail.newsPictures.get(i);
-                String suffix = "";
-                Pattern p = Pattern.compile("\\.[^\\.]+$");
-                Matcher m = p.matcher(picUrl);
-                if (m.find())
-                    suffix = m.group();
-                updateSinglePic(newsPath + "/" + i + suffix, i);
-            }
+            newsDetail = (NewsDetail) data;
+            init(getNewsDirectory());
+            setContent();
+            updatePics();
+        }
+        if (type.equals(Operation.PICTURE) && data instanceof Integer)
+        {
+            int i = (int) data;
+            String picUrl = newsDetail.newsPictures.get(i);
+            String suffix = "";
+            Pattern p = Pattern.compile("\\.[^\\.]+$");
+            Matcher m = p.matcher(picUrl);
+            if (m.find())
+                suffix = m.group();
+            updateSinglePic(newsPath + "/" + i + suffix, i);
         }
     }
 

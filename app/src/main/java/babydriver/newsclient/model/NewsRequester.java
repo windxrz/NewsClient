@@ -106,7 +106,7 @@ class NewsRequester
         );
     }
 
-    void normalRequestDetail(final String newsId, final OnRequestListener<NewsDetail> listener)
+    void requestDetail(final String newsId, final OnRequestListener<NewsDetail> listener)
     {
         Call<NewsDetail> detailCall = detailService.getDetail(newsId);
         detailCall.enqueue(new Callback<NewsDetail>()
@@ -131,7 +131,7 @@ class NewsRequester
         });
     }
 
-    void normalRequestPicture(String picUrl, final String cacheDir, final OnRequestListener<Integer> listener)
+    void downloadPicture(String picUrl, final String cacheDir, final OnRequestListener<Integer> listener)
     {
         Call<ResponseBody> pictureCall = pictureService.downloadPic(picUrl);
         pictureCall.enqueue(new Callback<ResponseBody>()
@@ -156,7 +156,7 @@ class NewsRequester
         });
     }
 
-    void downloadRequestDetail(final String newsId, final String cacheDir, final OnRequestListener<String> listener)
+    void downloadDetail(final String newsId, final String cacheDir, final OnRequestListener<Integer> listener)
     {
         Call<NewsDetail> detailCall = detailService.getDetail(newsId);
         detailCall.enqueue(new Callback<NewsDetail>()
@@ -178,7 +178,7 @@ class NewsRequester
                         e.printStackTrace();
                     }
 
-                    listener.onSuccess(Operation.download);
+                    listener.onSuccess(0);
                 }
                 else
                     listener.onFailure();
@@ -186,31 +186,6 @@ class NewsRequester
 
             @Override
             public void onFailure(@NonNull Call<NewsDetail> call, @NonNull Throwable t)
-            {
-                listener.onFailure();
-            }
-        });
-    }
-
-    void downloadRequestPicture(final String picUrl, final String cacheDir, final OnRequestListener<String> listener)
-    {
-        Call<ResponseBody> pictureCall = pictureService.downloadPic(picUrl);
-        pictureCall.enqueue(new Callback<ResponseBody>()
-        {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response)
-            {
-                if (response.isSuccessful())
-                {
-                    savePicToDisk(cacheDir, response.body());
-                    listener.onSuccess(Operation.download);
-                }
-                else
-                    listener.onFailure();
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t)
             {
                 listener.onFailure();
             }
