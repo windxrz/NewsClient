@@ -1,6 +1,8 @@
 package babydriver.newsclient.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +24,18 @@ public class MainActivity extends AppCompatActivity
     HomeFragment home_fragment;
     SearchFragment search_fragment;
     AccountFragment account_fragment;
+    private SharedPreferences sharedPreferences;
+
+    private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (key.equals("category_select"))
+            {
+                home_fragment.refreshTabs();
+                Log.e("fuckyou", "refreshed");
+            }
+        }
+    };
 
     private void initialize()
     {
@@ -34,6 +48,9 @@ public class MainActivity extends AppCompatActivity
         initialize();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        sharedPreferences.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
+        Log.e("fuckyou", "registered");
 
         home_fragment = new HomeFragment();
         search_fragment = new SearchFragment();
@@ -89,17 +106,23 @@ public class MainActivity extends AppCompatActivity
                         fragment = account_fragment;
                         break;
                 }
-                home_fragment.refreshTabs();
                 FragmentManager fragment_manager = getSupportFragmentManager();
                 FragmentTransaction transaction = fragment_manager.beginTransaction();
                 transaction.hide(home_fragment);
                 transaction.hide(search_fragment);
                 transaction.hide(account_fragment);
                 transaction.show(fragment).commit();
-                fragment_manager.executePendingTransactions();
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
+        Log.e("fuckyou", "unregistered");
     }
 
     public void onNewsClicked(NewsBrief item)
