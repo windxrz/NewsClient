@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import babydriver.newsclient.R;
+import babydriver.newsclient.model.NewsBriefList;
 import babydriver.newsclient.model.Operation;
 
 public class SearchNewsShowFragment extends NewsShowFragment
@@ -45,7 +46,7 @@ public class SearchNewsShowFragment extends NewsShowFragment
         LinearLayoutManager manager = (LinearLayoutManager)recycler_view.getLayoutManager();
         map.put("pageNo", manager.getItemCount() / 25 + 1);
         map.put("pageSize", 25);
-        new Operation().requestSearch(keyword, map, this);
+        new Operation(this).requestSearch(keyword, map);
         final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNews, Toast.LENGTH_SHORT);
         toast.show();
         Handler handler = new Handler();
@@ -69,6 +70,6 @@ public class SearchNewsShowFragment extends NewsShowFragment
         Map<String, Integer> map = new HashMap<>();
         map.put("pageNo", 1);
         map.put("pageSize", 25);
-        new Operation().requestSearch(keyword, map, this);
+        new Operation(this).requestSearch(keyword, map);
     }
 }

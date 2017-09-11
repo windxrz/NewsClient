@@ -30,7 +30,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     private List<NewsBrief> mValues;
     private OnNewsClickedListener mNewsClickedListener;
     private OnButtonClickedListener mButtonClickedListener;
-    private OnOperationListener<Integer> mRequestListener;
+    private OnOperationListener mOperationListener;
     private Context mContext;
     private NewsBrief news;
 
@@ -43,7 +43,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     MyNewsRecyclerViewAdapter(List<NewsBrief> items,
                               OnButtonClickedListener buttonClickedListener,
                               OnNewsClickedListener newsClickedListener,
-                              OnOperationListener<Integer> requestListener,
+                              OnOperationListener requestListener,
                               Context context)
     {
 
@@ -51,7 +51,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
         mButtonClickedListener = buttonClickedListener;
         mNewsClickedListener = newsClickedListener;
         mContext = context;
-        mRequestListener = requestListener;
+        mOperationListener = requestListener;
 
     }
 
@@ -95,8 +95,8 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             }
             else
             {
-                Operation operation = new Operation();
-                operation.normalRequestPicture(news.newsPictures.get(0), filename, position, mRequestListener);
+                Operation operation = new Operation(mOperationListener);
+                operation.requestPicture(news.newsPictures.get(0), filename, position);
             }
             holder.mNewsTitle.setText(holder.mItem.news_Title);
             holder.mNewsSource.setText(holder.mItem.news_Source);
