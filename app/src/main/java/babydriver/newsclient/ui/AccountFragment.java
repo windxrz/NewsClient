@@ -3,6 +3,7 @@ package babydriver.newsclient.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -52,7 +53,11 @@ public class AccountFragment extends Fragment implements MyOneLineView.OnRootCli
         switch ((int) view.getTag())
         {
             case 1:
-                startActivity(new Intent(getContext(), SettingsActivity.class));
+                Intent intent = new Intent(getContext(), SettingsActivity.class);
+                intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+                        SettingsActivity.GeneralPreferenceFragment.class.getName());
+                intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+                startActivity(intent);
                 break;
         }
     }

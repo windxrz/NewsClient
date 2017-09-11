@@ -5,4 +5,8 @@
     <color name="colorSearchView">#f4f4f4</color>
     <color name="colorPrimaryDark">#5f67ac</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorForeground">@android:color/white</color>
+    <color name="colorBackgound">#FAFAFA</color>
+    <color name="colorText">@android:color/primary_text_light</color>
+    <color name="colorTextSecond">@android:color/secondary_text_light</color>
 </resources>

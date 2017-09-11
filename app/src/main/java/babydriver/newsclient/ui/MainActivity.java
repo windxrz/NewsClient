@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import babydriver.newsclient.R;
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity
 
     private void initialize()
     {
-        Settings.setSettings();
+//        Settings.setSettings();
     }
 
     @Override
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity
         home_fragment = new HomeFragment();
         search_fragment = new SearchFragment();
         account_fragment = new AccountFragment();
-        FragmentTransaction traction = getSupportFragmentManager().beginTransaction();
+        final FragmentTransaction traction = getSupportFragmentManager().beginTransaction();
         traction.add(R.id.Fragment, home_fragment);
         traction.hide(home_fragment);
         traction.add(R.id.Fragment, search_fragment);
@@ -88,12 +89,14 @@ public class MainActivity extends AppCompatActivity
                         fragment = account_fragment;
                         break;
                 }
+                home_fragment.refreshTabs();
                 FragmentManager fragment_manager = getSupportFragmentManager();
                 FragmentTransaction transaction = fragment_manager.beginTransaction();
                 transaction.hide(home_fragment);
                 transaction.hide(search_fragment);
                 transaction.hide(account_fragment);
                 transaction.show(fragment).commit();
+                fragment_manager.executePendingTransactions();
                 return true;
             }
         });
