@@ -1,6 +1,7 @@
 package babydriver.newsclient.ui;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -167,7 +168,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
                 suffix = m.group();
             File picFile = new File(newsPath + "/" + i + suffix);
             if (!picFile.isFile())
-                new Operation(this).requestPicture(picUrl, picFile.getPath(), i);
+                new Operation(this).requestPicture(picUrl, picFile.getPath(), i, new BitmapFactory.Options());
             else
                 updateSinglePic(picFile.getPath(), i);
             i++;

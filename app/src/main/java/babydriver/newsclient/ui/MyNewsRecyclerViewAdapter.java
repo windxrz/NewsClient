@@ -1,16 +1,22 @@
 package babydriver.newsclient.ui;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.NinePatchDrawable;
 import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ResourceCursorTreeAdapter;
 import android.widget.TextView;
 
 import babydriver.newsclient.R;
@@ -22,12 +28,14 @@ import babydriver.newsclient.controller.Operation.OnOperationListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
 class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder>
 {
     private List<NewsBrief> mValues;
+    private HashSet<String> img_fail_list = new HashSet<>();
     private OnNewsClickedListener mNewsClickedListener;
     private OnButtonClickedListener mButtonClickedListener;
     private OnOperationListener mOperationListener;
@@ -91,12 +99,20 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             if (file.exists())
             {
                 Bitmap map = BitmapFactory.decodeFile(filename);
-                holder.mImage.setImageBitmap(map);
+                Resources r = mContext.getResources();
+                if (map != null) holder.mImage.setImageBitmap(Bitmap.createScaledBitmap(map, (int)r.getDimension(R.dimen.image_outline_width), (int)r.getDimension(R.dimen.image_outline_height), false));
+                if (map != null) map.recycle();
             }
             else
             {
+                Resources r = mContext.getResources();
+                NinePatchDrawable drawable = (NinePatchDrawable)mContext.getDrawable(R.drawable.placeholder);
+                holder.mImage.setImageDrawable(drawable);
                 Operation operation = new Operation(mOperationListener);
-                operation.requestPicture(news.newsPictures.get(0), filename, position);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.outHeight = (int)r.getDimension(R.dimen.image_outline_height);
+                options.outWidth = (int)r.getDimension(R.dimen.image_outline_width);
+                if (!img_fail_list.contains(holder.mItem.news_ID)) operation.requestPicture(news.newsPictures.get(0), filename, position, options);
             }
             holder.mNewsTitle.setText(holder.mItem.news_Title);
             holder.mNewsSource.setText(holder.mItem.news_Source);
@@ -122,16 +138,18 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             {
                 if (null != mNewsClickedListener)
                 {
+                    Log.e("Clicked", old_holder.mItem.news_Title);
                     mNewsClickedListener.onNewsClicked(old_holder.mItem);
                 }
             }
         });
-        old_holder.itemView.setOnLongClickListener(new View.OnLongClickListener()
+        old_holder.mView.setOnLongClickListener(new View.OnLongClickListener()
         {
             @Override
             public boolean onLongClick(View v)
             {
                 news = mValues.get(old_holder.getAdapterPosition());
+                Log.e("longClicked", news.news_Title);
                 return (news.equals(NewsShowFragment.nonNews));
             }
         });
@@ -154,7 +172,13 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     void clear()
     {
         mValues.clear();
+        img_fail_list.clear();
         notifyDataSetChanged();
+    }
+
+    void add_fail_img(int t)
+    {
+        img_fail_list.add(mValues.get(t).news_ID);
     }
 
     void addAll(List<NewsBrief> list)

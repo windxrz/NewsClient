@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import babydriver.newsclient.controller.MyApplication;
 import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBriefList;
@@ -35,6 +36,7 @@ public abstract  class NewsShowFragment extends Fragment
     SwipeRefreshLayout swipe_refresh_layout;
 
     private boolean loading = false;
+    private boolean refreshing = false;
 
     @Override
     public void onAttach(Context context)
@@ -64,6 +66,8 @@ public abstract  class NewsShowFragment extends Fragment
         recycler_view.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
         recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener()
         {
+            boolean last = false;
+
             @Override
             public void onScrolled(RecyclerView recycler_view, int dx, int dy)
             {
@@ -72,11 +76,12 @@ public abstract  class NewsShowFragment extends Fragment
                 LinearLayoutManager manager = (LinearLayoutManager)recycler_view.getLayoutManager();
                 int totalItemCount = manager.getItemCount();
                 int lastVisibleItem = manager.findLastVisibleItemPosition();
-                if (!loading && totalItemCount > 0 && lastVisibleItem == totalItemCount - 1)
+                if (!loading && totalItemCount > 0 && !last && lastVisibleItem == totalItemCount - 1)
                 {
                     loading = true;
                     listAdd();
                 }
+                last = (lastVisibleItem == totalItemCount - 1);
             }
         });
 
@@ -105,12 +110,12 @@ public abstract  class NewsShowFragment extends Fragment
     void clear()
     {
         loading = false;
+        refreshing = false;
         ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).clear();
     }
 
     private void addAll(List<NewsBrief> list)
     {
-        swipe_refresh_layout.setRefreshing(false);
         if (list == null || list.size() == 0)
         {
             LinearLayoutManager manager = (LinearLayoutManager)recycler_view.getLayoutManager();
@@ -138,7 +143,6 @@ public abstract  class NewsShowFragment extends Fragment
 
     private void fetchNewsListFail()
     {
-        swipe_refresh_layout.setRefreshing(false);
         final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNewsFail, Toast.LENGTH_SHORT);
         toast.show();
         Handler handler = new Handler();
@@ -172,13 +176,17 @@ public abstract  class NewsShowFragment extends Fragment
     {
         if (type.equals(Operation.LATEST) && data instanceof NewsBriefList)
         {
+            swipe_refresh_layout.setRefreshing(false);
             loading = false;
+            refreshing = false;
             NewsBriefList list = (NewsBriefList) data;
             addAll(list.list);
         }
         if (type.equals(Operation.SEARCH) && data instanceof NewsBriefList)
         {
+            swipe_refresh_layout.setRefreshing(false);
             loading = false;
+            refreshing = false;
             NewsBriefList list = (NewsBriefList) data;
             addAll(list.list);
         }
@@ -195,8 +203,14 @@ public abstract  class NewsShowFragment extends Fragment
     {
         if (type.equals(Operation.LATEST))
         {
-            fetchNewsListFail();
+            swipe_refresh_layout.setRefreshing(false);
             loading = false;
+            refreshing = false;
+            fetchNewsListFail();
+        }
+        if (type.equals(Operation.PICTURE) && data instanceof Integer)
+        {
+            ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).add_fail_img((int)data);
         }
         recycler_view.getAdapter().notifyDataSetChanged();
     }

@@ -132,7 +132,7 @@ class NewsRequester
         });
     }
 
-    void downloadPicture(String picUrl, final String cacheDir, final OnRequestListener<Integer> listener)
+    void downloadPicture(String picUrl, final String cacheDir, final BitmapFactory.Options option, final OnRequestListener<Integer> listener)
     {
         Call<ResponseBody> pictureCall = pictureService.downloadPic(picUrl);
         pictureCall.enqueue(new Callback<ResponseBody>()
@@ -142,7 +142,7 @@ class NewsRequester
             {
                 if (response.isSuccessful())
                 {
-                    savePicToDisk(cacheDir, response.body());
+                    savePicToDisk(cacheDir, response.body(), option);
                     listener.onSuccess(0);
                 }
                 else
@@ -179,7 +179,7 @@ class NewsRequester
                         e.printStackTrace();
                     }
 
-                    listener.onSuccess(0);
+                    listener.onSuccess(1);
                 }
                 else
                     listener.onFailure();
@@ -193,15 +193,13 @@ class NewsRequester
         });
     }
 
-    private void savePicToDisk(String cacheDir, ResponseBody body)
+    private void savePicToDisk(String cacheDir, ResponseBody body, BitmapFactory.Options option)
     {
         Bitmap bm;
         InputStream inputStream = null;
         File file = new File(cacheDir);
         try
         {
-            BitmapFactory.Options option = new BitmapFactory.Options();
-            option.inPreferredConfig = Bitmap.Config.RGB_565;
             inputStream = body.byteStream();
             bm = BitmapFactory.decodeStream(inputStream, null, option);
             FileOutputStream outputStream = new FileOutputStream(file);
