@@ -13,9 +13,6 @@ public class Operation
 {
     private static HashSet<String> downloading = new HashSet<>();
 
-    private int missions;
-    private String id;
-
     public static boolean isFavorite(String id)
     {
         return Settings.favorite_list.contains(id);
@@ -31,9 +28,14 @@ public class Operation
         return downloading.contains(id);
     }
 
-    public void finish()
+    private int missions;
+    private String id;
+    private boolean success;
+
+    public void finish(boolean state)
     {
         missions--;
+        if (!state) success = false;
     }
 
     public boolean isFinished()
@@ -41,11 +43,16 @@ public class Operation
         if (missions == 0)
         {
             downloading.remove(id);
-            Settings.downloaded_list.add(id);
+            if (success) Settings.downloaded_list.add(id);
             return true;
         }
         else
             return false;
+    }
+
+    public boolean isSuccess()
+    {
+        return success;
     }
 
     public void like(String id)
@@ -79,6 +86,7 @@ public class Operation
     public void download(NewsBrief news, File dir, OnRequestListener<String> mListener)
     {
         id = news.news_ID;
+        success = true;
         if (isDownloaded(news.news_ID))
             remove(news, dir);
         else

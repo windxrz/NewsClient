@@ -16,10 +16,12 @@ import java.util.Map;
 
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsRequester;
+import babydriver.newsclient.model.Operation;
 
 public class HomeNewsShowFragment extends NewsShowFragment
 {
     int category = 0;
+    boolean loading = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,8 +56,6 @@ public class HomeNewsShowFragment extends NewsShowFragment
 
         recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener()
             {
-                boolean loading = false;
-
                 @Override
                 public void onScrolled(RecyclerView recycler_view, int dx, int dy)
                 {
@@ -109,5 +109,12 @@ public class HomeNewsShowFragment extends NewsShowFragment
             if (t >= 1 && t <= 12) map.put("category", t);
             requester.requestLatest(map, mNewsBriefRequestListener);
         }
+    }
+
+    @Override
+    public void onFailure(String info, String id)
+    {
+        super.onFailure(info, id);
+        if (info.equals("NewsBriefList")) loading = false;
     }
 }
