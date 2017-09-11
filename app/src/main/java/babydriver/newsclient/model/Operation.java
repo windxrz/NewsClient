@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,7 +12,10 @@ import babydriver.newsclient.model.NewsRequester.OnRequestListener;
 
 public class Operation
 {
-    private static HashSet<String> downloading = new HashSet<>();
+    public static String normal = "normal";
+    static String download = "download";
+
+    final private static HashSet<String> downloading = new HashSet<>();
 
     public static boolean isFavorite(String id)
     {
@@ -28,32 +32,7 @@ public class Operation
         return downloading.contains(id);
     }
 
-    private int missions;
     private String id;
-    private boolean success;
-
-    public void finish(boolean state)
-    {
-        missions--;
-        if (!state) success = false;
-    }
-
-    public boolean isFinished()
-    {
-        if (missions == 0)
-        {
-            downloading.remove(id);
-            if (success) Settings.downloaded_list.add(id);
-            return true;
-        }
-        else
-            return false;
-    }
-
-    public boolean isSuccess()
-    {
-        return success;
-    }
 
     public void like(String id)
     {
@@ -83,10 +62,12 @@ public class Operation
         }
     }
 
-    public void download(NewsBrief news, File dir, OnRequestListener<String> mListener)
+    @SuppressWarnings("unchecked")
+    public void download(NewsBrief news, File dir, final OnOperationListener mListener)
     {
         id = news.news_ID;
-        success = true;
+        final boolean[] success = {true};
+        final int[] missions = new int[1];
         if (isDownloaded(news.news_ID))
             remove(news, dir);
         else
@@ -98,9 +79,32 @@ public class Operation
             if (isOk)
             {
                 downloading.add(id);
-                missions = 1 + news.newsPictures.size();
+                missions[0] = 1 + news.newsPictures.size();
                 NewsRequester requester = new NewsRequester();
-                requester.downloadRequestDetail(id, directory, mListener);
+                OnRequestListener<String> requestListener = new OnRequestListener<String>()
+                {
+                    @Override
+                    public void onSuccess(String detail)
+                    {
+                        missions[0]--;
+                        if (missions[0] == 0)
+                        {
+                            mListener.onSuccess(download, id);
+                            downloading.remove(id);
+                            if (success[0]) Settings.downloaded_list.add(id);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure()
+                    {
+                        missions[0]--;
+                        success[0] = false;
+                        if (missions[0] == 0)
+                            mListener.onFailure(download, "");
+                    }
+                };
+                requester.downloadRequestDetail(id, directory, requestListener);
                 for (int i = 0; i < news.newsPictures.size(); i++)
                 {
                     String picUrl = news.newsPictures.get(i);
@@ -109,9 +113,96 @@ public class Operation
                     Matcher m = p.matcher(picUrl);
                     if (m.find())
                         suffix = m.group();
-                    requester.downloadRequestPicture(id, picUrl, directory + i + suffix, mListener);
+                    requester.downloadRequestPicture(picUrl, directory + i + suffix, requestListener);
                 }
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void requestLatest(Map<String, Integer> map, final OnOperationListener listener)
+    {
+        NewsRequester requester = new NewsRequester();
+
+        requester.requestLatest(map, new OnRequestListener<NewsBriefList>()
+            {
+                @Override
+                public void onSuccess(NewsBriefList data)
+                {
+                    listener.onSuccess(normal, data);
+                }
+
+                @Override
+                public void onFailure()
+                {
+                    listener.onFailure(normal, null);
+                }
+            });
+    }
+
+    @SuppressWarnings("unchecked")
+    public void normalRequestDetail(final String newsId, final OnOperationListener listener)
+    {
+        NewsRequester requester = new NewsRequester();
+        requester.normalRequestDetail(newsId, new OnRequestListener<NewsDetail>()
+        {
+            @Override
+            public void onSuccess(NewsDetail detail)
+            {
+                listener.onSuccess(normal, detail);
+            }
+
+            @Override
+            public void onFailure()
+            {
+                listener.onFailure(normal, null);
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    public void normalRequestPicture(String picUrl, final String cacheDir, final int pos, final OnOperationListener listener)
+    {
+        NewsRequester requester = new NewsRequester();
+        requester.normalRequestPicture(picUrl, cacheDir, new OnRequestListener<Integer>()
+        {
+            @Override
+            public void onSuccess(Integer detail)
+            {
+                listener.onSuccess(normal, pos);
+            }
+
+            @Override
+            public void onFailure()
+            {
+                listener.onFailure(normal, null);
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    public void requestSearch(String keyword, Map<String, Integer> map, final OnOperationListener listener)
+    {
+        NewsRequester requester = new NewsRequester();
+        requester.requestSearch(keyword, map, new OnRequestListener<NewsBriefList>()
+        {
+            @Override
+            public void onSuccess(NewsBriefList detail)
+            {
+                listener.onSuccess(normal, detail);
+            }
+
+            @Override
+            public void onFailure()
+            {
+                listener.onFailure(normal, null);
+            }
+        });
+    }
+
+    public interface OnOperationListener<T>
+    {
+        void onSuccess(String type, T detail);
+        void onFailure(String type, T detail);
     }
 }

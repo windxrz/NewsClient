@@ -2,6 +2,7 @@ package babydriver.newsclient.model;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Path;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -20,21 +21,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Provide news modules. Bridge between UI and HTTP API.
- */
 
-public class NewsRequester
+class NewsRequester
 {
-    public static String normal = "normal";
-    public static String download = "download";
-
     private LatestService latestService;
     private SearchService searchService;
     private DetailService detailService;
     private PictureService pictureService;
 
-    public NewsRequester()
+    NewsRequester()
     {
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(NewsBriefListConverterFactory.create())
@@ -48,7 +43,7 @@ public class NewsRequester
         pictureService = retrofit.create(PictureService.class);
     }
 
-    public void requestLatest(Map<String, Integer> map, final OnRequestListener<NewsBriefList> listener)
+    void requestLatest(Map<String, Integer> map, final OnRequestListener<NewsBriefList> listener)
     {
         Call<NewsBriefList> latestCall = latestService.getLatest(map);
         latestCall.enqueue(new Callback<NewsBriefList>()
@@ -61,26 +56,26 @@ public class NewsRequester
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           listener.onSuccess(normal, newsBriefList);
+                                           listener.onSuccess(newsBriefList);
                                        }
                                        else
-                                           listener.onFailure("NewsBriefList", "");
+                                           listener.onFailure();
                                    }
                                    else
-                                       listener.onFailure("NewsBriefList", "");
+                                       listener.onFailure();
                                }
 
                                @Override
                                public void onFailure(@NonNull Call<NewsBriefList> call, @NonNull Throwable t)
                                {
-                                   listener.onFailure("NewsBriefList", "");
+                                   listener.onFailure();
                                }
                            }
 
         );
     }
 
-    public void requestSearch(String keyword, Map<String, Integer> map, final OnRequestListener<NewsBriefList> listener)
+    void requestSearch(String keyword, Map<String, Integer> map, final OnRequestListener<NewsBriefList> listener)
     {
         Call<NewsBriefList> searchCall = searchService.getSearch(keyword, map);
         searchCall.enqueue(new Callback<NewsBriefList>()
@@ -93,25 +88,25 @@ public class NewsRequester
                                        NewsBriefList newsBriefList = response.body();
                                        if (newsBriefList != null)
                                        {
-                                           listener.onSuccess(normal, newsBriefList);
+                                           listener.onSuccess(newsBriefList);
                                        }
                                        else
-                                           listener.onFailure("NewsBriefList", "");
+                                           listener.onFailure();
                                    }
                                    else
-                                       listener.onFailure("NewsBriefList", "");
+                                       listener.onFailure();
                                }
 
                                @Override
                                public void onFailure(@NonNull Call<NewsBriefList> call, @NonNull Throwable t)
                                {
-                                   listener.onFailure("NewsBriefList", "");
+                                   listener.onFailure();
                                }
                            }
         );
     }
 
-    public void normalRequestDetail(final String newsId, final OnRequestListener<NewsDetail> listener)
+    void normalRequestDetail(final String newsId, final OnRequestListener<NewsDetail> listener)
     {
         Call<NewsDetail> detailCall = detailService.getDetail(newsId);
         detailCall.enqueue(new Callback<NewsDetail>()
@@ -122,21 +117,21 @@ public class NewsRequester
                 if (response.isSuccessful())
                 {
                     NewsDetail newsDetail = response.body();
-                    listener.onSuccess(normal, newsDetail);
+                    listener.onSuccess(newsDetail);
                 }
                 else
-                    listener.onFailure("NewsDetail", "");
+                    listener.onFailure();
             }
 
             @Override
             public void onFailure(@NonNull Call<NewsDetail> call, @NonNull Throwable t)
             {
-                listener.onFailure("NewsDetail", "");
+                listener.onFailure();
             }
         });
     }
 
-    public void normalRequestPicture(String picUrl, final String cacheDir, final int pos, final OnRequestListener<Integer> listener)
+    void normalRequestPicture(String picUrl, final String cacheDir, final OnRequestListener<Integer> listener)
     {
         Call<ResponseBody> pictureCall = pictureService.downloadPic(picUrl);
         pictureCall.enqueue(new Callback<ResponseBody>()
@@ -147,16 +142,16 @@ public class NewsRequester
                 if (response.isSuccessful())
                 {
                     savePicToDisk(cacheDir, response.body());
-                    listener.onSuccess(normal, pos);
+                    listener.onSuccess(0);
                 }
                 else
-                    listener.onFailure("Picture", "");
+                    listener.onFailure();
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t)
             {
-                listener.onFailure("Picture", "");
+                listener.onFailure();
             }
         });
     }
@@ -183,21 +178,21 @@ public class NewsRequester
                         e.printStackTrace();
                     }
 
-                    listener.onSuccess(download, newsId);
+                    listener.onSuccess(Operation.download);
                 }
                 else
-                    listener.onFailure(download, newsId);
+                    listener.onFailure();
             }
 
             @Override
             public void onFailure(@NonNull Call<NewsDetail> call, @NonNull Throwable t)
             {
-                listener.onFailure(download, newsId);
+                listener.onFailure();
             }
         });
     }
 
-    void downloadRequestPicture(final String newsId, final String picUrl, final String cacheDir, final OnRequestListener<String> listener)
+    void downloadRequestPicture(final String picUrl, final String cacheDir, final OnRequestListener<String> listener)
     {
         Call<ResponseBody> pictureCall = pictureService.downloadPic(picUrl);
         pictureCall.enqueue(new Callback<ResponseBody>()
@@ -208,16 +203,16 @@ public class NewsRequester
                 if (response.isSuccessful())
                 {
                     savePicToDisk(cacheDir, response.body());
-                    listener.onSuccess(download, newsId);
+                    listener.onSuccess(Operation.download);
                 }
                 else
-                    listener.onFailure(download, newsId);
+                    listener.onFailure();
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t)
             {
-                listener.onFailure(download, newsId);
+                listener.onFailure();
             }
         });
     }
@@ -260,10 +255,10 @@ public class NewsRequester
         }
     }
 
-    public interface OnRequestListener<T>
+    interface OnRequestListener<T>
     {
-        void onSuccess(String type, T data);
-        void onFailure(String info, String id);
+        void onSuccess(T detail);
+        void onFailure();
     }
 
 }

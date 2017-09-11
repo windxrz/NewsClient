@@ -15,11 +15,10 @@ import android.widget.TextView;
 
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBrief;
-import babydriver.newsclient.model.NewsRequester;
 import babydriver.newsclient.model.Operation;
 import babydriver.newsclient.model.Settings;
 import babydriver.newsclient.ui.NewsShowFragment.OnNewsClickedListener;
-import babydriver.newsclient.model.NewsRequester.OnRequestListener;
+import babydriver.newsclient.model.Operation.OnOperationListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -31,7 +30,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     private List<NewsBrief> mValues;
     private OnNewsClickedListener mNewsClickedListener;
     private OnButtonClickedListener mButtonClickedListener;
-    private OnRequestListener<Integer> mRequestListener;
+    private OnOperationListener<Integer> mRequestListener;
     private Context mContext;
     private NewsBrief news;
 
@@ -44,7 +43,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     MyNewsRecyclerViewAdapter(List<NewsBrief> items,
                               OnButtonClickedListener buttonClickedListener,
                               OnNewsClickedListener newsClickedListener,
-                              OnRequestListener<Integer> requestListener,
+                              OnOperationListener<Integer> requestListener,
                               Context context)
     {
 
@@ -96,8 +95,8 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             }
             else
             {
-                NewsRequester news_requester = new NewsRequester();
-                news_requester.normalRequestPicture(news.newsPictures.get(0), filename, position, mRequestListener);
+                Operation operation = new Operation();
+                operation.normalRequestPicture(news.newsPictures.get(0), filename, position, mRequestListener);
             }
             holder.mNewsTitle.setText(holder.mItem.news_Title);
             holder.mNewsSource.setText(holder.mItem.news_Source);
