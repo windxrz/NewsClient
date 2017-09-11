@@ -15,7 +15,6 @@ import android.view.MenuItem;
 
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBrief;
-import babydriver.newsclient.model.Settings;
 
 public class MainActivity extends AppCompatActivity
         implements NewsShowFragment.OnNewsClickedListener

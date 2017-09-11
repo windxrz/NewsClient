@@ -1,11 +1,9 @@
 package babydriver.newsclient.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.Fragment;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import babydriver.newsclient.R;
-import babydriver.newsclient.model.Settings;
 
 
 public class AccountFragment extends Fragment implements MyOneLineView.OnRootClickListener

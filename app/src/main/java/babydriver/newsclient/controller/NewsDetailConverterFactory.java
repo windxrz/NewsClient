@@ -1,4 +1,4 @@
-package babydriver.newsclient.model;
+package babydriver.newsclient.controller;
 
 import android.support.annotation.NonNull;
 
@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import babydriver.newsclient.model.NewsDetail;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;

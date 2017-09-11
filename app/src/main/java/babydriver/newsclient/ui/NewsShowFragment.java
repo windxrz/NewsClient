@@ -2,7 +2,6 @@ package babydriver.newsclient.ui;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Path;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -23,7 +22,7 @@ import java.util.List;
 import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBriefList;
-import babydriver.newsclient.model.Operation;
+import babydriver.newsclient.controller.Operation;
 
 public abstract  class NewsShowFragment extends Fragment
         implements Operation.OnOperationListener, MyNewsRecyclerViewAdapter.OnButtonClickedListener

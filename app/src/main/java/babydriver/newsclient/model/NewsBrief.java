@@ -72,7 +72,7 @@ public class NewsBrief implements Serializable
         }
     }
 
-    void process()
+    public void process()
     {
         processPictures();
         processTime();

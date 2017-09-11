@@ -1,9 +1,6 @@
 package babydriver.newsclient.ui;
 
-import android.app.Application;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -12,12 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import babydriver.newsclient.R;
-import babydriver.newsclient.model.Settings;
+import babydriver.newsclient.controller.MyApplication;
 
 public class HomeFragment extends Fragment
 {
@@ -39,7 +32,7 @@ public class HomeFragment extends Fragment
         tab_lay_out.removeAllTabs();
         if (listener != null)
             tab_lay_out.removeOnTabSelectedListener(listener);
-        for (int cateNum : Settings.showCateNumList)
+        for (int cateNum : MyApplication.showCateNumList)
         {
 //            Log.e("add tab", cateNum + " added");
             TabLayout.Tab tab = tab_lay_out.newTab().setText(MyApplication.cateNames.get(cateNum));
@@ -63,7 +56,7 @@ public class HomeFragment extends Fragment
             @Override
             public void onTabSelected(TabLayout.Tab tab)
             {
-                home_news_show_fragment.setCategory(Settings.showCateNumList.get(tab.getPosition()));
+                home_news_show_fragment.setCategory(MyApplication.showCateNumList.get(tab.getPosition()));
             }
 
             @Override
