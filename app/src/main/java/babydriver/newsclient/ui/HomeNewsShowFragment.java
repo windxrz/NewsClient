@@ -27,6 +27,11 @@ public class HomeNewsShowFragment extends NewsShowFragment
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    int getCategory()
+    {
+        return category;
+    }
+
     void setCategory(int t)
     {
         if (category != t)

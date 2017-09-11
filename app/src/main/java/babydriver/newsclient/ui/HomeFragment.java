@@ -34,13 +34,29 @@ public class HomeFragment extends Fragment
 
     public void refreshTabs()
     {
+        int nowCate = home_news_show_fragment.getCategory();
+        boolean selected = false;
         tab_lay_out.removeAllTabs();
         if (listener != null)
             tab_lay_out.removeOnTabSelectedListener(listener);
         for (int cateNum : Settings.showCateNumList)
         {
-            Log.e("add tab", cateNum + " added");
-            tab_lay_out.addTab(tab_lay_out.newTab().setText(MyApplication.cateNames.get(cateNum)));
+//            Log.e("add tab", cateNum + " added");
+            TabLayout.Tab tab = tab_lay_out.newTab().setText(MyApplication.cateNames.get(cateNum));
+            tab_lay_out.addTab(tab);
+            if (cateNum == nowCate)
+            {
+                tab.select();
+                selected = true;
+            }
+        }
+        if (!selected)
+        {
+            TabLayout.Tab firstTab = tab_lay_out.getTabAt(0);
+            if (firstTab != null)
+            {
+                firstTab.select();
+            }
         }
         listener = new TabLayout.OnTabSelectedListener()
         {
