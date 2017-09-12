@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +26,7 @@ import babydriver.newsclient.R;
 import babydriver.newsclient.model.NewsBriefList;
 import babydriver.newsclient.controller.Operation;
 
-public abstract  class NewsShowFragment extends Fragment
+public abstract class NewsShowFragment extends Fragment
         implements Operation.OnOperationListener, MyNewsRecyclerViewAdapter.OnButtonClickedListener
 {
     static NewsBrief nonNews;
@@ -37,6 +38,8 @@ public abstract  class NewsShowFragment extends Fragment
 
     private boolean loading = false;
     private boolean refreshing = false;
+
+    private ArrayList<NewsBrief> list = new ArrayList<>();
 
     @Override
     public void onAttach(Context context)
@@ -54,15 +57,24 @@ public abstract  class NewsShowFragment extends Fragment
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
 
+        int pos = -1;
+        if (savedInstanceState != null)
+        {
+            list = (ArrayList<NewsBrief>) savedInstanceState.getSerializable("list");
+            if (list == null) list = new ArrayList<>();
+            pos = savedInstanceState.getInt("position");
+            Log.e("pos", pos + "");
+        }
         recycler_view = view.findViewById(R.id.recycler_view);
         Context context = recycler_view.getContext();
         recycler_view.setLayoutManager(new LinearLayoutManager(context));
-        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(new ArrayList<NewsBrief>(), this, mNewsClickedListener, this, this.getActivity()));
+        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(list, this, mNewsClickedListener, this, this.getActivity()));
         recycler_view.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
         recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener()
         {
@@ -85,6 +97,18 @@ public abstract  class NewsShowFragment extends Fragment
             }
         });
 
+        if (pos != -1)
+        {
+            final int finalPos = pos;
+            recycler_view.post(new Runnable() {
+                @Override
+                public void run() {
+                    recycler_view.scrollToPosition(finalPos);
+                    Log.e("run scroll", finalPos + "");
+                }
+            });
+            Log.e("scroll", "scroll");
+        }
         swipe_refresh_layout = view.findViewById(R.id.refresh_layout);
         swipe_refresh_layout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
         swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
@@ -96,8 +120,22 @@ public abstract  class NewsShowFragment extends Fragment
             }
         });
 
-        listInitialize();
+        if (savedInstanceState == null)
+            listInitialize();
+        else
+            Log.e("amount", ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).getItemCount() + "");
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("list", (ArrayList<NewsBrief>)((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).getList());
+        int pos = ((LinearLayoutManager)recycler_view.getLayoutManager()).findFirstVisibleItemPosition();
+        Log.e("listsize", recycler_view.getAdapter().getItemCount() + "");
+        Log.e("save pos", pos + "");
+        outState.putInt("position", pos);
     }
 
     @Override

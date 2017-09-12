@@ -22,6 +22,7 @@ import babydriver.newsclient.R;
 public class MyApplication extends Application
 {
     public static boolean isPreviewShowPicture;
+    private static boolean first = true;
 
     final String FAVORITE_LIST = "favorite_list";
     final String DOWNLOADED_LIST = "download_list";
@@ -30,6 +31,16 @@ public class MyApplication extends Application
     public static List<Integer> showCateNumList = new ArrayList<>();
 
     public static final List<String> cateNames = new ArrayList<>();
+
+    public static boolean isFirst()
+    {
+        if (first)
+        {
+            first = false;
+            return true;
+        }
+        return false;
+    }
 
     private void setDefaultCateNames()
     {

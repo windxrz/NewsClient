@@ -36,8 +36,8 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_content);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

@@ -2,7 +2,9 @@ package babydriver.newsclient.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import babydriver.newsclient.R;
+import babydriver.newsclient.controller.MyApplication;
 import babydriver.newsclient.controller.Operation;
 
 public class HomeNewsShowFragment extends NewsShowFragment
@@ -19,10 +22,29 @@ public class HomeNewsShowFragment extends NewsShowFragment
     int category = 0;
 
     @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+        {
+            category = savedInstanceState.getInt("category");
+            Log.e("category restored", String.valueOf(category));
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putInt("category", category);
+        Log.e("category saved", String.valueOf(category));
     }
 
     int getCategory()
