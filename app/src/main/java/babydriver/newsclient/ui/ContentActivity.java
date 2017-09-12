@@ -291,7 +291,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         mTts.setParameter(SpeechConstant.SPEED, "50");
         mTts.setParameter(SpeechConstant.VOLUME, "80");
         mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);
-        mTts.startSpeaking(newsDetail.news_Title + "... " + newsDetail.pureContent, mSynListener);
+        mTts.startSpeaking(newsDetail.news_Title + "! " + newsDetail.pureContent, mSynListener);
         startedSpeaking = true;
     }
 
@@ -417,10 +417,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
                 suffix = m.group();
             updateSinglePic(newsPath + "/" + i + suffix, i);
         }
-        if (type.equals(Operation.DOWNLOAD) && data instanceof Integer)
-        {
 
-        }
     }
 
     @Override
