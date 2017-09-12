@@ -6,15 +6,13 @@
     <View
         android:id="@+id/divider_top"
         android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_height="1dp"/>
 
     <!--item内容部分的容器-->
     <LinearLayout
         android:id="@+id/ll_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorForeground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="10dp"
@@ -35,7 +33,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:textColor="@color/colorText"
             android:layout_weight="1"
             android:textSize="20sp" />
 
@@ -55,7 +52,6 @@
             android:id="@+id/tv_right_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorTextSecond"
             android:textSize="14sp" />
 
         <!--item右边的Icon 默认是向右的箭头-->
@@ -73,7 +69,6 @@
     <View
         android:id="@+id/divider_bottom"
         android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_height="1dp"/>
 
 </LinearLayout>

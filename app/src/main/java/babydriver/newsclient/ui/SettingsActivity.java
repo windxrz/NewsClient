@@ -238,7 +238,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity
                 }
                 Collections.sort(showCateNumList);
                 MyApplication.showCateNumList = showCateNumList;
-                Log.e("settings", "categories changed");
             }
             return true;
         }

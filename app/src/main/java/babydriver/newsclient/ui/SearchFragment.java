@@ -3,10 +3,12 @@ package babydriver.newsclient.ui;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.SearchView;
+import android.view.Window;
 
 import babydriver.newsclient.R;
 
@@ -18,17 +20,26 @@ public class SearchFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        search_news_show_fragment = new SearchNewsShowFragment();
+        if (savedInstanceState == null)
+            search_news_show_fragment = new SearchNewsShowFragment();
+        else
+            search_news_show_fragment = (SearchNewsShowFragment)
+                    getChildFragmentManager().findFragmentByTag("search_news_fragment");
+        Log.e("SearchFragment", "onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        Log.e("SearchFragment", "onCreateView");
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        FragmentTransaction traction = getChildFragmentManager().beginTransaction();
-        traction.add(R.id.SearchNewsShowFragment, search_news_show_fragment);
-        traction.commit();
+        if (savedInstanceState == null)
+        {
+            FragmentTransaction traction = getChildFragmentManager().beginTransaction();
+            traction.add(R.id.SearchNewsShowFragment, search_news_show_fragment, "search_news_fragment");
+            traction.commit();
+        }
 
         search_view = view.findViewById(R.id.searchView);
         search_view.setSubmitButtonEnabled(true);

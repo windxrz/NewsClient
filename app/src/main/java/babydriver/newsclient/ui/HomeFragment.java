@@ -1,6 +1,7 @@
 package babydriver.newsclient.ui;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -22,7 +23,17 @@ public class HomeFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        home_news_show_fragment = new HomeNewsShowFragment();
+        if (savedInstanceState == null)
+        {
+            home_news_show_fragment = new HomeNewsShowFragment();
+        }
+        else
+        {
+            home_news_show_fragment = (HomeNewsShowFragment)
+                    getChildFragmentManager().findFragmentByTag("home_news_show_fragment");
+        }
+
+        Log.e("HomeFragment", "onCreate");
     }
 
     public void refreshTabs()
@@ -34,7 +45,6 @@ public class HomeFragment extends Fragment
             tab_lay_out.removeOnTabSelectedListener(listener);
         for (int cateNum : MyApplication.showCateNumList)
         {
-//            Log.e("add tab", cateNum + " added");
             TabLayout.Tab tab = tab_lay_out.newTab().setText(MyApplication.cateNames.get(cateNum));
             tab_lay_out.addTab(tab);
             if (cateNum == nowCate)
@@ -49,6 +59,7 @@ public class HomeFragment extends Fragment
             if (firstTab != null)
             {
                 firstTab.select();
+                home_news_show_fragment.setCategory(0);
             }
         }
         listener = new TabLayout.OnTabSelectedListener()
@@ -56,7 +67,8 @@ public class HomeFragment extends Fragment
             @Override
             public void onTabSelected(TabLayout.Tab tab)
             {
-                home_news_show_fragment.setCategory(MyApplication.showCateNumList.get(tab.getPosition()));
+                int category = MyApplication.showCateNumList.get(tab.getPosition());
+                home_news_show_fragment.setCategory(category);
             }
 
             @Override
@@ -74,20 +86,22 @@ public class HomeFragment extends Fragment
         tab_lay_out.addOnTabSelectedListener(listener);
     }
 
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        super.onCreateView(inflater, container, savedInstanceState);
         Log.e("HomeFragment", "onCreateView");
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        FragmentTransaction traction = getChildFragmentManager().beginTransaction();
-        traction.add(R.id.HomeNewsShowFragment, home_news_show_fragment);
-        traction.commit();
-
         tab_lay_out = view.findViewById(R.id.tab_layout);
         assert tab_lay_out != null;
-
+        if (savedInstanceState == null)
+        {
+            FragmentTransaction traction = getChildFragmentManager().beginTransaction();
+            traction.add(R.id.HomeNewsShowFragment, home_news_show_fragment, "home_news_show_fragment");
+            traction.commit();
+        }
         refreshTabs();
-
         return view;
     }
 }

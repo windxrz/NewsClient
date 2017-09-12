@@ -28,6 +28,7 @@ import babydriver.newsclient.controller.Operation.OnOperationListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -167,6 +168,11 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     public int getItemCount()
     {
         return mValues.size();
+    }
+
+    List<NewsBrief> getList()
+    {
+        return mValues;
     }
 
     void clear()
