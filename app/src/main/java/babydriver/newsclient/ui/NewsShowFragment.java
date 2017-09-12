@@ -123,7 +123,7 @@ public abstract class NewsShowFragment extends Fragment
         if (savedInstanceState == null)
             listInitialize();
         else
-            Log.e("amount", ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).getItemCount() + "");
+            Log.e("amount", recycler_view.getAdapter().getItemCount() + "");
         return view;
     }
 
@@ -194,11 +194,6 @@ public abstract class NewsShowFragment extends Fragment
                 }, 1000);
     }
 
-    private void setPicture(int pos)
-    {
-        ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).setPicture(pos);
-    }
-
     void setTop()
     {
         recycler_view.smoothScrollToPosition(0);
@@ -228,12 +223,10 @@ public abstract class NewsShowFragment extends Fragment
             NewsBriefList list = (NewsBriefList) data;
             addAll(list.list);
         }
-        if (type.equals(Operation.PICTURE) && data instanceof Integer)
+        if (type.equals(Operation.DOWNLOAD) && data instanceof Integer)
         {
-            int pos = (Integer) data;
-            setPicture(pos);
+            recycler_view.getAdapter().notifyItemChanged((int)data);
         }
-        recycler_view.getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -245,10 +238,6 @@ public abstract class NewsShowFragment extends Fragment
             loading = false;
             refreshing = false;
             fetchNewsListFail();
-        }
-        if (type.equals(Operation.PICTURE) && data instanceof Integer)
-        {
-            ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).add_fail_img((int)data);
         }
         recycler_view.getAdapter().notifyDataSetChanged();
     }
@@ -275,14 +264,15 @@ public abstract class NewsShowFragment extends Fragment
 
     private void newsOperate(String type)
     {
-        NewsBrief news = ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).getNews();
+        int pos = ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).getNews();
+        NewsBrief news = ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).getList().get(pos);
         Operation operation = new Operation(this);
         if (type.equals(getString(R.string.like)) || type.equals(getString(R.string.unlike))) operation.like(news.news_ID);
         if (type.equals(getString(R.string.download)) || type.equals(getString(R.string.delete)))
         {
-            operation.download(news, getContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS));
+            operation.download(news, getContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), pos);
         }
-        recycler_view.getAdapter().notifyDataSetChanged();
+        recycler_view.getAdapter().notifyItemChanged(pos);
     }
 
     interface OnNewsClickedListener

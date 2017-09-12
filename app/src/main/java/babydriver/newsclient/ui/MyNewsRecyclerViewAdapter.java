@@ -19,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.ResourceCursorTreeAdapter;
 import android.widget.TextView;
 
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.Picasso;
+
 import babydriver.newsclient.R;
 import babydriver.newsclient.controller.MyApplication;
 import babydriver.newsclient.model.NewsBrief;
@@ -36,12 +39,10 @@ import java.util.Locale;
 class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewAdapter.ViewHolder>
 {
     private List<NewsBrief> mValues;
-    private HashSet<String> img_fail_list = new HashSet<>();
     private OnNewsClickedListener mNewsClickedListener;
     private OnButtonClickedListener mButtonClickedListener;
-    private OnOperationListener mOperationListener;
     private Context mContext;
-    private NewsBrief news;
+    private int last_news;
 
     private enum NEWS_TYPE
     {
@@ -60,7 +61,6 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
         mButtonClickedListener = buttonClickedListener;
         mNewsClickedListener = newsClickedListener;
         mContext = context;
-        mOperationListener = requestListener;
 
     }
 
@@ -80,58 +80,59 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     public void onBindViewHolder(final ViewHolder old_holder, int position)
     {
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA);
+        old_holder.mItem = mValues.get(position);
+        old_holder.mNewsTitle.setText(old_holder.mItem.news_Title);
+        old_holder.mNewsSource.setText(old_holder.mItem.news_Source);
+        old_holder.pos = old_holder.getAdapterPosition();
+        if (old_holder.mItem.newsTime != null) old_holder.mNewsTime.setText(format.format(old_holder.mItem.newsTime));
+        else
+            old_holder.mNewsTime.setText("");
+
         if (old_holder instanceof NewsWithPictureViewHolder)
         {
             final NewsWithPictureViewHolder holder = (NewsWithPictureViewHolder)old_holder;
-            holder.mItem = mValues.get(position);
-
-            holder.mImage.setImageBitmap(null);
-            NewsBrief news = mValues.get(position);
-            File dir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            String filename = "";
-            try
-            {
-                assert dir != null;
-                filename = dir.getPath();
-            }
-            catch (NullPointerException ignored) {}
-            filename = filename + "/" + news.news_ID;
-            File file = new File(filename);
-            if (file.exists())
-            {
-                Bitmap map = BitmapFactory.decodeFile(filename);
-                Resources r = mContext.getResources();
-                if (map != null) holder.mImage.setImageBitmap(Bitmap.createScaledBitmap(map, (int)r.getDimension(R.dimen.image_outline_width), (int)r.getDimension(R.dimen.image_outline_height), false));
-                if (map != null) map.recycle();
-            }
-            else
-            {
-                Resources r = mContext.getResources();
-                NinePatchDrawable drawable = (NinePatchDrawable)mContext.getDrawable(R.drawable.placeholder);
-                holder.mImage.setImageDrawable(drawable);
-                Operation operation = new Operation(mOperationListener);
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.outHeight = (int)r.getDimension(R.dimen.image_outline_height);
-                options.outWidth = (int)r.getDimension(R.dimen.image_outline_width);
-                if (!img_fail_list.contains(holder.mItem.news_ID)) operation.requestPicture(news.newsPictures.get(0), filename, position, options);
-            }
-            holder.mNewsTitle.setText(holder.mItem.news_Title);
-            holder.mNewsSource.setText(holder.mItem.news_Source);
-            if (holder.mItem.newsTime != null) holder.mNewsTime.setText(format.format(holder.mItem.newsTime));
-            else
-                holder.mNewsTime.setText("");
-
+            Resources r = mContext.getResources();
+            Picasso.with(mContext).setIndicatorsEnabled(true);
+            Picasso.with(mContext)
+                    .load(holder.mItem.newsPictures.get(0))
+                    .placeholder(R.drawable.placeholder)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                    .resize((int)r.getDimension(R.dimen.image_outline_width), (int)r.getDimension(R.dimen.image_outline_height))
+                    .centerCrop()
+                    .into(holder.mImage);
+//
+//            holder.mImage.setImageBitmap(null);
+//            NewsBrief news = mValues.get(position);
+//            File dir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//            String filename = "";
+//            try
+//            {
+//                assert dir != null;
+//                filename = dir.getPath();
+//            }
+//            catch (NullPointerException ignored) {}
+//            filename = filename + "/" + news.news_ID;
+//            File file = new File(filename);
+//            if (file.exists())
+//            {
+//                Bitmap map = BitmapFactory.decodeFile(filename);
+//                Resources r = mContext.getResources();
+//                if (map != null) holder.mImage.setImageBitmap(Bitmap.createScaledBitmap(map, (int)r.getDimension(R.dimen.image_outline_width), (int)r.getDimension(R.dimen.image_outline_height), false));
+//                if (map != null) map.recycle();
+//            }
+//            else
+//            {
+//                Resources r = mContext.getResources();
+//                NinePatchDrawable drawable = (NinePatchDrawable)mContext.getDrawable(R.drawable.placeholder);
+//                holder.mImage.setImageDrawable(drawable);
+//                Operation operation = new Operation(mOperationListener);
+//                BitmapFactory.Options options = new BitmapFactory.Options();
+//                options.outHeight = (int)r.getDimension(R.dimen.image_outline_height);
+//                options.outWidth = (int)r.getDimension(R.dimen.image_outline_width);
+//                if (!img_fail_list.contains(holder.mItem.news_ID)) operation.requestPicture(news.newsPictures.get(0), filename, position, options, mContext);
+//            }
         }
-        if (old_holder instanceof NewsWithoutPictureViewHolder)
-        {
-            final NewsWithoutPictureViewHolder holder = (NewsWithoutPictureViewHolder)old_holder;
-            holder.mItem = mValues.get(position);
-            holder.mNewsTitle.setText(holder.mItem.news_Title);
-            holder.mNewsSource.setText(holder.mItem.news_Source);
-            if (holder.mItem.newsTime != null) holder.mNewsTime.setText(format.format(holder.mItem.newsTime));
-            else
-                holder.mNewsTime.setText("");
-        }
+
         old_holder.mView.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -149,9 +150,8 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             @Override
             public boolean onLongClick(View v)
             {
-                news = mValues.get(old_holder.getAdapterPosition());
-                Log.e("longClicked", news.news_Title);
-                return (news.equals(NewsShowFragment.nonNews));
+                last_news = old_holder.getAdapterPosition();
+                return (mValues.get(last_news).equals(NewsShowFragment.nonNews));
             }
         });
         old_holder.setImage();
@@ -178,13 +178,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     void clear()
     {
         mValues.clear();
-        img_fail_list.clear();
         notifyDataSetChanged();
-    }
-
-    void add_fail_img(int t)
-    {
-        img_fail_list.add(mValues.get(t).news_ID);
     }
 
     void addAll(List<NewsBrief> list)
@@ -203,6 +197,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
         TextView mNewsTime;
         ImageButton mLike;
         ImageButton mDownload;
+        int pos;
 
         ViewHolder(View view)
         {
@@ -247,9 +242,8 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
                 @Override
                 public void onClick(View view)
                 {
-                    news = mItem;
+                    last_news = pos;
                     mButtonClickedListener.onButtonClicked(mContext.getString(R.string.like));
-                    notifyDataSetChanged();
                 }
             });
             mDownload.setOnClickListener(new View.OnClickListener()
@@ -257,9 +251,9 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
                 @Override
                 public void onClick(View view)
                 {
-                    news = mItem;
+                    last_news = pos;
+                    Log.e("download", mValues.get(last_news).news_Title);
                     mButtonClickedListener.onButtonClicked(mContext.getString(R.string.download));
-                    notifyDataSetChanged();
                 }
             });
         }
@@ -282,11 +276,6 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             else
                 contextMenu.getItem(1).setEnabled(true);
         }
-    }
-
-    void setPicture(int pos)
-    {
-        notifyItemChanged(pos);
     }
 
     private class NewsWithPictureViewHolder extends ViewHolder
@@ -333,9 +322,9 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
         }
     }
 
-    NewsBrief getNews()
+    int getNews()
     {
-        return news;
+        return last_news;
     }
 
     interface OnButtonClickedListener

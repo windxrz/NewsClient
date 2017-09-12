@@ -1,7 +1,10 @@
 package babydriver.newsclient.controller;
 
+import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.HashSet;
@@ -20,7 +23,7 @@ public class Operation
     public static String DETAIL = "detail";
     public static String PICTURE = "picture";
     public static String SEARCH = "search";
-    private static String DOWNLOAD = "download";
+    public static String DOWNLOAD = "download";
 
     final private static HashSet<String> downloading = new HashSet<>();
 
@@ -77,7 +80,7 @@ public class Operation
     }
 
     @SuppressWarnings("unchecked")
-    public void download(NewsBrief news, File dir)
+    public void download(NewsBrief news, File dir, final int pos)
     {
         id = news.news_ID;
         final boolean[] success = {false};
@@ -105,7 +108,7 @@ public class Operation
                         if (detail.equals(1)) success[0] = true;
                         if (missions[0] == 0)
                         {
-                            listener.onSuccess(DOWNLOAD, id);
+                            listener.onSuccess(DOWNLOAD, pos);
                             downloading.remove(id);
                             if (success[0]) MyApplication.downloaded_list.add(id);
                         }
@@ -122,7 +125,7 @@ public class Operation
                             if (success[0])
                             {
                                 MyApplication.downloaded_list.add(id);
-                                listener.onSuccess(DOWNLOAD, id);
+                                listener.onSuccess(DOWNLOAD, pos);
                             }
                             else
                                 listener.onFailure(DOWNLOAD, "");
