@@ -1,16 +1,97 @@
 <resources>
-    <string name = "app_name">NewsClient</string>
-    <string name = "Left">Home</string>
-    <string name = "Middle">Search</string>
-    <string name = "Right">Account</string>
-    <string name = "home_fragment">Hello home fragment</string>
-    <string name = "search_fragment">Hello search fragment</string>
-    <string name = "account_fragment">Hello account fragment</string>
+    <string name="app_name">NewsClient</string>
+    <string name="appid">59b7e5a3</string>
+    <string name="Left">Home</string>
+    <string name="Middle">Search</string>
+    <string name="Right">Account</string>
+    <string name="home_fragment">Hello home fragment</string>
+    <string name="search_fragment">Hello search fragment</string>
+    <string name="account_fragment">Hello account fragment</string>
 
-    <string name = "news_kind0">Important</string>
-    <string name = "news_kind1">Sports</string>
-    <string name = "news_kind2">Politics</string>
-    <string name = "news_kind3">Economy</string>
-    <string name = "news_kind4">FUN</string>
+    <string name="news_kind0">Recommendation</string>
+    <string name="news_kind1">Technology</string>
+    <string name="news_kind2">Education</string>
+    <string name="news_kind3">Military</string>
+    <string name="news_kind4">Domestic</string>
+    <string name="news_kind5">Social</string>
+    <string name="news_kind6">Culture</string>
+    <string name="news_kind7">Cars</string>
+    <string name="news_kind8">International</string>
+    <string name="news_kind9">Sports</string>
+    <string name="news_kind10">Finance</string>
+    <string name="news_kind11">Health</string>
+    <string name="news_kind12">Entertainment</string>
+
+    <string name="FetchingNews">Fetching news</string>
+    <string name="FetchingNewsFail">Fail fetching news</string>
+    <string name="AllNewsFetched">All news have been fetched</string>
+    <string name="NonNews">Nothing found</string>
+
+    <string name="news_picture_outline">nothing</string>
+
+    <string name="favorites">Favorites</string>
+    <string name="downloads">Downloads</string>
+    <string name="downloading">Downloading</string>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="like">Like</string>
+    <string name="unlike">Unlike</string>
+    <string name="download">Download</string>
+    <string name="delete">Delete</string>
+
+    <string name="share">Share</string>
+    <string name="tts_start">Start TTS</string>
+    <string name="tts_stop">Stop TTS</string>
+    <string name="toNight">Night Mode</string>
+    <string name="toDay">Day Mode</string>
+
+    <string name="defaultSearchKeyword">Search Big News</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_night">Night mode</string>
+
+    <string name="pref_title_pic">Show pictures</string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_category">News categories</string>
+    <string name="pref_summary_category">Select categories you want to read</string>
+    <string-array name="pref_category_titles">
+        <item>@string/news_kind1</item>
+        <item>@string/news_kind2</item>
+        <item>@string/news_kind3</item>
+        <item>@string/news_kind4</item>
+        <item>@string/news_kind5</item>
+        <item>@string/news_kind6</item>
+        <item>@string/news_kind7</item>
+        <item>@string/news_kind8</item>
+        <item>@string/news_kind9</item>
+        <item>@string/news_kind10</item>
+        <item>@string/news_kind11</item>
+        <item>@string/news_kind12</item>
+    </string-array>
+    <string-array name="pref_category_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+    <string name="DownloadFail">Fail downloading</string>
+
 
 </resources>

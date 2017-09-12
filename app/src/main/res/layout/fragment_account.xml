@@ -1,12 +1,56 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="babydriver.newsclient.ui.AccountFragment">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/llAccount"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="babydriver.newsclient.ui.AccountFragment"
+              android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/account_fragment"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-</FrameLayout>
+        <Button
+            style="?android:attr/buttonBarStyle"
+            android:id="@+id/collectionBtn"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/favorites"
+            android:textSize="16sp"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:drawableTop="@drawable/ic_star_border_black_36dp">
+        </Button>
+
+        <Button
+            style="?android:attr/buttonBarStyle"
+            android:id="@+id/downloadBtn"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/downloads"
+            android:textSize="16sp"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:drawableTop="@drawable/ic_vertical_align_bottom_black_36dp">
+        </Button>
+
+    </LinearLayout>
+
+    <babydriver.newsclient.ui.MyOneLineView
+        android:id="@+id/settingsView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+    </babydriver.newsclient.ui.MyOneLineView>
+
+</LinearLayout>

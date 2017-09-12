@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="image_outline_width">212dp</dimen>
+    <dimen name="image_outline_height">150dp</dimen>
+    <dimen name="icon_size">20dp</dimen>
 </resources>
