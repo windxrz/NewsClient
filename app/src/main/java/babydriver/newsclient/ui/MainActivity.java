@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity
     HomeFragment home_fragment = null;
     SearchFragment search_fragment = null;
     AccountFragment account_fragment = null;
-    private BottomNavigationView.OnNavigationItemSelectedListener listener;
     private SharedPreferences sharedPreferences;
 
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener()
@@ -76,7 +75,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume()
     {
-        listener = new BottomNavigationView.OnNavigationItemSelectedListener()
+        BottomNavigationView.OnNavigationItemSelectedListener listener = new BottomNavigationView.OnNavigationItemSelectedListener()
         {
             int home_time = 1;
             int search_time = 0;
@@ -132,6 +131,7 @@ public class MainActivity extends AppCompatActivity
     protected void onPause()
     {
         super.onPause();
+        MyApplication.save();
     }
 
     @Override

@@ -18,7 +18,7 @@ public class AccountFragment extends Fragment implements MyOneLineView.OnRootCli
 {
     private LinearLayout llRoot;
     private MyOneLineView settingsView;
-    private Button collectionBtn, downloadBtn;
+    private Button favoriteBtn, downloadBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -32,8 +32,26 @@ public class AccountFragment extends Fragment implements MyOneLineView.OnRootCli
     {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
         llRoot = view.findViewById(R.id.llAccount);
-        collectionBtn = view.findViewById(R.id.collectionBtn);
+        favoriteBtn = view.findViewById(R.id.collectionBtn);
+        favoriteBtn.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    Intent intent = new Intent(getContext(), FavoriteActivity.class);
+                    startActivity(intent);
+                }
+            });
         downloadBtn = view.findViewById(R.id.downloadBtn);
+        downloadBtn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(getContext(), DownloadsActivity.class);
+                startActivity(intent);
+            }
+        });
 //        collectionBtn.setHeight(collectionBtn.getMeasuredWidth());
 //        downloadBtn.setHeight(downloadBtn.getMeasuredWidth());
 //        llRoot.setMinimumHeight(collectionBtn.getMeasuredHeight());

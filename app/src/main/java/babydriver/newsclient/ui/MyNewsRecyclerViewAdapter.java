@@ -53,7 +53,6 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     MyNewsRecyclerViewAdapter(List<NewsBrief> items,
                               OnButtonClickedListener buttonClickedListener,
                               OnNewsClickedListener newsClickedListener,
-                              OnOperationListener requestListener,
                               Context context)
     {
 
@@ -113,7 +112,6 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             {
                 if (null != mNewsClickedListener)
                 {
-                    Log.e("Clicked", old_holder.mItem.news_Title);
                     notifyItemChanged(old_holder.pos);
                     mNewsClickedListener.onNewsClicked(old_holder.mItem);
                 }
@@ -129,7 +127,6 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             }
         });
         old_holder.setImage();
-        Log.e("added", old_holder.mItem.news_Title);
     }
 
     @Override
@@ -227,7 +224,6 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
                 public void onClick(View view)
                 {
                     last_news = pos;
-                    Log.e("download", mValues.get(last_news).news_Title);
                     mButtonClickedListener.onButtonClicked(mContext.getString(R.string.download));
                 }
             });

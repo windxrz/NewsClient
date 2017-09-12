@@ -25,14 +25,12 @@ public class SearchFragment extends Fragment
         else
             search_news_show_fragment = (SearchNewsShowFragment)
                     getChildFragmentManager().findFragmentByTag("search_news_fragment");
-        Log.e("SearchFragment", "onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        Log.e("SearchFragment", "onCreateView");
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         if (savedInstanceState == null)
         {
