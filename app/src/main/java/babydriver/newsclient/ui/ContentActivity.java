@@ -17,6 +17,11 @@ import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechError;
+import com.iflytek.cloud.SpeechSynthesizer;
+import com.iflytek.cloud.SynthesizerListener;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -39,6 +44,10 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
     private String content;
     private boolean willPictureShow = false;
     private boolean isDownloading = false;
+    private boolean startedSpeaking = false;
+
+    private SpeechSynthesizer mTts;
+    private SynthesizerListener mSynListener;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -47,7 +56,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         menu.add(0, 1, 0, getString(R.string.like));
         menu.add(0, 2, 0, getString(R.string.download));
         menu.add(0, 3, 0, getString(R.string.share));
-        menu.add(0, 4, 0, getString(R.string.tts));
+        menu.add(0, 4, 0, getString(R.string.tts_start));
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
             menu.add(0, 5, 0, getString(R.string.toDay));
         else
@@ -62,7 +71,10 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         {
             MenuItem likeItem = menu.findItem(1);
             MenuItem downloadItem = menu.findItem(2);
+            MenuItem ttsItem = menu.findItem(4);
             MenuItem modeItem = menu.findItem(5);
+
+            //  like/unlike
             if (Operation.isFavorite(newsDetail.news_ID))
             {
                 likeItem.setTitle(getString(R.string.unlike));
@@ -71,6 +83,8 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
             {
                 likeItem.setTitle(getString(R.string.like));
             }
+
+            //  download/delete
             if (Operation.isDownloaded(newsDetail.news_ID))
             {
                 isDownloading = false;
@@ -88,6 +102,18 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
                 isDownloading = false;
                 downloadItem.setTitle(getString(R.string.download));
             }
+
+            //  TTS
+            if (startedSpeaking)
+            {
+                ttsItem.setTitle(getString(R.string.tts_stop));
+            }
+            else
+            {
+                ttsItem.setTitle(getString(R.string.tts_start));
+            }
+
+            //  night/day
             if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
             {
                 modeItem.setTitle(getString(R.string.toDay));
@@ -160,6 +186,64 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+        startedSpeaking = false;
+        mTts = SpeechSynthesizer.createSynthesizer(getApplicationContext(), null);
+        mSynListener = new SynthesizerListener()
+        {
+            @Override
+            public void onSpeakBegin()
+            {
+                startedSpeaking = true;
+            }
+
+            @Override
+            public void onBufferProgress(int i, int i1, int i2, String s)
+            {
+            }
+
+            @Override
+            public void onSpeakPaused()
+            {
+                startedSpeaking = false;
+            }
+
+            @Override
+            public void onSpeakResumed()
+            {
+                startedSpeaking = true;
+            }
+
+            @Override
+            public void onSpeakProgress(int i, int i1, int i2)
+            {
+            }
+
+            @Override
+            public void onCompleted(SpeechError speechError)
+            {
+                startedSpeaking = false;
+            }
+
+            @Override
+            public void onEvent(int i, int i1, int i2, Bundle bundle)
+            {
+            }
+        };
+    }
+
+    @Override
+    public void onPause()
+    {
+        mTts.stopSpeaking();
+        mTts.destroy();
+        startedSpeaking = true;
+        super.onPause();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         Operation operation = new Operation(this);
@@ -176,6 +260,16 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
                     operation.download(newsDetail, getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), 0);
                 }
                 break;
+            case 4:
+                if (!startedSpeaking)
+                {
+                    startTTS();
+                }
+                else
+                {
+                    stopTTS();
+                }
+                break;
             case 5:
                 if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
                 {
@@ -189,6 +283,22 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startTTS()
+    {
+        mTts.setParameter(SpeechConstant.VOICE_NAME, "xiaofeng");
+        mTts.setParameter(SpeechConstant.SPEED, "50");
+        mTts.setParameter(SpeechConstant.VOLUME, "80");
+        mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);
+        mTts.startSpeaking(newsDetail.news_Title + "... " + newsDetail.pureContent, mSynListener);
+        startedSpeaking = true;
+    }
+
+    private void stopTTS()
+    {
+        mTts.stopSpeaking();
+        startedSpeaking = false;
     }
 
     File getNewsDirectory()

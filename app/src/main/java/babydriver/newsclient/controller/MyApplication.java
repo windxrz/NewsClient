@@ -6,6 +6,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
 
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechUtility;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -63,6 +66,8 @@ public class MyApplication extends Application
     public void onCreate()
     {
         super.onCreate();
+
+        SpeechUtility.createUtility(getBaseContext(), SpeechConstant.APPID + "=" + getString(R.string.appid));
 
         SharedPreferences favorite_preferences = getSharedPreferences(FAVORITE_LIST, MODE_PRIVATE);
         SharedPreferences.Editor favorite_editor = favorite_preferences.edit();
