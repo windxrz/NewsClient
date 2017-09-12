@@ -37,6 +37,11 @@ public class Operation
         return MyApplication.downloaded_list.contains(id);
     }
 
+    public static boolean isRead(String id)
+    {
+        return MyApplication.read_list.contains(id);
+    }
+
     public static boolean isDownloading(String id)
     {
         return downloading.contains(id);

@@ -4,6 +4,9 @@
     <!--<color name="colorBottomNavigationView">#424242</color>-->
     <color name="colorSearchView">#303030</color>
     <color name="colorPrimaryDark">#000066</color>
+    <color name="textUnread">@android:color/white</color>
+    <color name="textRead">#636363</color>
+    <color name="colorIcon">#FFFFFFFF</color>
     <!--<color name="colorAccent">#430026</color>-->
     <!--<color name="colorForeground">#252525</color>-->
     <!--<color name="colorBackgound">#191919</color>-->

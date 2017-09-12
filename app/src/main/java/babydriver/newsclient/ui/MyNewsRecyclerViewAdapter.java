@@ -82,6 +82,10 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA);
         old_holder.mItem = mValues.get(position);
         old_holder.mNewsTitle.setText(old_holder.mItem.news_Title);
+        if (Operation.isRead(old_holder.mItem.news_ID))
+            old_holder.mNewsTitle.setTextColor(mContext.getColor(R.color.textRead));
+        else
+            old_holder.mNewsTitle.setTextColor(mContext.getColor(R.color.textUnread));
         old_holder.mNewsSource.setText(old_holder.mItem.news_Source);
         old_holder.pos = old_holder.getAdapterPosition();
         if (old_holder.mItem.newsTime != null) old_holder.mNewsTime.setText(format.format(old_holder.mItem.newsTime));
@@ -97,40 +101,9 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
                     .load(holder.mItem.newsPictures.get(0))
                     .placeholder(R.drawable.placeholder)
                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-                    .resize((int)r.getDimension(R.dimen.image_outline_width), (int)r.getDimension(R.dimen.image_outline_height))
+                    .resize((int) r.getDimension(R.dimen.image_outline_width), (int) r.getDimension(R.dimen.image_outline_height))
                     .centerCrop()
                     .into(holder.mImage);
-//
-//            holder.mImage.setImageBitmap(null);
-//            NewsBrief news = mValues.get(position);
-//            File dir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-//            String filename = "";
-//            try
-//            {
-//                assert dir != null;
-//                filename = dir.getPath();
-//            }
-//            catch (NullPointerException ignored) {}
-//            filename = filename + "/" + news.news_ID;
-//            File file = new File(filename);
-//            if (file.exists())
-//            {
-//                Bitmap map = BitmapFactory.decodeFile(filename);
-//                Resources r = mContext.getResources();
-//                if (map != null) holder.mImage.setImageBitmap(Bitmap.createScaledBitmap(map, (int)r.getDimension(R.dimen.image_outline_width), (int)r.getDimension(R.dimen.image_outline_height), false));
-//                if (map != null) map.recycle();
-//            }
-//            else
-//            {
-//                Resources r = mContext.getResources();
-//                NinePatchDrawable drawable = (NinePatchDrawable)mContext.getDrawable(R.drawable.placeholder);
-//                holder.mImage.setImageDrawable(drawable);
-//                Operation operation = new Operation(mOperationListener);
-//                BitmapFactory.Options options = new BitmapFactory.Options();
-//                options.outHeight = (int)r.getDimension(R.dimen.image_outline_height);
-//                options.outWidth = (int)r.getDimension(R.dimen.image_outline_width);
-//                if (!img_fail_list.contains(holder.mItem.news_ID)) operation.requestPicture(news.newsPictures.get(0), filename, position, options, mContext);
-//            }
         }
 
         old_holder.mView.setOnClickListener(new View.OnClickListener()
@@ -141,6 +114,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
                 if (null != mNewsClickedListener)
                 {
                     Log.e("Clicked", old_holder.mItem.news_Title);
+                    notifyItemChanged(old_holder.pos);
                     mNewsClickedListener.onNewsClicked(old_holder.mItem);
                 }
             }
@@ -155,6 +129,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             }
         });
         old_holder.setImage();
+        Log.e("added", old_holder.mItem.news_Title);
     }
 
     @Override

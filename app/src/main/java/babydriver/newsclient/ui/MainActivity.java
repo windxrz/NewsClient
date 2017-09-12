@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import babydriver.newsclient.R;
+import babydriver.newsclient.controller.MyApplication;
 import babydriver.newsclient.model.NewsBrief;
 
 public class MainActivity extends AppCompatActivity
@@ -144,6 +145,7 @@ public class MainActivity extends AppCompatActivity
         if (!item.news_ID.equals(""))
         {
             Intent intent = new Intent(this, ContentActivity.class);
+            MyApplication.read_list.add(item.news_ID);
             intent.putExtra(NEWS_ID, item.news_ID);
             startActivity(intent);
         }

@@ -104,10 +104,8 @@ public abstract class NewsShowFragment extends Fragment
                 @Override
                 public void run() {
                     recycler_view.scrollToPosition(finalPos);
-                    Log.e("run scroll", finalPos + "");
                 }
             });
-            Log.e("scroll", "scroll");
         }
         swipe_refresh_layout = view.findViewById(R.id.refresh_layout);
         swipe_refresh_layout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
@@ -133,8 +131,6 @@ public abstract class NewsShowFragment extends Fragment
         super.onSaveInstanceState(outState);
         outState.putSerializable("list", (ArrayList<NewsBrief>)((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).getList());
         int pos = ((LinearLayoutManager)recycler_view.getLayoutManager()).findFirstVisibleItemPosition();
-        Log.e("listsize", recycler_view.getAdapter().getItemCount() + "");
-        Log.e("save pos", pos + "");
         outState.putInt("position", pos);
     }
 

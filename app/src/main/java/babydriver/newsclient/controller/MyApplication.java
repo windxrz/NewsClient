@@ -29,6 +29,7 @@ public class MyApplication extends Application
     public static HashSet<String> favorite_list = new HashSet<>();
     public static HashSet<String> downloaded_list = new HashSet<>();
     public static List<Integer> showCateNumList = new ArrayList<>();
+    public static HashSet<String> read_list = new HashSet<>();
 
     public static final List<String> cateNames = new ArrayList<>();
 
