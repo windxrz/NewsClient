@@ -18,7 +18,8 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/text_margin"
             android:layout_weight="1"
-            android:textAppearance="?attr/textAppearanceListItem"/>
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textStyle="bold"/>
 
         <ImageView
             android:id="@+id/news1_picture"

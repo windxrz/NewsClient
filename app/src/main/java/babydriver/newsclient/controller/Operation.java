@@ -2,13 +2,22 @@ package babydriver.newsclient.controller;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.util.Log;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,13 +46,18 @@ public class Operation
         return MyApplication.downloaded_list.contains(id);
     }
 
+    public static boolean isRead(String id)
+    {
+        return MyApplication.read_list.contains(id);
+    }
+
     public static boolean isDownloading(String id)
     {
         return downloading.contains(id);
     }
 
     private String id;
-
+    private NewsBrief newsBrief;
     private OnOperationListener listener;
 
     public Operation(OnOperationListener listener)
@@ -51,17 +65,25 @@ public class Operation
         this.listener = listener;
     }
 
-    public void like(String id)
+    public void like(NewsBrief news)
     {
+        String id = news.news_ID;
         if (isFavorite(id))
+        {
             MyApplication.favorite_list.remove(id);
+            MyApplication.favorite.remove(id);
+        }
         else
+        {
             MyApplication.favorite_list.add(id);
+            MyApplication.favorite.put(id, news);
+        }
     }
 
     private void remove(NewsBrief news, File dir)
     {
         MyApplication.downloaded_list.remove(news.news_ID);
+        MyApplication.downloaded.remove(news.news_ID);
         String directory = dir.getPath() + "/" + id;
         File d = new File(directory);
         if (d.isDirectory())
@@ -79,17 +101,59 @@ public class Operation
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public void download(NewsBrief news, File dir, final int pos)
+    static void fetchNewsBrief(HashSet<String> set, String dir, HashMap<String, NewsBrief> map)
     {
+        if (set != null)
+        {
+            for (String id : set)
+            {
+                String filename = dir + "/" + id;
+                try
+                {
+                    FileInputStream fi = new FileInputStream(filename);
+                    ObjectInputStream si = new ObjectInputStream(fi);
+                    NewsBrief brief = (NewsBrief) si.readObject();
+                    map.put(id, brief);
+                } catch (IOException | ClassNotFoundException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    static void saveNewsBrief(HashSet<String> set, String dir, HashMap<String, NewsBrief> map)
+    {
+        if (set != null)
+        {
+            for (String id : set)
+            {
+                String filename = dir + "/" + id;
+                try
+                {
+                    FileOutputStream fo = new FileOutputStream(filename);
+                    ObjectOutputStream so = new ObjectOutputStream(fo);
+                    so.writeObject(map.get(id));
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void download(NewsBrief news, String directory, final int pos)
+    {
+        File dir = new File(directory);
         id = news.news_ID;
+        newsBrief = news;
         final boolean[] success = {false};
         final int[] missions = new int[1];
         if (isDownloaded(news.news_ID))
             remove(news, dir);
         else
         {
-            String directory = dir.getPath();
             directory = directory + "/" + id + "/";
             File file = new File(directory);
             boolean isOk = (file.isDirectory() || file.mkdir());
@@ -110,7 +174,11 @@ public class Operation
                         {
                             listener.onSuccess(DOWNLOAD, pos);
                             downloading.remove(id);
-                            if (success[0]) MyApplication.downloaded_list.add(id);
+                            if (success[0])
+                            {
+                                MyApplication.downloaded_list.add(id);
+                                MyApplication.downloaded.put(id, newsBrief);
+                            }
                         }
                     }
 
@@ -125,6 +193,7 @@ public class Operation
                             if (success[0])
                             {
                                 MyApplication.downloaded_list.add(id);
+                                MyApplication.downloaded.put(id, newsBrief);
                                 listener.onSuccess(DOWNLOAD, pos);
                             }
                             else

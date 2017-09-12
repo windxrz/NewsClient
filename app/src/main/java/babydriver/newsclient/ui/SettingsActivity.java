@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -168,6 +169,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity
         public void onCreate(Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
+            Log.e("create", (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) ? "NIGHT" : "DAY");
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
             nightSwitchPreference = (SwitchPreference) findPreference("night_switch");
@@ -186,15 +188,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity
             {
                 boolean isNight = (boolean) newValue;
                 if (isNight)
-                {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    Log.e("mode", "night mode");
-                }
                 else
-                {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    Log.e("mode", "day mode");
-                }
+                ((SettingsActivity)getActivity()).refresh();
             }
             else if (preference.getKey().equals("pic_switch"))
             {
@@ -228,5 +225,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity
         }
     }
 
+    private void refresh()
+    {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
 
 }

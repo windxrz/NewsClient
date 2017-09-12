@@ -32,8 +32,6 @@ public class HomeFragment extends Fragment
             home_news_show_fragment = (HomeNewsShowFragment)
                     getChildFragmentManager().findFragmentByTag("home_news_show_fragment");
         }
-
-        Log.e("HomeFragment", "onCreate");
     }
 
     public void refreshTabs()
@@ -91,7 +89,6 @@ public class HomeFragment extends Fragment
                              Bundle savedInstanceState)
     {
         super.onCreateView(inflater, container, savedInstanceState);
-        Log.e("HomeFragment", "onCreateView");
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         tab_lay_out = view.findViewById(R.id.tab_layout);
         assert tab_lay_out != null;

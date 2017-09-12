@@ -164,7 +164,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         {
             try
             {
-                FileInputStream fi = new FileInputStream(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/" + news_ID + "/detail.txt");
+                FileInputStream fi = new FileInputStream(MyApplication.newsDetail_directory + "/" + news_ID + "/detail.txt");
                 ObjectInputStream si = new ObjectInputStream(fi);
                 newsDetail = (NewsDetail)si.readObject();
                 f = true;
@@ -252,12 +252,12 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
                 finish();
                 break;
             case 1:
-                operation.like(newsDetail.news_ID);
+                operation.like(newsDetail);
                 break;
             case 2:
                 if (!isDownloading)
                 {
-                    operation.download(newsDetail, getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), 0);
+                    operation.download(newsDetail, MyApplication.newsDetail_directory, 0);
                 }
                 break;
             case 4:
@@ -305,9 +305,8 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
     {
         if (Operation.isDownloaded(newsDetail.news_ID))
         {
-            File dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-            assert dir != null;
-            return new File(dir.getPath() + "/" + newsDetail.news_ID);
+            Log.e("downloaded", MyApplication.newsDetail_directory + "/" + newsDetail.news_ID);
+            return new File(MyApplication.newsDetail_directory + "/" + newsDetail.news_ID);
         }
         else
         {

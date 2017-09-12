@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,12 +70,11 @@ public abstract class NewsShowFragment extends Fragment
             list = (ArrayList<NewsBrief>) savedInstanceState.getSerializable("list");
             if (list == null) list = new ArrayList<>();
             pos = savedInstanceState.getInt("position");
-            Log.e("pos", pos + "");
         }
         recycler_view = view.findViewById(R.id.recycler_view);
         Context context = recycler_view.getContext();
         recycler_view.setLayoutManager(new LinearLayoutManager(context));
-        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(list, this, mNewsClickedListener, this, this.getActivity()));
+        recycler_view.setAdapter(new MyNewsRecyclerViewAdapter(list, this, mNewsClickedListener, this.getActivity()));
         recycler_view.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
         recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener()
         {
@@ -104,10 +104,8 @@ public abstract class NewsShowFragment extends Fragment
                 @Override
                 public void run() {
                     recycler_view.scrollToPosition(finalPos);
-                    Log.e("run scroll", finalPos + "");
                 }
             });
-            Log.e("scroll", "scroll");
         }
         swipe_refresh_layout = view.findViewById(R.id.refresh_layout);
         swipe_refresh_layout.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED);
@@ -122,8 +120,7 @@ public abstract class NewsShowFragment extends Fragment
 
         if (savedInstanceState == null)
             listInitialize();
-        else
-            Log.e("amount", recycler_view.getAdapter().getItemCount() + "");
+
         return view;
     }
 
@@ -133,8 +130,6 @@ public abstract class NewsShowFragment extends Fragment
         super.onSaveInstanceState(outState);
         outState.putSerializable("list", (ArrayList<NewsBrief>)((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).getList());
         int pos = ((LinearLayoutManager)recycler_view.getLayoutManager()).findFirstVisibleItemPosition();
-        Log.e("listsize", recycler_view.getAdapter().getItemCount() + "");
-        Log.e("save pos", pos + "");
         outState.putInt("position", pos);
     }
 
@@ -152,7 +147,7 @@ public abstract class NewsShowFragment extends Fragment
         ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).clear();
     }
 
-    private void addAll(List<NewsBrief> list)
+    void addAll(List<NewsBrief> list)
     {
         if (list == null || list.size() == 0)
         {
@@ -176,7 +171,7 @@ public abstract class NewsShowFragment extends Fragment
                     }, 2000);
         }
         else
-            ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).addAll(list);
+            ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).addAll(list);
     }
 
     private void fetchNewsListFail()
@@ -267,10 +262,10 @@ public abstract class NewsShowFragment extends Fragment
         int pos = ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).getNews();
         NewsBrief news = ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).getList().get(pos);
         Operation operation = new Operation(this);
-        if (type.equals(getString(R.string.like)) || type.equals(getString(R.string.unlike))) operation.like(news.news_ID);
+        if (type.equals(getString(R.string.like)) || type.equals(getString(R.string.unlike))) operation.like(news);
         if (type.equals(getString(R.string.download)) || type.equals(getString(R.string.delete)))
         {
-            operation.download(news, getContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), pos);
+            operation.download(news, MyApplication.newsDetail_directory, pos);
         }
         recycler_view.getAdapter().notifyItemChanged(pos);
     }
