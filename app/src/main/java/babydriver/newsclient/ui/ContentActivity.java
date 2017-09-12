@@ -2,11 +2,16 @@ package babydriver.newsclient.ui;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.webkit.WebSettings;
@@ -33,6 +38,67 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
     private String newsPath;
     private String content;
     private boolean willPictureShow = false;
+    private boolean isDownloading = false;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.menu_content_toolbar, menu);
+        menu.add(0, 1, 0, getString(R.string.like));
+        menu.add(0, 2, 0, getString(R.string.download));
+        menu.add(0, 3, 0, getString(R.string.share));
+        menu.add(0, 4, 0, getString(R.string.tts));
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+            menu.add(0, 5, 0, getString(R.string.toDay));
+        else
+            menu.add(0, 5, 0, getString(R.string.toNight));
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        if (newsDetail != null)
+        {
+            MenuItem likeItem = menu.findItem(1);
+            MenuItem downloadItem = menu.findItem(2);
+            MenuItem modeItem = menu.findItem(5);
+            if (Operation.isFavorite(newsDetail.news_ID))
+            {
+                likeItem.setTitle(getString(R.string.unlike));
+            }
+            else
+            {
+                likeItem.setTitle(getString(R.string.like));
+            }
+            if (Operation.isDownloaded(newsDetail.news_ID))
+            {
+                isDownloading = false;
+                downloadItem.setTitle(getString(R.string.delete));
+            }
+            else if (Operation.isDownloading(newsDetail.news_ID))
+            {
+                isDownloading = true;
+                SpannableString downloading = new SpannableString(getString(R.string.downloading));
+                downloading.setSpan(new ForegroundColorSpan(Color.LTGRAY), 0, downloading.length(), 0);
+                downloadItem.setTitle(downloading);
+            }
+            else
+            {
+                isDownloading = false;
+                downloadItem.setTitle(getString(R.string.download));
+            }
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+            {
+                modeItem.setTitle(getString(R.string.toDay));
+            }
+            else
+            {
+                modeItem.setTitle(getString(R.string.toNight));
+            }
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,11 +106,12 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_content);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_content);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
         {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 //        textView = findViewById(R.id.contentTextView);;
         webView = findViewById(R.id.webView);
@@ -93,10 +160,32 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        Operation operation = new Operation(this);
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                break;
+            case 1:
+                operation.like(newsDetail.news_ID);
+                break;
+            case 2:
+                if (!isDownloading)
+                {
+                    operation.download(newsDetail, getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), 0);
+                }
+                break;
+            case 5:
+                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+                {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }
+                else
+                {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                }
+                recreate();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -132,7 +221,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         String textColor = "black";
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
         {
-            textColor = "white";
+            textColor = "silver";
         }
 
         content +=
@@ -202,6 +291,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         if (type.equals(Operation.DETAIL) && data instanceof NewsDetail)
         {
             newsDetail = (NewsDetail) data;
+//            getWindow().invalidatePanelMenu(Window.FEATURE_OPTIONS_PANEL);
             init(getNewsDirectory());
             setContent();
             updatePics();
@@ -216,6 +306,10 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
             if (m.find())
                 suffix = m.group();
             updateSinglePic(newsPath + "/" + i + suffix, i);
+        }
+        if (type.equals(Operation.DOWNLOAD) && data instanceof Integer)
+        {
+
         }
     }
 
