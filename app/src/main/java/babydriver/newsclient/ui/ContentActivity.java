@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.Window;
@@ -126,8 +127,20 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         newsPath = newsDir.getPath();
 
         content = "<html>" + "<head>" +
-                "<meta name=\"viewport\" content=\"width=device-width\">" +
-                "<style>img{max-width:100% !important; width:100%; height:auto;}</style>" +
+                "<meta name=\"viewport\" content=\"width=device-width\">";
+
+        String textColor = "black";
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+        {
+            textColor = "white";
+        }
+
+        content +=
+                "<style type=\"text/css\">" +
+                "img{max-width:100% !important; width:100%; height:auto;}" +
+                "h2{color:" + textColor + "}" +
+                "p{color:" + textColor +"; text-align:justify}" +
+                "</style>" +
                 "</head><body>" +
                 "<h2 style=\"font-weight:normal\">" + newsDetail.news_Title + "</h2>" +
                 "<div style=\"font-size:80%;color:grey\">" + newsDetail.news_Author + " " +
@@ -143,7 +156,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
             }
         }
         content +=
-                "<div  style=\"text-align:justify;\">" + newsDetail.news_Content + "</div>" +
+                newsDetail.news_Content +
                 "<br />" +
                 "<div style=\"font-size:80%;color:grey;text-align:right\">来源：" +
                 newsDetail.news_Source + "</div>" +
