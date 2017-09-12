@@ -19,6 +19,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
     productFlavors {
     }
 
@@ -43,4 +48,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.0.2'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:support-v4:26.0.2'
+    compile files('libs/Msc.jar')
 }

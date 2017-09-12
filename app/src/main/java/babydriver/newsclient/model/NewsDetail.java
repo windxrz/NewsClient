@@ -10,9 +10,11 @@ public class NewsDetail extends NewsBrief implements Serializable
 {
     public String news_Content;
     public String news_Journal;
+    public String pureContent;
 
     private void processContent()
     {
+        pureContent = news_Content;
         news_Content = news_Content.replaceAll("(?<!^)\\s{2,}(?!$)", "</p><p>");
         news_Content = news_Content.replaceAll("\\s{2,}", "");
         news_Content = "<p>" + news_Content + "</p>";
