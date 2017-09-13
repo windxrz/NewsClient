@@ -2,21 +2,14 @@ package babydriver.newsclient.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.NinePatchDrawable;
-import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ResourceCursorTreeAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.MemoryPolicy;
@@ -27,12 +20,8 @@ import babydriver.newsclient.controller.MyApplication;
 import babydriver.newsclient.model.NewsBrief;
 import babydriver.newsclient.controller.Operation;
 import babydriver.newsclient.ui.NewsShowFragment.OnNewsClickedListener;
-import babydriver.newsclient.controller.Operation.OnOperationListener;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,7 +36,8 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     private enum NEWS_TYPE
     {
         NEWS_WITH_PICTURE,
-        NEWS_WITHOUT_PICTURE
+        NEWS_WITHOUT_PICTURE,
+        LOAD_MORE
     }
 
     MyNewsRecyclerViewAdapter(List<NewsBrief> items,
@@ -69,15 +59,22 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
         if (viewType == NEWS_TYPE.NEWS_WITH_PICTURE.ordinal())
             return new NewsWithPictureViewHolder(LayoutInflater.from(parent.getContext()).
                     inflate(R.layout.fragment_news1, parent, false));
-        else
+        else if (viewType == NEWS_TYPE.NEWS_WITHOUT_PICTURE.ordinal())
             return new NewsWithoutPictureViewHolder(LayoutInflater.from(parent.getContext()).
                     inflate(R.layout.fragment_news2, parent, false));
-
+        else
+            return new FooterViewHolder(LayoutInflater.from(parent.getContext()).
+                    inflate(R.layout.fragment_news_load_more, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder old_holder, int position)
     {
+        if (old_holder instanceof FooterViewHolder)
+        {
+            ((FooterViewHolder)(old_holder)).load_more.setProgress(0, true);
+            return;
+        }
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA);
         old_holder.mItem = mValues.get(position);
         old_holder.mNewsTitle.setText(old_holder.mItem.news_Title);
@@ -132,6 +129,7 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     @Override
     public int getItemViewType(int position)
     {
+        if (mValues.get(position) == null) return NEWS_TYPE.LOAD_MORE.ordinal();
         if (!MyApplication.isPreviewShowPicture) return NEWS_TYPE.NEWS_WITHOUT_PICTURE.ordinal();
         return (mValues.get(position).newsPictures.size() == 0 ? NEWS_TYPE.NEWS_WITHOUT_PICTURE.ordinal() : NEWS_TYPE.NEWS_WITH_PICTURE.ordinal());
     }
@@ -158,6 +156,26 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
         int k = list.size();
         mValues.addAll(list);
         notifyItemRangeChanged(k, list.size());
+    }
+
+    void addProgressBar()
+    {
+        mValues.add(null);
+        notifyItemInserted(mValues.size() - 1);
+    }
+
+    boolean hasProgressBar()
+    {
+        return mValues.size() != 0 && (mValues.get(mValues.size() - 1) == null);
+    }
+
+    void removeProgressBar()
+    {
+        if (mValues.size() > 0 && mValues.get(mValues.size() - 1) == null)
+        {
+            mValues.remove(mValues.size() - 1);
+            notifyItemRemoved(mValues.size());
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener
@@ -292,6 +310,19 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
             return super.toString() + " '" + mNewsTitle.getText() + "'";
         }
     }
+
+
+    private class FooterViewHolder extends ViewHolder
+    {
+        ProgressBar load_more;
+
+        FooterViewHolder(View view)
+        {
+            super(view);
+            load_more = view.findViewById(R.id.load_more);
+        }
+    }
+
 
     int getNews()
     {

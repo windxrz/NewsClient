@@ -46,17 +46,17 @@ public class SearchNewsShowFragment extends NewsShowFragment
         map.put("pageNo", manager.getItemCount() / 25 + 1);
         map.put("pageSize", 25);
         new Operation(this).requestSearch(keyword, map);
-        final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNews, Toast.LENGTH_SHORT);
-        toast.show();
-        Handler handler = new Handler();
-        handler.postDelayed(
-                new Runnable()
-                {
-                    @Override
-                    public void run() {
-                        toast.cancel();
-                    }
-                }, 500);
+//        final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNews, Toast.LENGTH_SHORT);
+//        toast.show();
+//        Handler handler = new Handler();
+//        handler.postDelayed(
+//                new Runnable()
+//                {
+//                    @Override
+//                    public void run() {
+//                        toast.cancel();
+//                    }
+//                }, 500);
     }
 
     @Override
