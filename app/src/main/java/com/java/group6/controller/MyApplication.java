@@ -139,18 +139,18 @@ public class MyApplication extends Application
 
     public static void load(Context context)
     {
-        Operation.loadList(news_list_directory + "/" + FAVORITE_LIST, favorite_list);
-        Operation.loadList(news_list_directory + "/" + DOWNLOADED_LIST, downloaded_list);
-        for (int i = 1; i <= 12; i++)
+        Operation.loadList(news_list_directory + "/" + FAVORITE_LIST + ".txt", favorite_list);
+        Operation.loadList(news_list_directory + "/" + DOWNLOADED_LIST + ".txt", downloaded_list);
+        for (int i = 0; i <= 12; i++)
         {
             HashSet<String> tmp = new HashSet<>();
-            Operation.loadList(news_list_directory + "/cache/" + cateNames.get(i), tmp);
+            Operation.loadList(news_list_directory + "/cache/" + cateNames.get(i) + ".txt", tmp);
             cache_list.set(i, tmp);
         }
 
         Operation.loadNewsBrief(favorite_list, favorite_newsBrief_directory, favorite);
         Operation.loadNewsBrief(downloaded_list, downloaded_newsBrief_directory, downloaded);
-        for (int i = 1; i <= 12; i++)
+        for (int i = 0; i <= 12; i++)
             Operation.loadNewsBrief(cache_list.get(i), cache_newsBrief_directory, cache);
         Log.e("MyApplication", "load settings");
 
@@ -158,14 +158,14 @@ public class MyApplication extends Application
 
     public static void save(Context context)
     {
-        Operation.saveList(news_list_directory + "/" + FAVORITE_LIST, favorite_list);
-        Operation.saveList(news_list_directory + "/" + DOWNLOADED_LIST, downloaded_list);
-        for (int i = 1; i <= 12; i++)
-            Operation.saveList(news_list_directory + "/cache/" + cateNames.get(i), cache_list.get(i));
+        Operation.saveList(news_list_directory + "/" + FAVORITE_LIST + ".txt", favorite_list);
+        Operation.saveList(news_list_directory + "/" + DOWNLOADED_LIST + ".txt", downloaded_list);
+        for (int i = 0; i <= 12; i++)
+            Operation.saveList(news_list_directory + "/cache/" + cateNames.get(i) + ".txt", cache_list.get(i));
 
         Operation.saveNewsBrief(favorite_list, favorite_newsBrief_directory, favorite);
         Operation.saveNewsBrief(downloaded_list, downloaded_newsBrief_directory, downloaded);
-        for (int i = 1; i <= 12; i++)
+        for (int i = 0; i <= 12; i++)
             Operation.saveNewsBrief(cache_list.get(i), cache_newsBrief_directory, cache);
         Log.e("MyApplication", "save settings");
     }

@@ -94,7 +94,7 @@ public class HomeNewsShowFragment extends NewsShowFragment
         if (type.equals(Operation.LATEST) && data instanceof NewsBriefList)
         {
             NewsBriefList list = (NewsBriefList) data;
-            if (refreshed && category > 0)
+            if (refreshed)
             {
                 HashSet<String> now = new HashSet<>();
                 for (String id : MyApplication.cache_list.get(category))
