@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">NewsClient</string>
     <string name="appid">59b7e5a3</string>
+
+    <string name="title_main">Last Year News</string>
+
     <string name="Left">Home</string>
     <string name="Middle">Search</string>
     <string name="Right">Account</string>
@@ -8,7 +11,7 @@
     <string name="search_fragment">Hello search fragment</string>
     <string name="account_fragment">Hello account fragment</string>
 
-    <string name="news_kind0">Recommendation</string>
+    <string name="news_kind0">All</string>
     <string name="news_kind1">Technology</string>
     <string name="news_kind2">Education</string>
     <string name="news_kind3">Military</string>
@@ -24,6 +27,7 @@
 
     <string name="FetchingNews">Fetching news</string>
     <string name="FetchingNewsFail">Fail fetching news</string>
+    <string name="DownloadingNewsFail">Fail downloading news</string>
     <string name="AllNewsFetched">All news have been fetched</string>
     <string name="NonNews">Nothing found</string>
 
@@ -92,6 +96,11 @@
     </string-array>
 
     <string name="DownloadFail">Fail downloading</string>
+    <string name="Content">Content</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 
 </resources>
