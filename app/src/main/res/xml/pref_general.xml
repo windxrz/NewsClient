@@ -1,0 +1,25 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="night_switch"
+        android:title="@string/pref_title_night"
+        android:persistent="true"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pic_switch"
+        android:title="@string/pref_title_pic"
+        android:persistent="true"/>
+
+    <MultiSelectListPreference
+        android:key="category_select"
+        android:entries="@array/pref_category_titles"
+        android:entryValues="@array/pref_category_values"
+        android:title="@string/pref_title_category"
+        android:summary="@string/pref_summary_category"
+        android:persistent="true"
+        android:defaultValue="@array/pref_category_values"
+        />
+
+</PreferenceScreen>

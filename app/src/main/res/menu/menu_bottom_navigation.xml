@@ -2,12 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/item_home"
-        android:title="@string/Left"/>
+        android:title="@string/Left"
+        android:icon="@drawable/ic_home_black_24dp"/>
     <item
         android:id="@+id/item_search"
-        android:title="@string/Middle"/>
+        android:title="@string/Middle"
+        android:icon="@drawable/ic_search_black_24dp"/>
     <item
         android:id="@+id/item_account"
-        android:title="@string/Right"/>
-
+        android:title="@string/Right"
+        android:icon="@drawable/ic_account_circle_black_24dp"/>
 </menu>
