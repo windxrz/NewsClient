@@ -58,6 +58,7 @@ public class HomeNewsShowFragment extends NewsShowFragment
     {
         if (category != t)
         {
+            Log.e("HomeNewsShowFragment", category + "");
             category = t;
             listRefresh();
         }
@@ -130,7 +131,9 @@ public class HomeNewsShowFragment extends NewsShowFragment
                 addAll(list);
             }
             else
+            {
                 fetchNewsListFail();
+            }
             refreshed = false;
         }
     }

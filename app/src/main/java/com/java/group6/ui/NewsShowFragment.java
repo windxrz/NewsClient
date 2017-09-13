@@ -174,6 +174,7 @@ public abstract class NewsShowFragment extends Fragment
 
     void clear()
     {
+        Log.e("NewsShowFragment", "clear");
         refreshing = false;
         loading = false;
         ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).clear();
@@ -210,6 +211,7 @@ public abstract class NewsShowFragment extends Fragment
     void fetchNewsListFail()
     {
         ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).removeProgressBar();
+        recycler_view.scrollBy(0, -1);
         final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNewsFail, Toast.LENGTH_SHORT);
         toast.show();
         Handler handler = new Handler();
