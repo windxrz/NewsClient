@@ -231,7 +231,7 @@ public class Operation
                                 listener.onSuccess(DOWNLOAD, pos);
                             }
                             else
-                                listener.onFailure(DOWNLOAD, "");
+                                listener.onFailure(DOWNLOAD, pos);
                         }
                     }
                 };
