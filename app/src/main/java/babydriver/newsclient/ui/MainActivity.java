@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity
     SearchFragment search_fragment = null;
     AccountFragment account_fragment = null;
     private SharedPreferences sharedPreferences;
+    int current_fragment;
 
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener()
     {
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity
             transaction.add(R.id.Fragment, account_fragment, "account_fragment");
             transaction.hide(account_fragment);
             transaction.show(home_fragment);
+            current_fragment = R.id.item_home;
             transaction.commit();
         }
         else
@@ -77,9 +79,6 @@ public class MainActivity extends AppCompatActivity
     {
         BottomNavigationView.OnNavigationItemSelectedListener listener = new BottomNavigationView.OnNavigationItemSelectedListener()
         {
-            int home_time = 1;
-            int search_time = 0;
-
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item)
             {
@@ -90,28 +89,21 @@ public class MainActivity extends AppCompatActivity
                 {
                     case R.id.item_home:
                         home_fragment.home_news_show_fragment.update();
-                        search_time = 0;
-                        if (home_time == 1)
-                        {
+                        if (current_fragment == R.id.item_home)
                             home_fragment.home_news_show_fragment.setTop();
-                        } else
-                            home_time++;
                         fragment = home_fragment;
+                        current_fragment = R.id.item_home;
                         break;
                     case R.id.item_search:
-                        home_time = 0;
                         search_fragment.search_news_show_fragment.update();
-                        if (search_time == 1)
-                        {
+                        if (current_fragment == R.id.item_search)
                             search_fragment.search_news_show_fragment.setTop();
-                        } else
-                            search_time++;
                         fragment = search_fragment;
+                        current_fragment = R.id.item_search;
                         break;
                     case R.id.item_account:
-                        home_time = 0;
-                        search_time = 0;
                         fragment = account_fragment;
+                        current_fragment = R.id.item_account;
                         break;
                 }
                 FragmentManager fragment_manager = getSupportFragmentManager();
