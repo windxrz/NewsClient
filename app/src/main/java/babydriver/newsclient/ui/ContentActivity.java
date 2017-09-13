@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -244,11 +245,20 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
     }
 
     @Override
+    public void onBackPressed()
+    {
+        setResult(RESULT_OK, null);
+        finish();
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         Operation operation = new Operation(this);
         switch (item.getItemId()) {
             case android.R.id.home:
+                setResult(RESULT_OK, null);
                 finish();
                 break;
             case 1:
