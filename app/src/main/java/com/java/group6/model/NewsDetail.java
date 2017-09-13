@@ -26,7 +26,7 @@ public class NewsDetail extends NewsBrief implements Serializable
     {
         for (Word w : list)
         {
-            news_Content = news_Content.replace(w.word, "<a href=\"" +
+            news_Content = news_Content.replaceAll("(?<!item/)" + w.word + "(?!\">)", "<a href=\"" +
                     "http://baike.baidu.com/item/" +
                     w.word +
                     "\">" + w.word + "</a>");

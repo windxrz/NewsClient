@@ -8,14 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import com.java.group6.R;
 
 
 public class AccountFragment extends Fragment implements MyOneLineView.OnRootClickListener
 {
-    private LinearLayout llRoot;
     private MyOneLineView settingsView;
     private Button favoriteBtn, downloadBtn;
 
@@ -30,7 +28,6 @@ public class AccountFragment extends Fragment implements MyOneLineView.OnRootCli
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
-        llRoot = view.findViewById(R.id.llAccount);
         favoriteBtn = view.findViewById(R.id.collectionBtn);
         favoriteBtn.setOnClickListener(new View.OnClickListener()
             {
@@ -51,9 +48,6 @@ public class AccountFragment extends Fragment implements MyOneLineView.OnRootCli
                 startActivity(intent);
             }
         });
-//        collectionBtn.setHeight(collectionBtn.getMeasuredWidth());
-//        downloadBtn.setHeight(downloadBtn.getMeasuredWidth());
-//        llRoot.setMinimumHeight(collectionBtn.getMeasuredHeight());
         settingsView = view.findViewById(R.id.settingsView);
         settingsView = settingsView
                 .initMine(R.drawable.ic_settings_black_24dp, getString(R.string.title_activity_settings), "", false)
@@ -72,7 +66,7 @@ public class AccountFragment extends Fragment implements MyOneLineView.OnRootCli
                 intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
                         SettingsActivity.GeneralPreferenceFragment.class.getName());
                 intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-                startActivity(intent);
+                startActivityForResult(intent, 2);
                 break;
         }
     }

@@ -2,9 +2,7 @@ package com.java.group6.ui;
 
 
 import android.annotation.TargetApi;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,11 +11,11 @@ import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.java.group6.R;
@@ -109,8 +107,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
     }
@@ -164,7 +161,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity
         public void onCreate(Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
-            Log.e("create", (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) ? "NIGHT" : "DAY");
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
             nightSwitchPreference = (SwitchPreference) findPreference("night_switch");
@@ -213,6 +209,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity
             int id = item.getItemId();
             if (id == android.R.id.home)
             {
+                getActivity().setResult(RESULT_OK, null);
                 getActivity().finish();
                 return true;
             }
@@ -220,11 +217,20 @@ public class SettingsActivity extends AppCompatPreferenceActivity
         }
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        setResult(RESULT_OK, null);
+        finish();
+        super.onBackPressed();
+    }
+
     private void refresh()
     {
-        Intent intent = getIntent();
-        finish();
-        startActivity(intent);
+//        Intent intent = getIntent();
+//        finish();
+//        startActivity(intent);
+        recreate();
     }
 
 }
