@@ -144,24 +144,17 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(R.string.Content);
         }
-//        textView = findViewById(R.id.contentTextView);;
         webView = findViewById(R.id.webView);
         webView.setBackgroundColor(0);
         webView.setVerticalScrollBarEnabled(false);
         WebSettings webSettings = webView.getSettings();
-        webSettings.setUseWideViewPort(true); //将图片调整到适合webview的大小
-        webSettings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
-//        webSettings.setSupportZoom(true);  //支持缩放，默认为true。是下面那个的前提。
-//        webSettings.setBuiltInZoomControls(true); //设置内置的缩放控件。
-//        webSettings.setTextZoom(2);//设置文本的缩放倍数，默认为 100
-//        webSettings.setDisplayZoomControls(false); //隐藏原生的缩放控件
-//        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN); //支持内容重新布局
-        webSettings.setAllowFileAccess(true); //设置可以访问文件
-        webSettings.setLoadsImagesAutomatically(true); //支持自动加载图片
-        webSettings.setDefaultTextEncodingName("utf-8"); //设置编码格式
-        webSettings.setDefaultFontSize(16); //设置 WebView 字体的大小，默认大小为 16
-        webSettings.setMinimumFontSize(12); //设置 WebView 支持的最小字体大小，默认为 8
-
+        webSettings.setUseWideViewPort(true);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setLoadsImagesAutomatically(true);
+        webSettings.setDefaultTextEncodingName("utf-8");
+        webSettings.setDefaultFontSize(16);
+        webSettings.setMinimumFontSize(12);
         Intent intent = getIntent();
         String news_ID = intent.getStringExtra(MainActivity.NEWS_ID);
         boolean f = false;
@@ -171,6 +164,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
             {
                 FileInputStream fi = new FileInputStream(MyApplication.newsDetail_directory + "/" + news_ID + "/detail.txt");
                 ObjectInputStream si = new ObjectInputStream(fi);
+
                 newsDetail = (NewsDetail)si.readObject();
                 f = true;
             } catch (IOException | ClassNotFoundException e)

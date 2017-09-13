@@ -9,7 +9,7 @@ import java.util.List;
 
 public class NewsDetail extends NewsBrief implements Serializable
 {
-    public List<Word> persons, locations, organizations;
+    private List<Word> persons, locations, organizations;
     public String news_Content;
     public String news_Journal;
     public String pureContent;
@@ -43,9 +43,9 @@ public class NewsDetail extends NewsBrief implements Serializable
         processWords(organizations);
     }
 
-    private class Word
+    private class Word implements Serializable
     {
-        public String word;
+        String word;
         public int count;
         public float score;
     }

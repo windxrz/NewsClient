@@ -122,7 +122,7 @@ public abstract class NewsShowFragment extends Fragment
                     else
                     {
                         pos = offset;
-                        if (totalItemCount % 25 == 0)
+                        if (totalItemCount % 25 == 0 && totalItemCount > 0)
                             ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).addProgressBar();
                     }
                 }
@@ -174,6 +174,7 @@ public abstract class NewsShowFragment extends Fragment
 
     void clear()
     {
+        Log.e("NewsShowFragment", "clear");
         refreshing = false;
         loading = false;
         ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).clear();
@@ -210,6 +211,7 @@ public abstract class NewsShowFragment extends Fragment
     void fetchNewsListFail()
     {
         ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).removeProgressBar();
+        recycler_view.scrollBy(0, -1);
         final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNewsFail, Toast.LENGTH_SHORT);
         toast.show();
         Handler handler = new Handler();
@@ -253,6 +255,22 @@ public abstract class NewsShowFragment extends Fragment
         swipe_refresh_layout.setRefreshing(false);
         loading = false;
         refreshing = false;
+        if (type.equals(Operation.DOWNLOAD) && data instanceof Integer)
+        {
+            recycler_view.getAdapter().notifyItemChanged((int) data);
+            final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.DownloadingNewsFail, Toast.LENGTH_SHORT);
+            toast.show();
+            Handler handler = new Handler();
+            handler.postDelayed(
+                    new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            toast.cancel();
+                        }
+                    }, 1000);
+        }
     }
 
     @Override

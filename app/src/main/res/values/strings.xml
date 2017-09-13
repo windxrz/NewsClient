@@ -11,7 +11,7 @@
     <string name="search_fragment">Hello search fragment</string>
     <string name="account_fragment">Hello account fragment</string>
 
-    <string name="news_kind0">Recommendation</string>
+    <string name="news_kind0">All</string>
     <string name="news_kind1">Technology</string>
     <string name="news_kind2">Education</string>
     <string name="news_kind3">Military</string>
@@ -27,6 +27,7 @@
 
     <string name="FetchingNews">Fetching news</string>
     <string name="FetchingNewsFail">Fail fetching news</string>
+    <string name="DownloadingNewsFail">Fail downloading news</string>
     <string name="AllNewsFetched">All news have been fetched</string>
     <string name="NonNews">Nothing found</string>
 
