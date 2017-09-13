@@ -44,6 +44,13 @@ public class DownloadsActivity extends AppCompatActivity
         traction.commit();
     }
 
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        MyApplication.save(this);
+    }
+
     public void onNewsClicked(NewsBrief item)
     {
         if (!item.news_ID.equals(""))

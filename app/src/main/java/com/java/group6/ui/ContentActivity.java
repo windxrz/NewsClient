@@ -244,6 +244,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         mTts.stopSpeaking();
         mTts.destroy();
         startedSpeaking = true;
+        MyApplication.save(this);
         super.onPause();
     }
 
