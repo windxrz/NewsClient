@@ -2,6 +2,7 @@ package com.java.group6.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -72,16 +73,16 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
     {
         if (old_holder instanceof FooterViewHolder)
         {
-            ((FooterViewHolder)(old_holder)).load_more.setProgress(0, true);
+            ((FooterViewHolder)(old_holder)).load_more.setProgress(0);
             return;
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA);
         old_holder.mItem = mValues.get(position);
         old_holder.mNewsTitle.setText(old_holder.mItem.news_Title);
         if (Operation.isRead(old_holder.mItem.news_ID))
-            old_holder.mNewsTitle.setTextColor(mContext.getColor(R.color.textRead));
+            old_holder.mNewsTitle.setTextColor(ContextCompat.getColor(mContext, R.color.textRead));
         else
-            old_holder.mNewsTitle.setTextColor(mContext.getColor(R.color.textUnread));
+            old_holder.mNewsTitle.setTextColor(ContextCompat.getColor(mContext, R.color.textUnread));
         old_holder.mNewsSource.setText(old_holder.mItem.news_Source);
         old_holder.pos = old_holder.getAdapterPosition();
         if (old_holder.mItem.newsTime != null) old_holder.mNewsTime.setText(format.format(old_holder.mItem.newsTime));
@@ -92,7 +93,6 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
         {
             final NewsWithPictureViewHolder holder = (NewsWithPictureViewHolder)old_holder;
             Resources r = mContext.getResources();
-            Picasso.with(mContext).setIndicatorsEnabled(true);
             Picasso.with(mContext)
                     .load(holder.mItem.newsPictures.get(0))
                     .placeholder(R.drawable.placeholder)
@@ -147,8 +147,9 @@ class MyNewsRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsRecyclerViewA
 
     void clear()
     {
+        int tmp = mValues.size();
         mValues.clear();
-        notifyDataSetChanged();
+        notifyItemRangeRemoved(0, tmp);
     }
 
     void addAll(List<NewsBrief> list)
