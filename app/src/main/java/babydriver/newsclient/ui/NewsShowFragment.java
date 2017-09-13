@@ -37,6 +37,7 @@ public abstract class NewsShowFragment extends Fragment
 
     private boolean loading = false;
     private boolean refreshing = false;
+    private int offset = 0;
 
     private ArrayList<NewsBrief> list = new ArrayList<>();
 
@@ -76,7 +77,6 @@ public abstract class NewsShowFragment extends Fragment
         recycler_view.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
         recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener()
         {
-            int y = 0;
             int pos;
 
             @Override
@@ -89,7 +89,7 @@ public abstract class NewsShowFragment extends Fragment
                 boolean bar = ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).hasProgressBar();
                 if (bar && totalItemCount - 2 == lastVisibleItem && recycler_view.getScrollState() == RecyclerView.SCROLL_STATE_IDLE)
                 {
-                    if (!loading) recycler_view.scrollBy(0, pos - y);
+                    if (!loading) recycler_view.scrollBy(0, pos - offset);
                 }
             }
 
@@ -97,7 +97,7 @@ public abstract class NewsShowFragment extends Fragment
             public void onScrolled(RecyclerView recycler_view, int dx, int dy)
             {
                 super.onScrolled(recycler_view, dx, dy);
-                y += dy;
+                offset += dy;
                 LinearLayoutManager manager = (LinearLayoutManager)recycler_view.getLayoutManager();
                 int totalItemCount = manager.getItemCount();
                 int lastVisibleItem = manager.findLastCompletelyVisibleItemPosition();
@@ -120,8 +120,8 @@ public abstract class NewsShowFragment extends Fragment
                     }
                     else
                     {
-                        pos = y;
-                        Log.e("pos save", y + "");
+                        pos = offset;
+                        Log.e("pos save", offset + "");
                         if (totalItemCount % 25 == 0)
                             ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).addProgressBar();
                     }
@@ -135,7 +135,7 @@ public abstract class NewsShowFragment extends Fragment
             recycler_view.post(new Runnable() {
                 @Override
                 public void run() {
-                    recycler_view.scrollToPosition(finalPos);
+                    recycler_view.scrollTo(0, finalPos);
                 }
             });
         }
@@ -161,8 +161,7 @@ public abstract class NewsShowFragment extends Fragment
     {
         super.onSaveInstanceState(outState);
         outState.putSerializable("list", (ArrayList<NewsBrief>)((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).getList());
-        int pos = ((LinearLayoutManager)recycler_view.getLayoutManager()).findFirstVisibleItemPosition();
-        outState.putInt("position", pos);
+        outState.putInt("position", offset);
     }
 
     @Override
