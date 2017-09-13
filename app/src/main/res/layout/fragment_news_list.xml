@@ -20,7 +20,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="babydriver.newsclient.ui.NewsShowFragment">
+        tools:context="java.group6.com.java.group6.ui.NewsShowFragment">
     </android.support.v7.widget.RecyclerView>
 
 </android.support.v4.widget.SwipeRefreshLayout>

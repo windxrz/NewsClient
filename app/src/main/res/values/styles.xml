@@ -7,9 +7,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-    
+
     <style name="OverFlowMenuTheme" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
         <item name="overlapAnchor">false</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/lyn</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
 </resources>
