@@ -3,7 +3,7 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              tools:context="babydriver.newsclient.ui.SearchFragment"
+              tools:context="com.java.group6.ui.SearchFragment"
               android:orientation="vertical">
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

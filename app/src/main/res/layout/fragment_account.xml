@@ -3,7 +3,7 @@
               android:id="@+id/llAccount"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              tools:context="babydriver.newsclient.ui.AccountFragment"
+              tools:context="com.java.group6.ui.AccountFragment"
               android:orientation="vertical">
 
     <LinearLayout
@@ -45,12 +45,12 @@
 
     </LinearLayout>
 
-    <babydriver.newsclient.ui.MyOneLineView
+    <com.java.group6.ui.MyOneLineView
         android:id="@+id/settingsView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp">
 
-    </babydriver.newsclient.ui.MyOneLineView>
+    </com.java.group6.ui.MyOneLineView>
 
 </LinearLayout>
