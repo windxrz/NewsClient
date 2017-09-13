@@ -120,6 +120,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+//            Intent refresh = new Intent(this, MainActivity.class);
+//            startActivity(refresh);
+//            this.finish();
+            recreate();
+        }
+    }
+
+    @Override
     protected void onPause()
     {
         super.onPause();
@@ -140,7 +151,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, ContentActivity.class);
             MyApplication.read_list.add(item.news_ID);
             intent.putExtra(NEWS_ID, item.news_ID);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
         }
     }
 }
