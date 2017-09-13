@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.java.group6.controller.MyApplication;
@@ -79,6 +78,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume()
     {
+        MyApplication.load(this);
         BottomNavigationView.OnNavigationItemSelectedListener listener = new BottomNavigationView.OnNavigationItemSelectedListener()
         {
             @Override
@@ -122,9 +122,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK){
+        if (resultCode==RESULT_OK)
+        {
             recreate();
         }
     }
@@ -133,7 +135,7 @@ public class MainActivity extends AppCompatActivity
     protected void onPause()
     {
         super.onPause();
-        MyApplication.save();
+        MyApplication.save(this);
     }
 
     @Override

@@ -209,13 +209,13 @@ class NewsRequester
             outputStream.close();
         } catch (NullPointerException e)
         {
-            Log.e("Exception", "NullPointerException");
+            Log.e("savePicToDisk Exception", "NullPointerException");
         } catch (FileNotFoundException e)
         {
-            Log.e("Exception", "FileNotFound");
+            Log.e("savePicToDisk Exception", "FileNotFound");
         } catch (IOException e)
         {
-            Log.e("Exception", "IOException when flushing/closing outputStream");
+            Log.e("savePicToDisk Exception", "IOException when flushing/closing outputStream");
         } finally
         {
             if (inputStream != null)
@@ -224,7 +224,7 @@ class NewsRequester
                     inputStream.close();
                 } catch (IOException e)
                 {
-                    Log.e("Exception", "IOException when closing inputStream");
+                    Log.e("savePicToDisk Exception", "IOException when closing inputStream");
                 }
         }
     }
