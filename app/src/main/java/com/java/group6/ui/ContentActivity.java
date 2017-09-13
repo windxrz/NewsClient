@@ -405,7 +405,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         for (String picUrl : newsDetail.newsPictures)
         {
             String suffix = "";
-            Pattern p = Pattern.compile("\\.[^\\.]+$");
+            Pattern p = Pattern.compile("\\.[^.]+$");
             Matcher m = p.matcher(picUrl);
             if (m.find())
                 suffix = m.group();
