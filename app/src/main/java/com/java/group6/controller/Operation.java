@@ -3,12 +3,17 @@ package com.java.group6.controller;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -88,14 +93,48 @@ public class Operation
             {
                 File f = new File(directory + "/" + file);
                 isOK = f.delete();
-                if (!isOK) Log.e(f.toString(), "delete fail");
+                if (!isOK) Log.e("remove newsBrief", f.toString() + " delete fail");
             }
             isOK = d.delete();
-            if (!isOK) Log.e(d.toString(), "delete fail");
+            if (!isOK) Log.e("remove newsBrief", "delete fail");
         }
     }
 
-    static void fetchNewsBrief(HashSet<String> set, String dir, HashMap<String, NewsBrief> map)
+    static void loadList(String filename, HashSet<String> set)
+    {
+        try
+        {
+            set.clear();
+            FileInputStream fi = new FileInputStream(filename);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fi));
+            String s;
+            while ((s = reader.readLine()) != null)
+            {
+                set.add(s);
+            }
+            reader.close();
+        }
+        catch (IOException ignored) {}
+    }
+
+    static void saveList(String filename, HashSet<String> set)
+    {
+        try
+        {
+            FileOutputStream fo = new FileOutputStream(filename);
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fo));
+            String s;
+            for (String id : set)
+            {
+                writer.write(id + "\n");
+            }
+            writer.flush();
+            writer.close();
+        }
+        catch (IOException ignored) {}
+    }
+
+    static void loadNewsBrief(HashSet<String> set, String dir, HashMap<String, NewsBrief> map)
     {
         if (set != null)
         {
@@ -107,6 +146,7 @@ public class Operation
                     FileInputStream fi = new FileInputStream(filename);
                     ObjectInputStream si = new ObjectInputStream(fi);
                     NewsBrief brief = (NewsBrief) si.readObject();
+                    si.close();
                     map.put(id, brief);
                 } catch (IOException | ClassNotFoundException e)
                 {
@@ -128,6 +168,8 @@ public class Operation
                     FileOutputStream fo = new FileOutputStream(filename);
                     ObjectOutputStream so = new ObjectOutputStream(fo);
                     so.writeObject(map.get(id));
+                    so.flush();
+                    so.close();
                 } catch (IOException e)
                 {
                     e.printStackTrace();
@@ -162,7 +204,6 @@ public class Operation
                     public void onSuccess(Integer detail)
                     {
                         missions[0]--;
-                        Log.e("progress", missions[0] + " " + detail);
                         if (detail.equals(1)) success[0] = true;
                         if (missions[0] == 0)
                         {
@@ -180,7 +221,6 @@ public class Operation
                     public void onFailure()
                     {
                         missions[0]--;
-                        Log.e("progress", missions[0] + "");
                         if (missions[0] == 0)
                         {
                             downloading.remove(id);

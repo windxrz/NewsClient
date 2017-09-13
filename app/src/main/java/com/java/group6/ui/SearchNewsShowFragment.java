@@ -2,6 +2,7 @@ package com.java.group6.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.java.group6.controller.Operation;
+import com.java.group6.model.NewsBriefList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +35,25 @@ public class SearchNewsShowFragment extends NewsShowFragment
     }
 
     @Override
+    public void onSuccess(String type, Object data)
+    {
+        if (type.equals(Operation.SEARCH) && data instanceof NewsBriefList)
+        {
+            NewsBriefList list = (NewsBriefList) data;
+            addAll(list.list);
+        }
+    }
+
+    @Override
+    public void onFailure(String type, Object data)
+    {
+        if (type.equals(Operation.SEARCH))
+        {
+            fetchNewsListFail();
+        }
+    }
+
+    @Override
     void listInitialize() {}
 
     @Override
@@ -43,17 +64,6 @@ public class SearchNewsShowFragment extends NewsShowFragment
         map.put("pageNo", manager.getItemCount() / 25 + 1);
         map.put("pageSize", 25);
         new Operation(this).requestSearch(keyword, map);
-//        final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNews, Toast.LENGTH_SHORT);
-//        toast.show();
-//        Handler handler = new Handler();
-//        handler.postDelayed(
-//                new Runnable()
-//                {
-//                    @Override
-//                    public void run() {
-//                        toast.cancel();
-//                    }
-//                }, 500);
     }
 
     @Override

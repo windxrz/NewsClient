@@ -122,7 +122,6 @@ public abstract class NewsShowFragment extends Fragment
                     else
                     {
                         pos = offset;
-                        Log.e("pos save", offset + "");
                         if (totalItemCount % 25 == 0)
                             ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).addProgressBar();
                     }
@@ -147,6 +146,7 @@ public abstract class NewsShowFragment extends Fragment
             @Override
             public void onRefresh()
             {
+                refreshing = true;
                 listRefresh();
             }
         });
@@ -174,8 +174,8 @@ public abstract class NewsShowFragment extends Fragment
 
     void clear()
     {
-        loading = false;
         refreshing = false;
+        loading = false;
         ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).clear();
     }
 
@@ -207,10 +207,9 @@ public abstract class NewsShowFragment extends Fragment
             ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).addAll(list);
     }
 
-    private void fetchNewsListFail()
+    void fetchNewsListFail()
     {
         ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).removeProgressBar();
-        loading = false;
         final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNewsFail, Toast.LENGTH_SHORT);
         toast.show();
         Handler handler = new Handler();
@@ -239,22 +238,9 @@ public abstract class NewsShowFragment extends Fragment
     @Override
     public void onSuccess(String type, Object data)
     {
-        if (type.equals(Operation.LATEST) && data instanceof NewsBriefList)
-        {
-            swipe_refresh_layout.setRefreshing(false);
-            loading = false;
-            refreshing = false;
-            NewsBriefList list = (NewsBriefList) data;
-            addAll(list.list);
-        }
-        if (type.equals(Operation.SEARCH) && data instanceof NewsBriefList)
-        {
-            swipe_refresh_layout.setRefreshing(false);
-            loading = false;
-            refreshing = false;
-            NewsBriefList list = (NewsBriefList) data;
-            addAll(list.list);
-        }
+        swipe_refresh_layout.setRefreshing(false);
+        loading = false;
+        refreshing = false;
         if (type.equals(Operation.DOWNLOAD) && data instanceof Integer)
         {
             recycler_view.getAdapter().notifyItemChanged((int)data);
@@ -264,12 +250,9 @@ public abstract class NewsShowFragment extends Fragment
     @Override
     public void onFailure(String type, Object data)
     {
-        if (type.equals(Operation.LATEST))
-        {
-            swipe_refresh_layout.setRefreshing(false);
-            refreshing = false;
-            fetchNewsListFail();
-        }
+        swipe_refresh_layout.setRefreshing(false);
+        loading = false;
+        refreshing = false;
     }
 
     @Override
@@ -285,6 +268,11 @@ public abstract class NewsShowFragment extends Fragment
     abstract void listAdd();
 
     abstract void listRefresh();
+
+    boolean isRefreshing()
+    {
+        return refreshing;
+    }
 
     @Override
     public void onButtonClicked(String type)

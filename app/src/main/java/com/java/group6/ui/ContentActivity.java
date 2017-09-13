@@ -141,7 +141,7 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
         if (getSupportActionBar() != null)
         {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setTitle(R.string.Content);
         }
 //        textView = findViewById(R.id.contentTextView);;
         webView = findViewById(R.id.webView);
@@ -322,7 +322,6 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
     {
         if (Operation.isDownloaded(newsDetail.news_ID))
         {
-            Log.e("downloaded", MyApplication.newsDetail_directory + "/" + newsDetail.news_ID);
             return new File(MyApplication.newsDetail_directory + "/" + newsDetail.news_ID);
         }
         else

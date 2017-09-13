@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#5f67ac</color>
     <!--<color name="colorBottomNavigationView">#f4f4f4</color>-->
-    <color name="colorSearchView">#f4f4f4</color>
+    <color name="colorSearchView">@android:color/white</color>
     <color name="colorPrimaryDark">#5f67ac</color>
     <color name="colorAccent">#FF4081</color>
     <color name="textUnread">@android:color/black</color>

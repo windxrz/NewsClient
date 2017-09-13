@@ -29,21 +29,11 @@ public class DownloadsNewsShowFragment extends NewsShowFragment
     @Override
     void listInitialize()
     {
-        ArrayList<NewsBrief> list = new ArrayList<>();
         news_list.addAll(MyApplication.downloaded_list);
         Collections.sort(news_list);
         int n = news_list.size();
         current = n - 1;
-        int s = 0;
-        while (current >= 0 && s < 25)
-        {
-            s++;
-            list.add(MyApplication.downloaded.get(news_list.get(current)));
-            current--;
-        }
-        Log.e("size", list.size() + "");
-        addAll(list);
-        recycler_view.getAdapter().notifyDataSetChanged();
+        listAdd();
     }
 
     @Override

@@ -92,6 +92,7 @@
     </string-array>
 
     <string name="DownloadFail">Fail downloading</string>
+    <string name="Content">Content</string>
 
 
 </resources>
