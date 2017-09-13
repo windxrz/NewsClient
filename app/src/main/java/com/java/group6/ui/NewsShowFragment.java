@@ -122,7 +122,7 @@ public abstract class NewsShowFragment extends Fragment
                     else
                     {
                         pos = offset;
-                        if (totalItemCount % 25 == 0)
+                        if (totalItemCount % 25 == 0 && totalItemCount > 0)
                             ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).addProgressBar();
                     }
                 }
