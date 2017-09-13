@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 
 import com.java.group6.controller.MyApplication;
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity
                             home_fragment.home_news_show_fragment.setTop();
                         fragment = home_fragment;
                         current_fragment = R.id.item_home;
+//                        findViewById(R.id.toolbar_main).setVisibility(View.VISIBLE);
                         break;
                     case R.id.item_search:
                         search_fragment.search_news_show_fragment.update();
@@ -104,10 +106,12 @@ public class MainActivity extends AppCompatActivity
                             search_fragment.search_news_show_fragment.setTop();
                         fragment = search_fragment;
                         current_fragment = R.id.item_search;
+//                        findViewById(R.id.toolbar_main).setVisibility(View.VISIBLE);
                         break;
                     case R.id.item_account:
                         fragment = account_fragment;
                         current_fragment = R.id.item_account;
+//                        findViewById(R.id.toolbar_main).setVisibility(View.GONE);
                         break;
                 }
                 FragmentManager fragment_manager = getSupportFragmentManager();
