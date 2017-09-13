@@ -24,6 +24,7 @@
 
     <string name="FetchingNews">Fetching news</string>
     <string name="FetchingNewsFail">Fail fetching news</string>
+    <string name="DownloadingNewsFail">Fail downloading news</string>
     <string name="AllNewsFetched">All news have been fetched</string>
     <string name="NonNews">Nothing found</string>
 

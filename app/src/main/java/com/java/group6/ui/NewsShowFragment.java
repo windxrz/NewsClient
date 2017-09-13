@@ -255,6 +255,22 @@ public abstract class NewsShowFragment extends Fragment
         swipe_refresh_layout.setRefreshing(false);
         loading = false;
         refreshing = false;
+        if (type.equals(Operation.DOWNLOAD) && data instanceof Integer)
+        {
+            recycler_view.getAdapter().notifyItemChanged((int) data);
+            final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.DownloadingNewsFail, Toast.LENGTH_SHORT);
+            toast.show();
+            Handler handler = new Handler();
+            handler.postDelayed(
+                    new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            toast.cancel();
+                        }
+                    }, 1000);
+        }
     }
 
     @Override
