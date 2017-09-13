@@ -3,7 +3,6 @@ package babydriver.newsclient.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,22 +76,56 @@ public abstract class NewsShowFragment extends Fragment
         recycler_view.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
         recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener()
         {
-            boolean last = false;
+            int y = 0;
+            int pos;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState)
+            {
+                super.onScrollStateChanged(recyclerView, newState);
+                LinearLayoutManager manager = (LinearLayoutManager)recycler_view.getLayoutManager();
+                int totalItemCount = manager.getItemCount();
+                int lastVisibleItem = manager.findLastCompletelyVisibleItemPosition();
+                boolean bar = ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).hasProgressBar();
+                if (bar && totalItemCount - 2 == lastVisibleItem && recycler_view.getScrollState() == RecyclerView.SCROLL_STATE_IDLE)
+                {
+                    if (!loading) recycler_view.scrollBy(0, pos - y);
+                }
+            }
 
             @Override
             public void onScrolled(RecyclerView recycler_view, int dx, int dy)
             {
                 super.onScrolled(recycler_view, dx, dy);
-
+                y += dy;
                 LinearLayoutManager manager = (LinearLayoutManager)recycler_view.getLayoutManager();
                 int totalItemCount = manager.getItemCount();
-                int lastVisibleItem = manager.findLastVisibleItemPosition();
-                if (!loading && totalItemCount > 0 && !last && lastVisibleItem == totalItemCount - 1)
+                int lastVisibleItem = manager.findLastCompletelyVisibleItemPosition();
+                boolean bar = ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).hasProgressBar();
+
+                if (!loading && totalItemCount > 0 && lastVisibleItem == totalItemCount - 1)
                 {
-                    loading = true;
-                    listAdd();
+                    if (bar)
+                    {
+                        loading = true;
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                listAdd();
+                            }
+                        }, 500);
+                    }
+                    else
+                    {
+                        pos = y;
+                        Log.e("pos save", y + "");
+                        if (totalItemCount % 25 == 0)
+                            ((MyNewsRecyclerViewAdapter) recycler_view.getAdapter()).addProgressBar();
+                    }
                 }
-                last = (lastVisibleItem == totalItemCount - 1);
             }
         });
 
@@ -149,6 +181,7 @@ public abstract class NewsShowFragment extends Fragment
 
     void addAll(List<NewsBrief> list)
     {
+        ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).removeProgressBar();
         if (list == null || list.size() == 0)
         {
             LinearLayoutManager manager = (LinearLayoutManager)recycler_view.getLayoutManager();
@@ -176,6 +209,8 @@ public abstract class NewsShowFragment extends Fragment
 
     private void fetchNewsListFail()
     {
+        ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).removeProgressBar();
+        loading = false;
         final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNewsFail, Toast.LENGTH_SHORT);
         toast.show();
         Handler handler = new Handler();
@@ -183,10 +218,12 @@ public abstract class NewsShowFragment extends Fragment
                 new Runnable()
                 {
                     @Override
-                    public void run() {
+                    public void run()
+                    {
                         toast.cancel();
                     }
                 }, 1000);
+
     }
 
     void setTop()
@@ -230,11 +267,9 @@ public abstract class NewsShowFragment extends Fragment
         if (type.equals(Operation.LATEST))
         {
             swipe_refresh_layout.setRefreshing(false);
-            loading = false;
             refreshing = false;
             fetchNewsListFail();
         }
-        recycler_view.getAdapter().notifyDataSetChanged();
     }
 
     @Override

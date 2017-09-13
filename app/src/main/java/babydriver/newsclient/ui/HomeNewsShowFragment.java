@@ -88,17 +88,17 @@ public class HomeNewsShowFragment extends NewsShowFragment
         map.put("pageSize", 25);
         Operation operation = new Operation(this);
         operation.requestLatest(map);
-        final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNews, Toast.LENGTH_SHORT);
-        toast.show();
-        Handler handler = new Handler();
-        handler.postDelayed(
-                new Runnable()
-                {
-                    @Override
-                    public void run() {
-                        toast.cancel();
-                    }
-                }, 500);
+//        final Toast toast = Toast.makeText(recycler_view.getContext(), R.string.FetchingNews, Toast.LENGTH_SHORT);
+//        toast.show();
+//        Handler handler = new Handler();
+//        handler.postDelayed(
+//                new Runnable()
+//                {
+//                    @Override
+//                    public void run() {
+//                        toast.cancel();
+//                    }
+//                }, 500);
     }
 
     @Override

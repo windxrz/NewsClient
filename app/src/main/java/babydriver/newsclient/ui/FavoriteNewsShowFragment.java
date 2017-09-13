@@ -49,6 +49,7 @@ public class FavoriteNewsShowFragment extends NewsShowFragment
     @Override
     void listAdd()
     {
+        ((MyNewsRecyclerViewAdapter)recycler_view.getAdapter()).removeProgressBar();
         ArrayList<NewsBrief> list = new ArrayList<>();
         int s = 0;
         while (current >= 0 && s < 25)
