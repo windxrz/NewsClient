@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -268,6 +269,24 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
                     operation.download(newsDetail, MyApplication.newsDetail_directory, 0);
                 }
                 break;
+            case 3:
+                Intent intent = new Intent();
+//                Uri picUri = getFirstPicUri();
+//                if (picUri != null)
+//                {
+//                    intent.setType("*/*");
+//                    intent.putExtra(Intent.EXTRA_STREAM, picUri);
+//                    intent.putExtra("Kdescription", newsDetail.news_Title);
+//                }
+//                else
+                intent.setType("text/plain");
+
+                intent.setAction(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_SUBJECT, newsDetail.news_Title);
+                intent.putExtra(Intent.EXTRA_TEXT, newsDetail.news_Title + "\n" + newsDetail.news_URL);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                //设置分享列表的标题，并且每次都显示分享列表
+                startActivity(Intent.createChooser(intent, "分享到"));
             case 4:
                 if (!startedSpeaking)
                 {
@@ -295,6 +314,24 @@ public class ContentActivity extends AppCompatActivity implements Operation.OnOp
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private Uri getFirstPicUri()
+    {
+        File picDir = getNewsDirectory();
+        if (!picDir.isDirectory())
+            return null;
+        if (newsDetail.newsPictures.isEmpty())
+            return null;
+        String firstLink = newsDetail.newsPictures.get(0);
+        String suffix = "";
+        Pattern p = Pattern.compile("\\.[^.]+$");
+        Matcher m = p.matcher(firstLink);
+        if (!m.find())
+            return null;
+        suffix = m.group();
+        File pic = new File(picDir.getPath() + "/" + "0" + suffix);
+        return Uri.fromFile(pic);
     }
 
     private void startTTS()
