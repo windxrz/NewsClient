@@ -2,11 +2,11 @@
 
 ## 成员：
 	
-邴冠文	2015080065
+邴冠文 2015080065
 
-徐韧喆	2015011350
+徐韧喆 2015011350
 
-左浩佳	2015011362
+左浩佳 2015011362
 
 ## APP简介 
 
@@ -46,7 +46,22 @@
 
 com.java.group6 下有 3 个包：controller, model, ui
 
- - controller包：
+ - controller包
+ 
+Operation类，封装对新闻数据的各种操作，包括获取、收藏、离线、分享等
+
+MyApplication类：程序入口。
+
+NewRequester等其余类：使用Retrofit框架实现对新闻API的HTTP请求功能。
 	
-	Operation类，封装对新闻数据的各种操作，包括获取、收藏、离线、分享等
+ - model包
 	
+NewsBrief类：一条新闻的简要信息
+
+NewsBriefList类：新闻简要信息列表
+
+NewsDetail类：一条新闻的详细信息
+
+ - ui包
+	
+所有关于UI的类
