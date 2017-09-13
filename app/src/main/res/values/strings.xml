@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">NewsClient</string>
     <string name="appid">59b7e5a3</string>
+
+    <string name="title_main">Last Year News</string>
+
     <string name="Left">Home</string>
     <string name="Middle">Search</string>
     <string name="Right">Account</string>
@@ -93,6 +96,10 @@
 
     <string name="DownloadFail">Fail downloading</string>
     <string name="Content">Content</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 
 </resources>
